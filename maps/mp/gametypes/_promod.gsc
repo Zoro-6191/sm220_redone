@@ -111,9 +111,6 @@ setClassChoice( classType )
 	self.pers["class"] = classType;
 	self.class = classType;
 
-	if(idef)
-		self promod\shoutcast::addPlayer();
-
 	self setClientDvar( "loadout_class", classType );
 
 	self initClassLoadouts();

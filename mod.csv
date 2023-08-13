@@ -11,9 +11,6 @@ menufile,ui_mp/scriptmenus/quickpromod.menu
 menufile,ui_mp/scriptmenus/quickpromodgfx.menu
 menufile,ui_mp/scriptmenus/scoreboard.menu
 menufile,ui_mp/scriptmenus/shoutcast.menu
-menufile,ui_mp/scriptmenus/shoutcast_map.menu
-menufile,ui_mp/scriptmenus/shoutcast_setup.menu
-menufile,ui_mp/scriptmenus/shoutcast_setup_binds.menu
 menufile,ui_mp/scriptmenus/team_marinesopfor.menu
 menufile,ui_mp/scriptmenus/team_marinesopfor_flipped.menu
 

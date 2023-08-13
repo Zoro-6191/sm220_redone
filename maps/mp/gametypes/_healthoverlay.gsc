@@ -150,7 +150,6 @@ playerHealthRegen()
 
 			player setnormalhealth (newHealth);
 			oldhealth = player.health;
-			player promod\shoutcast::updatePlayer();
 			continue;
 		}
 

@@ -11,8 +11,6 @@ init()
 	game["menu_changeclass"] = "changeclass_mw";
 	game["menu_changeclass_offline"] = "changeclass_offline";
 	game["menu_shoutcast"] = "shoutcast";
-	game["menu_shoutcast_map"] = "shoutcast_map";
-	game["menu_shoutcast_setup"] = "shoutcast_setup";
 	game["menu_callvote"] = "callvote";
 	game["menu_muteplayer"] = "muteplayer";
 	game["menu_quickcommands"] = "quickcommands";
@@ -39,9 +37,6 @@ init()
 	precacheMenu("callvote");
 	precacheMenu("muteplayer");
 	precacheMenu("shoutcast");
-	precacheMenu("shoutcast_map");
-	precacheMenu("shoutcast_setup");
-	precacheMenu("shoutcast_setup_binds");
 	precacheMenu("echo");
 	precacheMenu("demo");
 
@@ -109,15 +104,6 @@ onMenuResponse()
 				self openMenu(game["menu_team"]);
 				continue;
 
-			case "shoutcast_setup":
-				if ( self.pers["team"] != "spectator" )
-					continue;
-
-				self closeMenu();
-				self closeInGameMenu();
-				self openMenu(game["menu_shoutcast_setup"]);
-				continue;
-
 			case "changeclass_marines":
 			case "changeclass_opfor":
 				if ( self.pers["team"] == "axis" || self.pers["team"] == "allies" )
@@ -178,37 +164,6 @@ onMenuResponse()
 
 			case "changeclass_mw":
 				self maps\mp\gametypes\_promod::menuAcceptClass( response );
-				continue;
-
-			case "shoutcast_setup":
-				if ( self.pers["team"] == "spectator" )
-				{
-					if( response == "assault" || response == "specops" || response == "demolitions" || response == "sniper" )
-						self promod\shoutcast::followClass(response);
-					else if (response == "getdetails")
-					{
-						self promod\shoutcast::loadOne();
-						classes = [];
-						classes["assault"] = 0;
-						classes["specops"] = 0;
-						classes["demolitions"] = 0;
-						classes["sniper"] = 0;
-
-						for(i=0;i<level.players.size;i++)
-						{
-							if(isDefined(level.players[i].curClass))
-								classes[level.players[i].curClass]++;
-							if(isDefined(level.players[i].pers["shoutnum"]) && isDefined(level.players[i].curClass))
-								self setclientdvar("shout_class"+level.players[i].pers["shoutnum"], maps\mp\gametypes\_quickmessages::chooseClassName(level.players[i].curClass));
-						}
-						self setClientDvars("shout_class_assault", classes["assault"],
-											"shout_class_specops", classes["specops"],
-											"shout_class_demolitions", classes["demolitions"],
-											"shout_class_sniper", classes["sniper"]);
-					}
-					else if ( int( response ) < 11 && int( response ) > 0 )
-						self promod\shoutcast::followBar(int(response)-1);
-				}
 				continue;
 
 			case "quickcommands":

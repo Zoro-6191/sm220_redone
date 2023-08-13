@@ -58,8 +58,6 @@ init()
 
 	level.players = [];
 
-	level.shoutbars = [];
-
 	registerDvars();
 
 	precacheModel( "tag_origin" );
@@ -429,8 +427,6 @@ spawnPlayer()
 
 	if ( !isDefined( level.rdyup ) || !level.rdyup )
 		self.statusicon = "";
-
-	self promod\shoutcast::updatePlayer();
 }
 
 removeWeapons()
@@ -841,11 +837,6 @@ endGame( winner, endReasonText )
 			{
 				player = level.players[i];
 
-				if( player.pers["team"] == "spectator" )
-					player setClientDvars(
-											"shout_scores_attack", game["teamScores"][game["defenders"]],
-											"shout_scores_defence", game["teamScores"][game["attackers"]] );
-
 				if ( !isDefined( player.pers["team"] ) || player.pers["team"] == "spectator" )
 				{
 					player [[level.spawnIntermission]]();
@@ -960,12 +951,6 @@ endGame( winner, endReasonText )
 				game["roundsplayed"]--;
 				[[level._setTeamScore]]( "allies", 0 );
 				[[level._setTeamScore]]( "axis", 0 );
-
-				for( i = 0; i < level.players.size; i++ )
-					if(level.players[i].pers["team"] == "spectator")
-						level.players[i] setClientDvars(
-												"shout_scores_attack", game["teamScores"][game["attackers"]],
-												"shout_scores_defence", game["teamScores"][game["defenders"]] );
 			}
 			game["PROMOD_KNIFEROUND"] = 0;
 			for(i=0;i<level.players.size;i++)
@@ -1271,9 +1256,6 @@ menuAutoAssign()
 	self.team = assignment;
 	self setClientDvar( "loadout_curclass", "" );
 
-	if(isDefined(self.pers["shoutnum"]))
-		self promod\shoutcast::removePlayer();
-
 	self updateObjectiveText();
 
 	if ( level.teamBased )
@@ -1390,9 +1372,6 @@ menuAllies()
 			self setClientDvar( "loadout_curclass", "" );
 		}
 
-		if(isDefined(self.pers["shoutnum"]))
-			self promod\shoutcast::removePlayer();
-
 		self updateObjectiveText();
 
 		if ( level.teamBased )
@@ -1477,9 +1456,6 @@ menuAxis()
 			self setClientDvar( "loadout_curclass", "" );
 		}
 
-		if(isDefined(self.pers["shoutnum"]))
-			self promod\shoutcast::removePlayer();
-
 		self updateObjectiveText();
 
 		if ( level.teamBased )
@@ -1536,9 +1512,6 @@ menuKillspec()
 	self thread [[level.spawnSpectator]]( self.origin, self.angles );
 
 	thread maps\mp\gametypes\_promod::updateClassAvailability( self.pers["team"] );
-
-	if(isDefined(self.pers["shoutnum"]))
-		self promod\shoutcast::removePlayer();
 }
 
 menuSpectator()
@@ -1567,33 +1540,15 @@ menuSpectator()
 		self.team = "spectator";
 		self setClientDvar( "loadout_curclass", "" );
 
-		if(isDefined(self.pers["shoutnum"]))
-			self promod\shoutcast::removePlayer();
-
 		self updateObjectiveText();
 
 		self.sessionteam = "spectator";
 		self thread [[level.spawnSpectator]]( self.origin, self.angles );
 
-		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
-			self setClientDvars(
-							"shout_attack_name", "Attack",
-							"shout_defence_name", "Defence" );
-		else
-			self setClientDvars(
-							"shout_attack_name", "Defence",
-							"shout_defence_name", "Attack" );
-
-		self setClientDvars(
-						"shout_scores_attack", game["teamScores"][game["attackers"]],
-						"shout_scores_defence", game["teamScores"][game["defenders"]] );
-
 		self setclientdvar( "g_scriptMainMenu", game["menu_shoutcast"] );
 
 		self notify("joined_spectators");
 		iprintln(self.name + " Joined Shoutcaster");
-
-		self promod\shoutcast::loadOne();
 
 		if ( oldTeam == "allies" || oldTeam == "axis" )
 			thread maps\mp\gametypes\_promod::updateClassAvailability( oldTeam );
@@ -1816,22 +1771,6 @@ sendUpdatedTeamScores()
 
 	for ( i = 0; i < level.players.size; i++ )
 		level.players[i] updateScores();
-
-	for( i = 0; i < level.players.size; i++ )
-	{
-		player = level.players[i];
-		if( player.pers["team"] == "spectator" )
-		{
-			if( game["attackers"] == "allies" && game["defenders"] == "axis" )
-				player setClientDvars(
-										"shout_scores_attack", game["teamScores"]["allies"],
-										"shout_scores_defence", game["teamScores"]["axis"] );
-			else
-				player setClientDvars(
-										"shout_scores_attack", game["teamScores"]["axis"],
-										"shout_scores_defence", game["teamScores"]["allies"] );
-		}
-	}
 
 	if ( isDefined( level.scorebot ) && level.scorebot )
 	{
@@ -2893,9 +2832,6 @@ Callback_PlayerConnect()
 
 	level.players[level.players.size] = self;
 
-	if(isDefined(self.pers["shoutnum"]))
-		level.shoutbars[self.pers["shoutnum"]] = self;
-
 	if ( level.teambased )
 		self updateScores();
 
@@ -2986,7 +2922,6 @@ Callback_PlayerDisconnect()
 	if ( level.gameEnded )
 		self removeDisconnectedPlayerFromPlacement();
 
-	self promod\shoutcast::removePlayer();
 	self maps\mp\gametypes\_weapons::printStats();
 
 	if ( isDefined( self.pers["team"] ) && ( self.pers["team"] == "allies" || self.pers["team"] == "axis" ) )
@@ -3228,9 +3163,6 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 
 		logPrint("D;" + self getGuid() + ";" + self getEntityNumber() + ";" + self.pers["team"] + ";" + self.name + ";" + lpattackGuid + ";" + lpattacknum + ";" + lpattackerteam + ";" + lpattackname + ";" + sWeapon + ";" + iDamage + ";" + sMeansOfDeath + ";" + sHitLoc + "\n");
 	}
-
-	// Shoutcaster healthbar update
-	self promod\shoutcast::updatePlayer();
 }
 
 dinkNoise( player1, player2 )
@@ -3445,9 +3377,6 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 				giveTeamScore( "kill", attacker.team, attacker, self );
 		}
 	}
-
-	self promod\shoutcast::updatePlayer();
-
 	self.switching_teams = undefined;
 	self.joining_team = undefined;
 	self.leaving_team = undefined;
