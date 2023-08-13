@@ -770,32 +770,6 @@ endGame( winner, endReasonText )
 		player freeGameplayHudElems();
 	}
 
-	if ( isDefined( level.scorebot ) && level.scorebot )
-	{
-		winners = "";
-		if ( winner == "allies" )
-		{
-			if ( game["attackers"] == "allies" && game["defenders"] == "axis" )
-				winners = "attack";
-			else
-				winners = "defence";
-		}
-		else if ( winner == "axis" )
-		{
-			if ( game["attackers"] == "allies" && game["defenders"] == "axis" )
-				winners = "defence";
-			else
-				winners = "attack";
-		}
-		else
-			winners = "tie";
-
-		attack_score = game["teamScores"]["allies"];
-		defence_score = game["teamScores"]["axis"];
-
-		game["promod_scorebot_ticker_buffer"] += "round_winner" + winners + "" + attack_score + "" + defence_score;
-	}
-
 	if ( (level.roundLimit > 1 || (!level.roundLimit && level.scoreLimit != 1)) && !level.forcedEnd )
 	{
 		if ( level.displayRoundEndText )
@@ -974,22 +948,6 @@ endGame( winner, endReasonText )
 			endReasonText = game["strings"]["score_limit_reached"];
 		else
 			endReasonText = game["strings"]["time_limit_reached"];
-	}
-
-	if ( isDefined( level.scorebot ) && level.scorebot )
-	{
-		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
-		{
-			attack_score = game["teamScores"]["allies"];
-			defence_score = game["teamScores"]["axis"];
-		}
-		else
-		{
-			attack_score = game["teamScores"]["axis"];
-			defence_score = game["teamScores"]["allies"];
-		}
-
-		game["promod_scorebot_ticker_buffer"] += "map_completeattack" + attack_score + "defence" + defence_score;
 	}
 
 	for ( i = 0; i < level.players.size; i++ )
@@ -1771,25 +1729,6 @@ sendUpdatedTeamScores()
 
 	for ( i = 0; i < level.players.size; i++ )
 		level.players[i] updateScores();
-
-	if ( isDefined( level.scorebot ) && level.scorebot )
-	{
-		if ( !isDefined( level.allies_team ) )
-			level.allies_team = "none";
-		if ( !isDefined( level.axis_team ) )
-			level.axis_team = "none";
-
-		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
-		{
-			game["promod_scorebot_attack_ticker_buffer"] = game["teamScores"]["allies"] + level.allies_team;
-			game["promod_scorebot_defence_ticker_buffer"] = game["teamScores"]["axis"] + level.axis_team;
-		}
-		else
-		{
-			game["promod_scorebot_attack_ticker_buffer"] = game["teamScores"]["axis"] + level.axis_team;
-			game["promod_scorebot_defence_ticker_buffer"] = game["teamScores"]["allies"] + level.allies_team;
-		}
-	}
 }
 
 sendUpdatedDMScores()
@@ -1888,43 +1827,6 @@ updateTeamStatus()
 		if( level.players[i].pers["team"] == "allies" || level.players[i].pers["team"] == "axis" )
 			level.players[i] setClientDvars("self_alive", level.aliveCount[level.players[i].pers["team"]],
 											"opposing_alive", level.aliveCount[maps\mp\gametypes\_gameobjects::getEnemyTeam(level.players[i].pers["team"])] );
-
-	if ( isDefined( level.scorebot ) && level.scorebot )
-	{
-		level.allies_team = "";
-		level.axis_team = "";
-
-		players = getentarray("player","classname");
-		for( i = 0; i < players.size; i++ )
-		{
-			player = players[i];
-			playerstring = "" + player.name + "" + int( isAlive( player ) ) + "" + player.kills + "" + player.assists + "" + player.deaths + "0";
-
-			if ( player.pers["team"] == "allies" )
-				level.allies_team += playerstring;
-			else if ( player.pers["team"] == "axis" )
-				level.axis_team += playerstring;
-		}
-
-		if ( level.allies_team == "" )
-			level.allies_team = "none";
-		if ( level.axis_team == "" )
-			level.axis_team = "none";
-
-		level.allies_string = game["teamScores"]["allies"] + level.allies_team;
-		level.axis_string = game["teamScores"]["axis"] + level.axis_team;
-
-		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
-		{
-			game["promod_scorebot_attack_ticker_buffer"] = level.allies_string;
-			game["promod_scorebot_defence_ticker_buffer"] = level.axis_string;
-		}
-		else
-		{
-			game["promod_scorebot_attack_ticker_buffer"] = level.axis_string;
-			game["promod_scorebot_defence_ticker_buffer"] = level.allies_string;
-		}
-	}
 
 	prof_end( "updateTeamStatus" );
 
@@ -2136,27 +2038,6 @@ startGame()
 	level notify("prematch_over");
 	level notify("header_destroy");
 	level.timerStopped = false;
-
-	if ( isDefined( level.scorebot ) && level.scorebot )
-	{
-		if ( isDefined(game["PROMOD_KNIFEROUND"]) && game["PROMOD_KNIFEROUND"] )
-			game["promod_scorebot_ticker_buffer"] += "knife_round";
-		else
-		{
-			sb_text = "";
-
-			if ( !game["roundsplayed"] && !game["promod_in_timeout"] )
-				sb_text = "1st_half_started";
-			else if ( isDefined( level.roundswitch ) && level.roundswitch > 0 && game["roundsplayed"] % level.roundswitch == 0 && !game["promod_in_timeout"] )
-				sb_text = "2nd_half_started";
-			else if ( game["promod_in_timeout"] )
-				sb_text = "match_resumed";
-			else
-				sb_text = "round_start";
-
-			game["promod_scorebot_ticker_buffer"] += "" + sb_text + "" + ( game["roundsplayed"] + 1 );
-		}
-	}
 
 	game["promod_in_timeout"] = 0;
 
@@ -2573,14 +2454,6 @@ Callback_StartGameType()
 		level.prematchPeriod = maps\mp\gametypes\_tweakables::getTweakableValue( "game", "matchstarttime" );
 
 		thread promod\setvariables::main();
-
-		if ( !isDefined( game["promod_scorebot_ticker_buffer"] ) )
-		{
-			setDvar( "promod_scorebot_ticker_num", 0 );
-			game["promod_scorebot_ticker_buffer"] = 0;
-		}
-
-		game["promod_scorebot_ticker_buffer"] += "map" + getDvar("mapname") + "" + level.gametype;
 	}
 
 	if ( !isdefined( game["timepassed"] ) )
@@ -2626,8 +2499,6 @@ Callback_StartGameType()
 	thread maps\mp\gametypes\_spawnlogic::init();
 	thread maps\mp\gametypes\_hud_message::init();
 	thread maps\mp\gametypes\_quickmessages::init();
-
-	thread promod\scorebot::main();
 
 	stringNames = getArrayKeys( game["strings"] );
 	for ( i = 0; i < stringNames.size; i++ )
@@ -3390,9 +3261,6 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 
 	sHeadshot = int(sMeansOfDeath == "MOD_HEAD_SHOT");
 
-	if ( isDefined( level.scorebot ) && level.scorebot && !level.rdyup )
-		game["promod_scorebot_ticker_buffer"] += "kill" + lpattackname + "" + scWeapon + "" + self.name + "" + sHeadshot;
-
 	logPrint( "K;" + self getGuid() + ";" + self getEntityNumber() + ";" + self.pers["team"] + ";" + self.name + ";" + lpattackguid + ";" + lpattacknum + ";" + lpattackerteam + ";" + lpattackname + ";" + sWeapon + ";" + iDamage + ";" + sMeansOfDeath + ";" + sHitLoc + "\n" );
 
 	level thread updateTeamStatus();
@@ -3527,9 +3395,6 @@ processAssist( killedplayer )
 
 	if ( !isDefined( level.rdyup ) )
 		level.rdyup = false;
-
-	if ( isDefined( level.scorebot ) && level.scorebot && !level.rdyup )
-		game["promod_scorebot_ticker_buffer"] += "assist_by" + self.name;
 }
 
 Callback_PlayerLastStand()

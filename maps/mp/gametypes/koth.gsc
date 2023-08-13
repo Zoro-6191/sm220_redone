@@ -401,9 +401,6 @@ onRadioCapture( player )
 
 	level notify( "hq_captured" );
 
-	if ( isDefined( level.scorebot ) && level.scorebot )
-		game["promod_scorebot_ticker_buffer"] += "hq_captured" + player.name;
-
 	logPrint("P_HQC;" + player getGuid() + ";" + player getEntityNumber() + ";" + player.name + "\n");
 }
 
@@ -434,9 +431,6 @@ onRadioDestroy( player )
 
 	if ( level.kothmode )
 		level thread awardHQPoints( team );
-
-	if ( isDefined( level.scorebot ) && level.scorebot )
-		game["promod_scorebot_ticker_buffer"] += "hq_destroyed" + player.name;
 
 	logPrint("P_HQD;" + player getGuid() + ";" + player getEntityNumber() + ";" + player.name + "\n");
 }
