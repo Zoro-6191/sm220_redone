@@ -11,6 +11,9 @@
 		backcolor		1 1 1 1
 		background		"$levelBriefing"
 		rect			FULLSCREEN_WIDE
+		onClose			{
+			
+		}
 
 		itemDef
 		{

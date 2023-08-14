@@ -30,7 +30,6 @@ validMode( mode )
 	switches = [];
 	switches["match_knockout"] = false;
 	switches["1v1_2v2"] = false;
-	switches["lan_pb"] = false;
 	switches["hc_done"] = false;
 	switches["knife_done"] = false;
 	switches["mr_done"] = false;
@@ -45,15 +44,12 @@ validMode( mode )
 				if(switches["match_knockout"]) return false;
 				switches["match_knockout"] = true;
 				break;
+			case "pb":
+				break;
 			case "1v1":
 			case "2v2":
 				if(switches["1v1_2v2"]) return false;
 				switches["1v1_2v2"] = true;
-				break;
-			case "lan":
-			case "pb":
-				if(switches["lan_pb"]) return false;
-				switches["lan_pb"] = true;
 				break;
 			case "knife":
 				if(switches["scores_done"]) return false;
@@ -105,7 +101,7 @@ monitorMode()
 			else
 			{
 				if ( isDefined( mode ) && mode != "" )
-					iPrintLN( "Error Changing To Mode: ^1" + mode + "\nSyntax: match|knockout_lan|pb_hc_knife_1v1|2v2_mr#_#:#,\nNormal Modes: comp_public(_lan), comp_public_hc(_lan), custom_public(_lan)" );
+					iPrintLN( "Error Changing To Mode: ^1" + mode + "\nSyntax: match|knockout_lan|2v2_mr#_#:#,\nNormal Modes: comp_public(_lan), comp_public_hc(_lan), custom_public(_lan)" );
 
 				setDvar( "promod_mode", o_mode );
 			}
@@ -127,7 +123,6 @@ setMode( mode )
 	game["PROMOD_STRATTIME"] = 6;
 	game["PROMOD_MODE_HUD"] = "";
 	game["PROMOD_MATCH_MODE"] = "";
-	game["PROMOD_PB_OFF"] = 0;
 	game["PROMOD_KNIFEROUND"] = 0;
 	game["SCORES_ATTACK"] = 0;
 	game["SCORES_DEFENCE"] = 0;
@@ -207,7 +202,6 @@ setMode( mode )
 					game["PROMOD_KNIFEROUND"] = 1;
 					break;
 				case "pb":
-					game["PROMOD_PB_OFF"] = 1;
 					break;
 				case "hc":
 					game["HARDCORE_MODE"] = 1;
