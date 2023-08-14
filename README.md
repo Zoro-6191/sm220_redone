@@ -7,4 +7,5 @@
 - Removed Hardcode Mode
 - Removed logprinting
 - Removed all sv_cheats checks
+- Removed b55 (Print Stats)
 - Cleaner HUD

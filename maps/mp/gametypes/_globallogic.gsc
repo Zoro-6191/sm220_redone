@@ -2788,7 +2788,7 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 	if ( !isDefined( level.rdyup ) )
 		level.rdyup = false;
 
-	if ( getDvarInt("g_knockback") != 1000 || isDefined( game["state"] ) && game["state"] == "postgame" || self.sessionteam == "spectator" || isDefined( level.bombDefused ) && level.bombDefused || isDefined( level.bombExploded ) && level.bombExploded && self.pers["team"] == game["attackers"] || isDefined( game["PROMOD_KNIFEROUND"] ) && game["PROMOD_KNIFEROUND"] && sMeansOfDeath != "MOD_MELEE" && sMeansOfDeath != "MOD_FALLING" && !level.rdyup )
+	if ( getDvarInt("g_knockback") != 1000 || isDefined( game["state"] ) && game["state"] == "postgame" || self.sessionteam == "spectator" || isDefined( level.bombDefused ) && level.bombDefused || isDefined( level.bombExploded ) && level.bombExploded && self.pers["team"] == game["attackers"] )
 		return;
 
 	if( isDefined(eAttacker) && isPlayer(eAttacker) && isPlayer(self) && eAttacker.sessionstate == "playing" && isDefined(iDamage) && isDefined( sMeansOfDeath ) && sMeansOfDeath != "" && (sMeansOfDeath == "MOD_RIFLE_BULLET" || sMeansOfDeath == "MOD_PISTOL_BULLET"))
@@ -2801,7 +2801,7 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 	if( !isDefined( vDir ) )
 		iDFlags |= level.iDFLAGS_NO_KNOCKBACK;
 
-	// Not sure exactly what happens here, but ok...
+	// Process Assists
 	if ( level.teamBased && self.health == self.maxhealth || !isDefined( self.attackers ) )
 	{
 		self.attackers = [];
@@ -2858,7 +2858,7 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 					self.attackers[ self.attackers.size ] = eAttacker;
 					self.attackerData[eAttacker.clientid] = false;
 				}
-				if ( isDefined(sWeapon) && isSubStr("m1014_mp winchester1200_mp mp5_mp uzi_mp ak74u_mp ak47_mp m14_mp mp44_mp g3_mp g36c_mp m16_mp m4_mp m40a3_mp remington700_mp", sWeapon) )
+				if ( isDefined(sWeapon) )
 					self.attackerData[eAttacker.clientid] = true;
 			}
 			self finishPlayerDamageWrapper(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
@@ -2869,7 +2869,7 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 			if ( sMeansOfDeath == "MOD_HEAD_SHOT" )
 				thread dinkNoise(eAttacker, self);
 
-			if ( iDamage > 0 && ( getDvarInt( "scr_enable_hiticon" ) == 1 || getDvarInt( "scr_enable_hiticon" ) == 2 && !(iDFlags & level.iDFLAGS_PENETRATION) ) )
+			if ( iDamage > 0 && !(iDFlags & level.iDFLAGS_PENETRATION) )
 				eAttacker thread maps\mp\gametypes\_damagefeedback::updateDamageFeedback( false );
 		}
 
@@ -2878,54 +2878,6 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 
 	if ( isdefined( eAttacker ) && eAttacker != self && !friendly )
 		level.useStartSpawns = false;
-
-	if( level.rdyup )
-	{
-		if ( isDefined( eAttacker ) && isPlayer( eAttacker ) && isDefined( sHitLoc ) )
-		{
-			if ( eAttacker != self )
-			{
-				if ( sHitLoc == "none" )
-				{
-					eAttacker iprintln("You inflicted ^2" + iDamage + "^7 damage to " + self.name);
-					self iprintln(eAttacker.name + " inflicted ^1" + iDamage + "^7 damage to you");
-				}
-				else
-				{
-					damagestring = "";
-					if( isSubStr( sHitLoc, "torso_upper" ) )
-						damagestring = "upper torso";
-					else if( isSubStr( sHitLoc, "torso_lower" ) )
-						damagestring = "lower torso";
-					else if( isSubStr( sHitLoc, "leg_upper" ) )
-						damagestring = "upper leg";
-					else if( isSubStr( sHitLoc, "leg_lower" ) )
-						damagestring = "lower leg";
-					else if( isSubStr( sHitLoc, "arm_upper" ) )
-						damagestring = "upper arm";
-					else if( isSubStr( sHitLoc, "arm_lower" ) )
-						damagestring = "lower arm";
-					else if( isSubStr( sHitLoc, "head" ) || isSubStr( sHitLoc, "helmet" ) )
-						damagestring = "head";
-					else if( isSubStr( sHitLoc, "neck" ) )
-						damagestring = "neck";
-					else if( isSubStr( sHitLoc, "foot" ) )
-						damagestring = "foot";
-					else if( isSubStr( sHitLoc, "hand" ) )
-						damagestring = "hand";
-
-					metrestring = int(distance(self.origin, eAttacker.origin) * 2.54) / 100;
-
-					eAttacker iprintln("You inflicted ^2" + iDamage + "^7 damage at a distance of ^2" + metrestring + "^7 metres in the ^2" + damagestring + "^7 to " + self.name);
-					self iprintln(eAttacker.name + " inflicted ^1" + iDamage + "^7 damage at a distance of ^1" + metrestring + "^7 metres in the ^1" + damagestring + "^7 to you");
-				}
-			}
-			else if ( sHitLoc == "none" )
-				self iprintln("You inflicted ^1" + iDamage + "^7 damage to yourself");
-		}
-		else if ( sMeansOfDeath == "MOD_FALLING" )
-			self iprintln("You inflicted ^1" + iDamage + "^7 damage to yourself");
-	}
 }
 
 dinkNoise( player1, player2 )
