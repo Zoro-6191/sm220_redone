@@ -7,3 +7,4 @@
 - Removed Hardcode Mode
 - Removed logprinting
 - Removed all sv_cheats checks
+- Cleaner HUD

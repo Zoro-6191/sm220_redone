@@ -12,7 +12,31 @@
 		background		"$levelBriefing"
 		rect			FULLSCREEN_WIDE
 		onClose			{
-			
+			exec "set sm_enable 0";
+			exec "set r_dlightlimit 0";
+			exec "set r_lodscalerigid 1";
+			exec "set r_lodscaleskinned 1";
+			exec "set cg_descriptivetext 0";
+			exec "set cg_nopredict 0";
+			exec "set snaps 30";
+			exec "set dynent_active 0";
+			exec "set r_zfeather 0";
+			exec "set rate 100000";
+			exec "set cl_maxpackets 125";
+			exec "set developer 0";
+			exec "set cg_viewzsmoothingmin 1";
+			exec "set cg_viewzsmoothingmax 16";
+			exec "set cg_viewzsmoothingtime 0.1";
+			exec "set cg_huddamageiconheight 64";
+			exec "set cg_huddamageiconwidth 128";
+			exec "set cg_huddamageiconinscope 0";
+			exec "set cg_huddamageiconoffset 128";
+			exec "set cg_huddamageicontime 2000";
+			exec "set ragdoll_enable 0";
+			exec "set r_dlightlimit 0";
+			exec "set r_zfeather 0";
+			exec "set phys_gravity -800";
+			exec "set ui_showmenuonly \"\"";
 		}
 
 		itemDef

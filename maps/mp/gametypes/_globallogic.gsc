@@ -2633,19 +2633,6 @@ Callback_PlayerConnect()
 	if( !isdefined( self.pers["score"] ) )
 		iPrintLn( &"MP_CONNECTED", self.name );
 
-	if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" )
-		self setClientDvar( "promod_hud_website", "" );
-	else
-		self setClientDvar( "promod_hud_website", getDvar( "promod_hud_website" ) );
-
-	self setClientDvars("cg_hudGrenadeIconMaxRangeFrag", 250,
-						"cg_drawcrosshair", 1,
-						"cg_drawSpectatorMessages", 1,
-						"ui_hud_hardcore", 0,
-						"fx_drawClouds", 0,
-						"ui_showmenuonly", "",
-						"self_ready", "" );
-
 	self initPersStat( "score" );
 	self.score = self.pers["score"];
 
