@@ -155,10 +155,6 @@ printStats()
 		if ( !isDefined( self.pers["hits"] ) )
 			self.pers["hits"] = 0;
 
-		// Log, print, reset
-		if(self.pers["damage_done"] > 0 || self.pers["damage_taken"] > 0 || self.pers["friendly_damage_done"] > 0 || self.pers["friendly_damage_taken"] > 0 || self.pers["shots"] > 0 || self.pers["hits"] > 0)
-			logPrint("P_A;" + self getGuid() + ";" + self getEntityNumber() + ";" + self.name + ";" + self.pers["shots"] + ";" + self.pers["hits"] + ";" + self.pers["damage_done"] + ";" + self.pers["damage_taken"] + ";" + self.pers["friendly_damage_done"] + ";" + self.pers["friendly_damage_taken"] + "\n");
-
 		self iprintln("^3" + self.name);
 		self iprintln("Damage Done: ^2" + self.pers["damage_done"] + "^7 Damage Taken: ^1" + self.pers["damage_taken"]);
 		if( level.teamBased )

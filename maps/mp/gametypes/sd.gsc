@@ -377,8 +377,6 @@ onUsePlantObject( player )
 
 		player thread [[level.onXPEvent]]( "plant" );
 		level thread bombPlanted( self, player );
-
-		logPrint("P_P;" + player getGuid() + ";" + player getEntityNumber() + ";" + player.name + "\n");
 	}
 }
 
@@ -397,8 +395,6 @@ onUseDefuseObject( player )
 
 	maps\mp\gametypes\_globallogic::givePlayerScore( "defuse", player );
 	player thread [[level.onXPEvent]]( "defuse" );
-
-	logPrint("P_D;" + player getGuid() + ";" + player getEntityNumber() + ";" + player.name + "\n");
 }
 
 onDrop( player )

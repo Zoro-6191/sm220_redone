@@ -446,8 +446,6 @@ onUse( player )
 		player thread [[level.onXPEvent]]( "plant" );
 		level thread bombPlanted( self, player.pers["team"] );
 
-		logPrint("P_P;" + player getGuid() + ";" + player getEntityNumber() + ";" + player.name + "\n");
-
 		level.bombOwner = player;
 
 		level.sabBomb.autoResetTime = undefined;
@@ -470,8 +468,6 @@ onUse( player )
 
 		player thread [[level.onXPEvent]]( "defuse" );
 		level thread bombDefused( self );
-
-		logPrint("P_D;" + player getGuid() + ";" + player getEntityNumber() + ";" + player.name + "\n");
 
 		if ( level.inOverTime && isDefined( level.plantingTeamDead ) )
 		{

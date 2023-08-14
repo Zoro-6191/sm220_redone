@@ -400,8 +400,6 @@ onRadioCapture( player )
 	level thread awardHQPoints( team );
 
 	level notify( "hq_captured" );
-
-	logPrint("P_HQC;" + player getGuid() + ";" + player getEntityNumber() + ";" + player.name + "\n");
 }
 
 onRadioDestroy( player )
@@ -431,8 +429,6 @@ onRadioDestroy( player )
 
 	if ( level.kothmode )
 		level thread awardHQPoints( team );
-
-	logPrint("P_HQD;" + player getGuid() + ";" + player getEntityNumber() + ";" + player.name + "\n");
 }
 
 DestroyHQAfterTime( time )

@@ -342,8 +342,6 @@ onUse( player )
 	oldTeam = self maps\mp\gametypes\_gameobjects::getOwnerTeam();
 	label = self maps\mp\gametypes\_gameobjects::getLabel();
 
-	logPrint("P_F;" + player getGuid() + ";" + player getEntityNumber() + ";" + player.name + "\n");
-
 	self maps\mp\gametypes\_gameobjects::setOwnerTeam( team );
 	self maps\mp\gametypes\_gameobjects::set2DIcon( "enemy", "compass_waypoint_capture" + label );
 	self maps\mp\gametypes\_gameobjects::set3DIcon( "enemy", "waypoint_capture" + label );

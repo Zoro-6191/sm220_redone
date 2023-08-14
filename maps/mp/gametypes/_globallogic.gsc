@@ -2643,8 +2643,6 @@ Callback_PlayerConnect()
 	if( !isdefined( self.pers["score"] ) )
 		iPrintLn( &"MP_CONNECTED", self.name );
 
-	logPrint("J;" + self getGuid() + ";" + self getEntityNumber() + ";" + self.name + "\n");
-
 	if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" )
 		self setClientDvar( "promod_hud_website", "" );
 	else
@@ -2764,8 +2762,6 @@ Callback_PlayerDisconnect()
 	self removePlayerOnDisconnect();
 
 	[[level.onPlayerDisconnect]]();
-
-	logPrint("Q;" + self getGuid() + ";" + self getEntityNumber() + ";" + self.name + "\n");
 
 	for ( i = 0; i < level.players.size; i++ )
 	{
@@ -3002,29 +2998,6 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 		else if ( sMeansOfDeath == "MOD_FALLING" )
 			self iprintln("You inflicted ^1" + iDamage + "^7 damage to yourself");
 	}
-
-	// Logging into file
-	if( self.sessionstate != "dead" )
-	{
-		lpattackerteam = "";
-
-		if( isPlayer( eAttacker ) )
-		{
-			lpattacknum = eAttacker getEntityNumber();
-			lpattackGuid = eAttacker getGuid();
-			lpattackname = eAttacker.name;
-			lpattackerteam = eAttacker.pers["team"];
-		}
-		else
-		{
-			lpattacknum = -1;
-			lpattackGuid = "";
-			lpattackname = "";
-			lpattackerteam = "world";
-		}
-
-		logPrint("D;" + self getGuid() + ";" + self getEntityNumber() + ";" + self.pers["team"] + ";" + self.name + ";" + lpattackGuid + ";" + lpattacknum + ";" + lpattackerteam + ";" + lpattackname + ";" + sWeapon + ";" + iDamage + ";" + sMeansOfDeath + ";" + sHitLoc + "\n");
-	}
 }
 
 dinkNoise( player1, player2 )
@@ -3251,8 +3224,6 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 		scWeapon = sWeapon;
 
 	sHeadshot = int(sMeansOfDeath == "MOD_HEAD_SHOT");
-
-	logPrint( "K;" + self getGuid() + ";" + self getEntityNumber() + ";" + self.pers["team"] + ";" + self.name + ";" + lpattackguid + ";" + lpattacknum + ";" + lpattackerteam + ";" + lpattackname + ";" + sWeapon + ";" + iDamage + ";" + sMeansOfDeath + ";" + sHitLoc + "\n" );
 
 	level thread updateTeamStatus();
 
