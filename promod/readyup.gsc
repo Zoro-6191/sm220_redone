@@ -227,8 +227,6 @@ selfLoop()
 	self thread onSpawn();
 	self thread clientHUD();
 
-	self setClientDvar( "self_kills", "" );
-
 	while ( !level.ready_up_over )
 	{
 		while ( !isDefined( self.pers["team"] ) || self.pers["team"] == "none" )

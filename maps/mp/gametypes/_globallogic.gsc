@@ -2801,21 +2801,6 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 	self.iDFlags = iDFlags;
 	self.iDFlagsTime = getTime();
 
-	if ( level.rdyup && isDefined( eAttacker ) && isPlayer( eAttacker ) && eAttacker != self )
-	{
-		if ( !isDefined( eAttacker.ruptally ) || eAttacker.ruptally < 0 )
-		{
-			eAttacker.ruptally = 0;
-			eAttacker setclientdvar("self_kills", 0);
-		}
-
-		if ( !isDefined( self.ruptally ) )
-			self.ruptally = -1;
-
-		if ( self.ruptally < 0 )
-			return;
-	}
-
 	// bit arrays are interesting, huh?
 	if( !isDefined( vDir ) )
 		iDFlags |= level.iDFLAGS_NO_KNOCKBACK;
@@ -3026,12 +3011,6 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 
 	if ( !isDefined( level.rdyup ) || !level.rdyup )
 		self.statusicon = "hud_status_dead";
-
-	if (level.rdyup && isDefined( attacker.pers ) && ( attacker != self ) )
-	{
-		attacker.ruptally++;
-		attacker setclientdvar("self_kills", attacker.ruptally);
-	}
 
 	if (!level.rdyup)
 	{
