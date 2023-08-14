@@ -4,8 +4,7 @@
 #define TEAM_IS_MARINES		(localVarString( ui_team ) == "marines")
 #define TEAM_IS_OPFOR		(localVarString( ui_team ) == "opfor")
 #define NOT_SPECTATING		(!spectatingClient())
-#define DVAR_ENFORCER		( team( name ) != "TEAM_SPECTATOR" && ( dvarint( com_maxfps ) > 250 || dvarint( com_maxfps ) < 40 || dvarint( cl_maxpackets ) != 100 || dvarint( rate ) != 25000 || dvarint( dynent_active ) || dvarfloat( cg_hudDamageIconWidth ) != 128 || dvarfloat( cg_hudDamageIconHeight ) != 64 || dvarint( cg_huddamageiconinscope ) || dvarfloat( cg_huddamageiconoffset ) != 128 || dvarint( cg_huddamageicontime ) != 2000 || dvarfloat( cg_viewZSmoothingMin ) != 1 || dvarfloat( cg_viewZSmoothingMax ) != 16 || dvarfloat( cg_viewZSmoothingTime ) != 0.1 || dvarint( r_filmtweakInvert ) || dvarint( r_dlightlimit ) || dvarfloat( r_lodscalerigid ) != 1 || dvarfloat( r_lodscaleskinned ) != 1 || dvarint( sm_enable ) || dvarint( cg_nopredict ) || dvarint( developer ) || dvarint( r_zfeather ) || dvarfloat( phys_gravity ) != "-800" ) )
-#define DVAR_ENFORCER_NOSND ( team( name ) != "TEAM_SPECTATOR" && ( dvarint( aim_automelee_enabled ) || dvarfloat( compassplayerwidth ) != dvarfloat( compassplayerheight ) || dvarfloat( compassfriendlywidth ) != dvarfloat( compassfriendlyheight ) ) )
+#define DVAR_ENFORCER		( team( name ) != "TEAM_SPECTATOR" && ( dvarint( com_maxfps ) > 250 || dvarint( com_maxfps ) < 40 || dvarint( dynent_active ) || dvarfloat( cg_hudDamageIconWidth ) != 128 || dvarfloat( cg_hudDamageIconHeight ) != 64 || dvarint( cg_huddamageiconinscope ) || dvarfloat( cg_huddamageiconoffset ) != 128 || dvarint( cg_huddamageicontime ) != 2000 || dvarfloat( cg_viewZSmoothingMin ) != 1 || dvarfloat( cg_viewZSmoothingMax ) != 16 || dvarfloat( cg_viewZSmoothingTime ) != 0.1 || dvarint( r_filmtweakInvert ) || dvarint( r_dlightlimit ) || dvarfloat( r_lodscalerigid ) != 1 || dvarfloat( r_lodscaleskinned ) != 1 || dvarint( sm_enable ) || dvarint( developer ) || dvarint( r_zfeather ) ) )
 #define DVAR_BLANK			( dvarString( ui_showmenuonly ) == "" )
 #define HUD_ALPHA 0.65
 #define HUD_FOREGROUND_ALPHA 0.75
@@ -18,7 +17,7 @@
 			forecolor	1 0 0 1 \
 			backcolor	1 0 0 1 \
 			exp			text( txt ); \
-			textfont	UI_FONT_OBJECTIVE \
+			textfont	UI_FONT_BIG \
 			textscale	0.5 \
 			textalign	ITEM_ALIGN_CENTER \
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE \
@@ -127,7 +126,7 @@
 			name			"chRect"
 			rect			0 0 80 80
 			ownerdraw		CG_PLAYER_STANCE
-			textfont		UI_FONT_OBJECTIVE
+			textfont		UI_FONT_BIG
 			visible			when( !inkillcam() && !dvarint( ui_hud_hardcore ) );
 			textscale		TEXTSIZE_SMALL
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
@@ -149,41 +148,8 @@
 
 		itemDef
 		{
-			name			"minimapBG"
-			rect			(MINIMAP_X_MP - 14) (MINIMAP_Y_MP - 6) COMPASS_SIZE_MP COMPASS_SIZE_MP
-			origin			MINIMAP_ORIGIN
-			forecolor		1 1 1 1
-			background		"minimap_background"
-			ownerdraw		CG_PLAYER_COMPASS_BACK
-			visible			1
-			decoration
-		}
-		itemDef
-		{
-			name			"minimapTickerBorder"
-			rect			MINIMAP_X_MP (MINIMAP_Y_MP - 15) MINIMAP_W_MP 14
-			origin			MINIMAP_ORIGIN
-			forecolor		1 1 1 1
-			background		"minimap_tickertape_background"
-			ownerdraw		CG_PLAYER_COMPASS_BACK
-			visible			1
-			decoration
-		}
-		itemDef
-		{
-			name			"minimapTicker"
-			rect			MINIMAP_X_MP (MINIMAP_Y_MP - 12) MINIMAP_W_MP 9
-			origin			MINIMAP_ORIGIN
-			forecolor		1 1 1 1
-			background		"minimap_tickertape_mp"
-			ownerdraw		CG_PLAYER_COMPASS_TICKERTAPE_NO_OBJ
-			visible			1
-			decoration
-		}
-		itemDef
-		{
 			name			"mini_map"
-			rect			MINIMAP_X_MP MINIMAP_Y_MP MINIMAP_W_MP MINIMAP_H_MP
+			rect			MINIMAP_X_MP(MINIMAP_Y_MP-10) MINIMAP_W_MP MINIMAP_H_MP
 			origin			MINIMAP_ORIGIN
 			forecolor		1 1 1 1
 			background		"compass_map_default"
@@ -194,18 +160,18 @@
 		itemDef
 		{
 			name			"compasspointers"
-			rect			MINIMAP_X_MP MINIMAP_Y_MP MINIMAP_W_MP MINIMAP_H_MP
+			rect			MINIMAP_X_MP(MINIMAP_Y_MP-10) MINIMAP_W_MP MINIMAP_H_MP
 			origin			MINIMAP_ORIGIN
 			forecolor		1 1 1 1
 			background		"objective_line"
 			ownerdraw		CG_PLAYER_COMPASS_POINTERS
-			visible			when ( dvarint( ui_hud_showobjicons ) > 0 );
+			visible			when(dvarint(ui_hud_showobjicons)>0);
 			decoration
 		}
 		itemDef
 		{
 			name			"compassfriendlies"
-			rect			MINIMAP_X_MP MINIMAP_Y_MP MINIMAP_W_MP MINIMAP_H_MP
+			rect			MINIMAP_X_MP(MINIMAP_Y_MP-10) MINIMAP_W_MP MINIMAP_H_MP
 			origin			MINIMAP_ORIGIN
 			forecolor		1 1 1 1
 			ownerdraw		CG_PLAYER_COMPASS_FRIENDS
@@ -214,7 +180,7 @@
 		itemDef
 		{
 			name			"compassenemies"
-			rect			MINIMAP_X_MP MINIMAP_Y_MP MINIMAP_W_MP MINIMAP_H_MP
+			rect			MINIMAP_X_MP(MINIMAP_Y_MP-10) MINIMAP_W_MP MINIMAP_H_MP
 			origin			MINIMAP_ORIGIN
 			forecolor		1 1 1 1
 			ownerdraw		CG_PLAYER_COMPASS_ENEMIES
@@ -223,7 +189,7 @@
 		itemDef
 		{
 			name			"compassplayer"
-			rect			MINIMAP_X_MP MINIMAP_Y_MP MINIMAP_W_MP MINIMAP_H_MP
+			rect			MINIMAP_X_MP(MINIMAP_Y_MP-10) MINIMAP_W_MP MINIMAP_H_MP
 			origin			MINIMAP_ORIGIN
 			forecolor		1 1 1 1
 			background		"compassping_player"
@@ -569,7 +535,7 @@
 			rect			50 -27 1 1 HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_BOTTOM
 			exp				rect Y( -27 + 0-(TEAM_IS_LOSING*24) );
 			exp				text( team( score ) );
-			textfont		UI_FONT_OBJECTIVE
+			textfont		UI_FONT_BIG
 			textscale		0.35
 			textalign		ITEM_ALIGN_LEFT
 			textstyle		ITEM_TEXTSTYLE_SHADOWEDMORE
@@ -582,7 +548,7 @@
 			rect			50 -27 1 1 HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_BOTTOM
 			exp				rect Y( -27 + 0-(PLAYER_IS_LOSING*24) );
 			exp				text( player( score ) );
-			textfont		UI_FONT_OBJECTIVE
+			textfont		UI_FONT_BIG
 			textscale		0.35
 			textalign		ITEM_ALIGN_LEFT
 			textstyle		ITEM_TEXTSTYLE_SHADOWEDMORE
@@ -659,7 +625,7 @@
 			rect			50 -8 1 1 HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_BOTTOM
 			exp				rect Y( -8 + (TEAM_IS_LOSING*12) );
 			exp				text( otherteam( score ) );
-			textfont		UI_FONT_OBJECTIVE
+			textfont		UI_FONT_BIG
 			textscale		0.35
 			textalign		ITEM_ALIGN_LEFT
 			textstyle		ITEM_TEXTSTYLE_SHADOWEDMORE
@@ -672,7 +638,7 @@
 			rect			50 -8 1 1 HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_BOTTOM
 			exp				rect Y( -8 + (PLAYER_IS_LOSING*12) );
 			exp				text( scoreatrank( 2 ) );
-			textfont		UI_FONT_OBJECTIVE
+			textfont		UI_FONT_BIG
 			textscale		0.35
 			textalign		ITEM_ALIGN_LEFT
 			textstyle		ITEM_TEXTSTYLE_SHADOWEDMORE
@@ -685,7 +651,7 @@
 			rect			50 -8 1 1 HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_BOTTOM
 			exp				rect Y( -8 + (PLAYER_IS_LOSING*12) );
 			exp				text( scoreatrank( 1 ) );
-			textfont		UI_FONT_OBJECTIVE
+			textfont		UI_FONT_BIG
 			textscale		0.35
 			textalign		ITEM_ALIGN_LEFT
 			textstyle		ITEM_TEXTSTYLE_SHADOWEDMORE
@@ -708,7 +674,7 @@
 			rect			134 -3 1 1 HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_BOTTOM
 			origin			6 0
 			exp				text( secondsAsCountdown( timeLeft() ) );
-			textfont		UI_FONT_OBJECTIVE
+			textfont		UI_FONT_BIG
 			textscale		0.35
 			textalign		ITEM_ALIGN_LEFT
 			textstyle		ITEM_TEXTSTYLE_SHADOWEDMORE
@@ -721,7 +687,7 @@
 			rect			134 -3 1 1 HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_BOTTOM
 			origin			6 0
 			exp				text( secondsAsCountdown( timeLeft() ) );
-			textfont		UI_FONT_OBJECTIVE
+			textfont		UI_FONT_BIG
 			textscale		0.35
 			textalign		ITEM_ALIGN_LEFT
 			textstyle		ITEM_TEXTSTYLE_SHADOWEDMORE
@@ -734,7 +700,7 @@
 			rect			134 -3 1 1 HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_BOTTOM
 			origin			6 0
 			exp				text( secondsAsCountdown( timeLeft() ) + "." + (9 - int( (milliseconds() / 100)%10 )) );
-			textfont		UI_FONT_OBJECTIVE
+			textfont		UI_FONT_BIG
 			textscale		0.35
 			textalign		ITEM_ALIGN_LEFT
 			textstyle		ITEM_TEXTSTYLE_SHADOWEDMORE
@@ -757,7 +723,7 @@
 			rect			0 -3 1 1 HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_BOTTOM
 			origin			6 0
 			exp				text( secondsAsCountdown( timeLeft() ) );
-			textfont		UI_FONT_OBJECTIVE
+			textfont		UI_FONT_BIG
 			textscale		0.35
 			textalign		ITEM_ALIGN_LEFT
 			textstyle		ITEM_TEXTSTYLE_SHADOWEDMORE
@@ -770,7 +736,7 @@
 			rect			0 -3 1 1 HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_BOTTOM
 			origin			6 0
 			exp				text( secondsAsCountdown( timeLeft() ) );
-			textfont		UI_FONT_OBJECTIVE
+			textfont		UI_FONT_BIG
 			textscale		0.35
 			textalign		ITEM_ALIGN_LEFT
 			textstyle		ITEM_TEXTSTYLE_SHADOWEDMORE
@@ -783,7 +749,7 @@
 			rect			0 -3 1 1 HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_BOTTOM
 			origin			6 0
 			exp				text ( secondsAsCountdown( timeLeft() ) + "." + (9 - int( (milliseconds() / 100)%10 )) );
-			textfont		UI_FONT_OBJECTIVE
+			textfont		UI_FONT_BIG
 			textscale		0.35
 			textalign		ITEM_ALIGN_LEFT
 			textstyle		ITEM_TEXTSTYLE_SHADOWEDMORE
@@ -820,7 +786,7 @@
 			rect			(WEAPINFO_X - 65) (WEAPINFO_Y + 33) 57 0
 			textscale		TEXTSIZE_SMALL
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textfont		UI_FONT_OBJECTIVE
+			textfont		UI_FONT_BIG
 			forecolor		1 1 1 1
 			ownerdraw		CG_PLAYER_AMMO_VALUE
 			visible			when ( dvarint( cg_drawBreathHint ) )
@@ -841,7 +807,7 @@
 			rect			(WEAPINFO_X - 31) (WEAPINFO_Y + 34) 1 1
 			textscale		TEXTSIZE_SMALL
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textfont		UI_FONT_OBJECTIVE
+			textfont		UI_FONT_BIG
 			forecolor		1 1 1 HUD_FOREGROUND_ALPHA
 			ownerdraw		CG_PLAYER_WEAPON_AMMO_STOCK
 			visible			when ( !dvarint( cg_drawBreathHint ) )
@@ -873,7 +839,7 @@
 			rect			(WEAPINFO_X -45) (WEAPINFO_Y +14) 25 25
 			textscale		TEXTSIZE_SMALL
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textfont		UI_FONT_OBJECTIVE
+			textfont		UI_FONT_BIG
 			forecolor		1 1 1 HUD_FOREGROUND_ALPHA
 			ownerdraw		CG_OFFHAND_WEAPON_AMMO_SMOKEFLASH
 			visible			1
@@ -885,21 +851,9 @@
 			rect			(WEAPINFO_X -14) (WEAPINFO_Y +14) 25 25
 			textscale		TEXTSIZE_SMALL
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textfont		UI_FONT_OBJECTIVE
+			textfont		UI_FONT_BIG
 			forecolor		1 1 1 HUD_FOREGROUND_ALPHA
 			ownerdraw		CG_OFFHAND_WEAPON_AMMO_FRAG
-			visible			1
-			decoration
-		}
-		itemDef
-		{
-			name			"weapname"
-			rect			(WEAPINFO_X - 40) (WEAPINFO_Y + 14) 1 1
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textfont		UI_FONT_OBJECTIVE
-			forecolor		1 1 1 HUD_FOREGROUND_ALPHA
-			ownerdraw		CG_PLAYER_WEAPON_NAME
 			visible			1
 			decoration
 		}
@@ -948,14 +902,12 @@
 		rect			FULLSCREEN_WIDE
 		style			WINDOW_STYLE_FILLED
 		fullScreen		MENU_FALSE
-		visible			when( DVAR_ENFORCER || DVAR_ENFORCER_NOSND )
+		visible			when( DVAR_ENFORCER )
 
-		ENFORCE( dvarint( cl_maxpackets ) != 100, "SET CL_MAXPACKETS TO 100", -210 );
 		ENFORCE( dvarint( r_dlightlimit ), "SET R_DLIGHTLIMIT TO 0", -190 );
 		ENFORCE( dvarint( com_maxfps ) < 40 || dvarint( com_maxfps ) > 250, "SET COM_MAXFPS WITHIN 40-250", -170 );
 		ENFORCE( dvarfloat( r_lodscaleskinned ) != 1, "SET R_LODSCALESKINNED TO 1", -150 );
 		ENFORCE( dvarfloat( r_lodscalerigid ) != 1, "SET R_LODSCALERIGID TO 1", -130 );
-		ENFORCE( dvarint( rate ) != 25000, "SET RATE TO 25000", -110 );
 		ENFORCE( dvarint( dynent_active ), "SET DYNENT_ACTIVE TO 0", -90 );
 		ENFORCE( dvarfloat( cg_hudDamageIconHeight ) != 64, "SET CG_HUDDAMAGEICONHEIGHT TO 64", -70 );
 		ENFORCE( dvarfloat( cg_hudDamageIconWidth ) != 128, "SET CG_HUDDAMAGEICONWIDTH TO 128", -50 );
@@ -965,13 +917,8 @@
 		ENFORCE( dvarfloat( cg_viewZSmoothingMin ) != 1 || dvarfloat( cg_viewZSmoothingMax ) != 16 || dvarfloat( cg_viewZSmoothingTime ) != 0.1, "SET CG_VIEWZSMOOTHING VALUES TO STOCK", 30 );
 		ENFORCE( dvarint( r_filmtweakInvert ), "SET R_FILMTWEAKINVERT TO 0", 50 );
 		ENFORCE( dvarint( sm_enable ), "SET SM_ENABLE TO 0", 70 );
-		ENFORCE( dvarint( cg_nopredict ), "SET CG_NOPREDICT TO 0", 90 );
-		ENFORCE( dvarfloat( compassplayerwidth ) != dvarfloat( compassplayerheight ), "SET COMPASSPLAYERHEIGHT/WIDTH EQUAL", 110 );
-		ENFORCE( dvarfloat( compassfriendlywidth ) != dvarfloat( compassfriendlyheight ), "SET COMPASSFRIENDLYHEIGHT/WIDTH EQUAL", 130 );
 		ENFORCE( dvarint( developer ), "SET DEVELOPER TO 0", 150 );
 		ENFORCE( dvarint( r_zfeather ), "SET R_ZFEATHER TO 0", 170 );
-		ENFORCE( dvarfloat( phys_gravity ) != "-800", "SET PHYS_GRAVITY TO -800", 190 );
-		ENFORCE( dvarint( aim_automelee_enabled ), "PLEASE RECONNECT TO THE SERVER", 210 );
 	}
 
 	menuDef
@@ -1006,7 +953,7 @@
 			rect			0 45 1 1 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_TOP
 			origin			0 0
 			exp				text( "KILLCAM" );
-			textfont		UI_FONT_OBJECTIVE
+			textfont		UI_FONT_BIG
 			textscale		0.9
 			textalign		ITEM_ALIGN_CENTER
 			textstyle		ITEM_TEXTSTYLE_SHADOWEDMORE
@@ -1084,7 +1031,7 @@
 			type				ITEM_TYPE_GAME_MESSAGE_WINDOW
 			gamemsgwindowindex	1
 			gamemsgwindowmode	MODE_BOTTOMUP_ALIGN_BOTTOM
-			textfont			UI_FONT_OBJECTIVE
+			textfont			UI_FONT_BIG
 			textstyle			ITEM_TEXTSTYLE_SHADOWED
 			textalign			ITEM_ALIGN_CENTER
 			textscale			0.417
