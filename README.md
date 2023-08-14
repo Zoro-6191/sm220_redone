@@ -4,5 +4,6 @@
 - Removed "LIVE" part of Promod LIVE
 - Removed Scorebot Garbage
 - Removed Strat Mode
+- Removed Hardcode Mode
 - Removed logprinting
 - Removed all sv_cheats checks
