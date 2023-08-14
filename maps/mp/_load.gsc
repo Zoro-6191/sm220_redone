@@ -21,7 +21,6 @@ main( bScriptgened, bCSVgened, bsgenabled )
 	thread maps\mp\_destructible::init();
 
 	thread promod\dvarmon::main();
-	thread promod\servercheck::main();
 	thread promod\modes::monitorMode();
 
 	VisionSetNight( "default_night" );
