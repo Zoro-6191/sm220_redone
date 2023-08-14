@@ -171,7 +171,7 @@ HQMainLoop()
 	precacheString( &"MP_CAPTURING_HQ" );
 	precacheString( &"MP_DESTROYING_HQ" );
 
-	if ( isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"] || game["PROMOD_MATCH_MODE"] == "strat")
+	if ( isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"] )
 		return;
 
 	while ( level.inPrematchPeriod )

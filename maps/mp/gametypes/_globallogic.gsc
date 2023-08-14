@@ -2009,16 +2009,7 @@ startGame()
 	if ( ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" || getDvarInt( "promod_allow_strattime" ) && isDefined( game["CUSTOM_MODE"] ) && game["CUSTOM_MODE"] ) && level.gametype == "sd" )
 		promod\strattime::main();
 
-	if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" )
-	{
-		thread disableBombsites();
-		thread promod\stratmode::main();
-		setDvar( "g_deadChat", 1 );
-		SetClientNameMode( "auto_change" );
-		setGameEndTime( 0 );
-		return;
-	}
-	else if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" )
+	if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" )
 		setDvar( "g_deadChat", 0 );
 
 	if ( isDefined( level.timeout_over ) && !level.timeout_over )
@@ -2096,7 +2087,7 @@ prematchPeriod()
 {
 	level endon( "game_ended" );
 
-	if ( level.prematchPeriod > 0 && isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] != "match" && game["PROMOD_MATCH_MODE"] != "strat" )
+	if ( level.prematchPeriod > 0 && isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] != "match" )
 	{
 		if ( getDvarInt( "promod_allow_strattime" ) && isDefined( game["CUSTOM_MODE"] ) && game["CUSTOM_MODE"] && level.gametype == "sd" )
 			matchStartTimerSkip();
@@ -2164,7 +2155,7 @@ TimeUntilWaveSpawn( minimumWait )
 
 TimeUntilSpawn()
 {
-	if ( ( level.inGracePeriod && !self.hasSpawned ) || ( isDefined( level.rdyup ) && level.rdyup ) || ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" ) )
+	if ( ( level.inGracePeriod && !self.hasSpawned ) || ( isDefined( level.rdyup ) && level.rdyup )  )
 		return 0;
 
 	respawnDelay = 0;
@@ -2187,7 +2178,7 @@ TimeUntilSpawn()
 
 maySpawn()
 {
-	if ( ( isDefined( level.rdyup ) && level.rdyup ) || ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" ) )
+	if ( ( isDefined( level.rdyup ) && level.rdyup ) )
 		return true;
 
 	if ( level.inOvertime )
@@ -2828,7 +2819,7 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 	if ( !isDefined( level.rdyup ) )
 		level.rdyup = false;
 
-	if ( getDvarInt("g_knockback") != 1000 || isDefined( game["state"] ) && game["state"] == "postgame" || self.sessionteam == "spectator" || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" && isDefined( self.flying ) && self.flying || isDefined( level.bombDefused ) && level.bombDefused || isDefined( level.bombExploded ) && level.bombExploded && self.pers["team"] == game["attackers"] || isDefined( game["PROMOD_KNIFEROUND"] ) && game["PROMOD_KNIFEROUND"] && sMeansOfDeath != "MOD_MELEE" && sMeansOfDeath != "MOD_FALLING" && !level.rdyup )
+	if ( getDvarInt("g_knockback") != 1000 || isDefined( game["state"] ) && game["state"] == "postgame" || self.sessionteam == "spectator" || isDefined( level.bombDefused ) && level.bombDefused || isDefined( level.bombExploded ) && level.bombExploded && self.pers["team"] == game["attackers"] || isDefined( game["PROMOD_KNIFEROUND"] ) && game["PROMOD_KNIFEROUND"] && sMeansOfDeath != "MOD_MELEE" && sMeansOfDeath != "MOD_FALLING" && !level.rdyup )
 		return;
 
 	if( isDefined(eAttacker) && isPlayer(eAttacker) && isPlayer(self) && eAttacker.sessionstate == "playing" && isDefined(iDamage) && isDefined( sMeansOfDeath ) && sMeansOfDeath != "" && (sMeansOfDeath == "MOD_RIFLE_BULLET" || sMeansOfDeath == "MOD_PISTOL_BULLET"))
@@ -2964,7 +2955,7 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 	if ( isdefined( eAttacker ) && eAttacker != self && !friendly )
 		level.useStartSpawns = false;
 
-	if( level.rdyup || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" )
+	if( level.rdyup )
 	{
 		if ( isDefined( eAttacker ) && isPlayer( eAttacker ) && isDefined( sHitLoc ) )
 		{

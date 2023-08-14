@@ -580,7 +580,7 @@ setKeyObject( object )
 
 useObjectUseThink()
 {
-	if ( (isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" ))
+	if ( (isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) )
 		return;
 
 	level endon ( "game_ended" );
@@ -650,7 +650,7 @@ getEarliestClaimPlayer()
 
 useObjectProxThink()
 {
-	if ( (isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" ) )
+	if ( (isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) )
 		return;
 
 	level endon ( "game_ended" );
@@ -1264,7 +1264,7 @@ setCanUse( relativeTeam )
 
 set2DIcon( relativeTeam, shader )
 {
-	if ((isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" ))
+	if ((isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) )
 		return;
 
 	self.compassIcons[relativeTeam] = shader;
@@ -1273,7 +1273,7 @@ set2DIcon( relativeTeam, shader )
 
 set3DIcon( relativeTeam, shader )
 {
-	if ((isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" ))
+	if ((isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) )
 		return;
 
 	self.worldIcons[relativeTeam] = shader;
@@ -1282,7 +1282,7 @@ set3DIcon( relativeTeam, shader )
 
 set3DUseIcon( relativeTeam, shader )
 {
-	if ((isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" ))
+	if ((isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) )
 		return;
 
 	self.worldUseIcons[relativeTeam] = shader;

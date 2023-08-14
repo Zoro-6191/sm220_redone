@@ -274,7 +274,7 @@ sabotage()
 	precacheModel( "prop_suitcase_bomb" );
 	visuals[0] setModel( "prop_suitcase_bomb" );
 
-	if ( ( !isDefined( game["promod_do_readyup"] ) || isDefined( game["promod_do_readyup"] ) && !game["promod_do_readyup"] ) && ( !isDefined( game["PROMOD_MATCH_MODE"] ) || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] != "strat" ) )
+	if ( !isDefined( game["promod_do_readyup"] ) || isDefined( game["promod_do_readyup"] ) && !game["promod_do_readyup"] )
 	{
 		level.sabBomb = maps\mp\gametypes\_gameobjects::createCarryObject( "neutral", trigger, visuals, (0,0,32) );
 		level.sabBomb maps\mp\gametypes\_gameobjects::allowCarry( "any" );

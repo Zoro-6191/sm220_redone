@@ -20,7 +20,6 @@ validMode( mode )
 		case "comp_public_lan":
 		case "comp_public_hc_lan":
 		case "custom_public_lan":
-		case "strat":
 		case "match":
 		case "knockout":
 			return true;
@@ -108,7 +107,7 @@ monitorMode()
 			else
 			{
 				if ( isDefined( mode ) && mode != "" )
-					iPrintLN( "Error Changing To Mode: ^1" + mode + "\nSyntax: match|knockout_lan|pb_hc_knife_1v1|2v2_mr#_#:#,\nNormal Modes: comp_public(_lan), comp_public_hc(_lan), custom_public(_lan), strat" );
+					iPrintLN( "Error Changing To Mode: ^1" + mode + "\nSyntax: match|knockout_lan|pb_hc_knife_1v1|2v2_mr#_#:#,\nNormal Modes: comp_public(_lan), comp_public_hc(_lan), custom_public(_lan)" );
 
 				setDvar( "promod_mode", o_mode );
 			}
@@ -188,15 +187,6 @@ setMode( mode )
 		game["PROMOD_MODE_HUD"] = "^4Custom ^3Public";
 		game["PROMOD_KNIFEROUND"] = getDvarInt("promod_kniferound");
 		game["LAN_MODE"] = 1;
-	}
-	else if ( mode == "strat" )
-	{
-		promod\comp::main();
-		game["PROMOD_MODE_HUD"] = "^4Strat ^3Mode";
-		game["PROMOD_MATCH_MODE"] = "strat";
-		setDvar( "class_specops_limit", 64 );
-		setDvar( "class_demolitions_limit", 64 );
-		setDvar( "class_sniper_limit", 64 );
 	}
 
 	if ( game["PROMOD_MATCH_MODE"] == "" )
