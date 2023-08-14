@@ -359,8 +359,7 @@ onUsePlantObject( player )
 
 	if ( !self maps\mp\gametypes\_gameobjects::isFriendlyTeam( player.pers["team"] ) )
 	{
-		if ( !level.hardcoreMode )
-			iPrintLn( &"MP_EXPLOSIVES_PLANTED_BY", player.name );
+		iPrintLn( &"MP_EXPLOSIVES_PLANTED_BY", player.name );
 
 		maps\mp\gametypes\_globallogic::givePlayerScore( "plant", player );
 
@@ -390,8 +389,7 @@ onUseDefuseObject( player )
 
 	playSoundOnPlayers("promod_defused");
 
-	if ( !level.hardcoreMode )
-		iPrintLn( &"MP_EXPLOSIVES_DEFUSED_BY", player.name );
+	iPrintLn( &"MP_EXPLOSIVES_DEFUSED_BY", player.name );
 
 	maps\mp\gametypes\_globallogic::givePlayerScore( "defuse", player );
 	player thread [[level.onXPEvent]]( "defuse" );

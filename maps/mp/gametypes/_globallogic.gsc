@@ -73,7 +73,6 @@ init()
 	if ( !isDefined( game["gamestarted"] ) )
 		promod\modes::main();
 
-	level.hardcoreMode = getDvarInt( "scr_hardcore" );
 	level.roundswitch = getDvarInt( "scr_" + level.gametype + "_roundswitch" );
 	level.roundLimit = getDvarInt( "scr_" + level.gametype + "_roundlimit" );
 	level.timelimit = getDvarFloat( "scr_" + level.gametype + "_timelimit" );
@@ -83,10 +82,7 @@ init()
 	setDvar( "ui_scorelimit", level.scoreLimit );
 	setDvar( "ui_timelimit", level.timelimit );
 
-	if ( level.hardcoreMode )
-		setDvar( "scr_player_maxhealth", 30 );
-	else
-		setDvar( "scr_player_maxhealth", 100 );
+	setDvar( "scr_player_maxhealth", 100 );
 }
 
 registerDvars()
@@ -786,10 +782,7 @@ endGame( winner, endReasonText )
 				if ( isDefined( player.pers["team"] ) && player.pers["team"] == "spectator" )
 					continue;
 
-				player setClientDvars(
-										"ui_hud_hardcore", 1,
-										"cg_drawSpectatorMessages", 0,
-										"g_compassShowEnemies", 0 );
+				player setClientDvars( "ui_hud_hardcore", 1, "cg_drawSpectatorMessages", 0, "g_compassShowEnemies", 0 );
 			}
 
 			level thread header();
@@ -971,10 +964,7 @@ endGame( winner, endReasonText )
 		else
 			player thread maps\mp\gametypes\_hud_message::outcomeNotify( winner, endReasonText );
 
-		player setClientDvars(
-								"ui_hud_hardcore", 1,
-								"cg_drawSpectatorMessages", 0,
-								"g_compassShowEnemies", 0 );
+		player setClientDvars( "ui_hud_hardcore", 1, "cg_drawSpectatorMessages", 0, "g_compassShowEnemies", 0 );
 
 		player maps\mp\gametypes\_weapons::printStats();
 	}
@@ -2648,10 +2638,10 @@ Callback_PlayerConnect()
 	else
 		self setClientDvar( "promod_hud_website", getDvar( "promod_hud_website" ) );
 
-	self setClientDvars("cg_hudGrenadeIconMaxRangeFrag", int(!level.hardcoreMode)*250,
-						"cg_drawcrosshair", int(!level.hardcoreMode),
+	self setClientDvars("cg_hudGrenadeIconMaxRangeFrag", 250,
+						"cg_drawcrosshair", 1,
 						"cg_drawSpectatorMessages", 1,
-						"ui_hud_hardcore", level.hardcoreMode,
+						"ui_hud_hardcore", 0,
 						"fx_drawClouds", 0,
 						"ui_showmenuonly", "",
 						"self_ready", "" );

@@ -436,8 +436,7 @@ onUse( player )
 
 	if ( !self maps\mp\gametypes\_gameobjects::isFriendlyTeam( player.pers["team"] ) )
 	{
-		if ( !level.hardcoreMode )
-			iPrintLn( &"MP_EXPLOSIVES_PLANTED_BY", player.name );
+		iPrintLn( &"MP_EXPLOSIVES_PLANTED_BY", player.name );
 
 		maps\mp\gametypes\_globallogic::givePlayerScore( "plant", player );
 
@@ -459,8 +458,7 @@ onUse( player )
 	{
 		level notify ( "bomb_defused" );
 
-		if ( !level.hardcoreMode )
-			iPrintLn( &"MP_EXPLOSIVES_DEFUSED_BY", player.name );
+		iPrintLn( &"MP_EXPLOSIVES_DEFUSED_BY", player.name );
 
 		maps\mp\gametypes\_globallogic::givePlayerScore( "defuse", player );
 

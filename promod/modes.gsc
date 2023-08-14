@@ -119,7 +119,6 @@ setMode( mode )
 
 	game["CUSTOM_MODE"] = 0;
 	game["LAN_MODE"] = 0;
-	game["HARDCORE_MODE"] = 0;
 	game["PROMOD_STRATTIME"] = 6;
 	game["PROMOD_MODE_HUD"] = "";
 	game["PROMOD_MATCH_MODE"] = "";
@@ -138,7 +137,6 @@ setMode( mode )
 	{
 		promod\comp::main();
 		game["PROMOD_MATCH_MODE"] = "pub";
-		game["HARDCORE_MODE"] = 1;
 		game["PROMOD_MODE_HUD"] = "^4Competitive ^3Public ^6HC";
 		pub();
 	}
@@ -162,7 +160,6 @@ setMode( mode )
 	{
 		promod\comp::main();
 		game["PROMOD_MATCH_MODE"] = "pub";
-		game["HARDCORE_MODE"] = 1;
 		game["PROMOD_MODE_HUD"] = "^4Competitive ^3Public ^6HC";
 		game["LAN_MODE"] = 1;
 		pub();
@@ -202,9 +199,6 @@ setMode( mode )
 					game["PROMOD_KNIFEROUND"] = 1;
 					break;
 				case "pb":
-					break;
-				case "hc":
-					game["HARDCORE_MODE"] = 1;
 					break;
 				default:
 					if ( isSubStr( exploded[i], "mr" ) )
@@ -247,13 +241,6 @@ setMode( mode )
 		game["PROMOD_MODE_HUD"] += " ^4LAN";
 		if( knockout_mode )
 			game["PROMOD_STRATTIME"] = 10;
-	}
-
-	if ( game["HARDCORE_MODE"] )
-	{
-		if(game["PROMOD_MATCH_MODE"] == "match")
-			game["PROMOD_MODE_HUD"] += " ^6HC";
-		setDvar( "scr_hardcore", 1 );
 	}
 
 	maxscore = 0;

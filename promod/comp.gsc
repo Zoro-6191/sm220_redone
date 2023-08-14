@@ -175,5 +175,4 @@ main()
 	setDvar( "g_allowVote", 0 );
 	setDvar( "scr_game_allowkillcam", 0 );
 	setDvar( "scr_game_spectatetype", 1 );
-	setDvar( "scr_hardcore", 0 );
 }

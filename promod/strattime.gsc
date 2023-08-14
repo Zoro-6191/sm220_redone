@@ -23,9 +23,7 @@ main()
 		{
 			if ( isDefined( game["PROMOD_KNIFEROUND"] ) && !game["PROMOD_KNIFEROUND"] || !isDefined( game["PROMOD_KNIFEROUND"] ) )
 			{
-				if ( level.hardcoreMode && getDvarInt("weap_allow_frag_grenade") )
-					player giveWeapon( "frag_grenade_short_mp" );
-				else if ( getDvarInt( "weap_allow_frag_grenade" ) )
+				if ( getDvarInt( "weap_allow_frag_grenade" ) )
 					player giveWeapon( "frag_grenade_mp" );
 
 				if ( player.pers[classType]["loadout_grenade"] == "flash_grenade" && getDvarInt("weap_allow_flash_grenade") )

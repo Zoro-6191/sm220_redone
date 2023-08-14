@@ -209,7 +209,6 @@ main()
 	setDvar( "promod_allow_readyup", 0 ); // [0-1]
 	setDvar( "promod_kniferound", 0 ); // [0-1] (sd only)
 	setDvar( "g_maxDroppedWeapons", 16 ); // [2-32] (maximum number of dropped weapons before recycling)
-	setDvar( "scr_hardcore", 0 ); // [0-1]
 
 	// website
 	setDvar( "promod_hud_website", "www.codpromod.com" ); // (avoid "//" here)

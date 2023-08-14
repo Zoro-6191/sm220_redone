@@ -10,12 +10,9 @@ giveLoadout( team, class )
 
 	if(getDvarInt("weap_allow_frag_grenade") && (!isDefined( level.strat_over ) || level.strat_over))
 	{
-		s = "";
-		if ( level.hardcoreMode )
-			s = "_short";
-		self giveWeapon( "frag_grenade"+s+"_mp" );
-		self setWeaponAmmoClip( "frag_grenade"+s+"_mp", 1 );
-		self switchToOffhand( "frag_grenade"+s+"_mp" );
+		self giveWeapon( "frag_grenade_mp" );
+		self setWeaponAmmoClip( "frag_grenade_mp", 1 );
+		self switchToOffhand( "frag_grenade_mp" );
 	}
 
 	gren = self.pers[class]["loadout_grenade"];
