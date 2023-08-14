@@ -59,56 +59,6 @@
 
 		CHOICE_MENU_TITLE( "@MPUI_CHOOSE_TEAM" )
 
-		itemDef
-		{
-			style			WINDOW_STYLE_FILLED
-			rect			48 72 285 117
-			backcolor		0 0 0 .5
-			visible			when( team( name ) == "TEAM_FREE" && dvarString("ui_motd") != "" )
-			decoration
-		}
-		itemDef
-		{
-			rect			50 92 270 117
-			type			ITEM_TYPE_BUTTON
-			textfont		UI_FONT_DEFAULT
-			dvar			"ui_motd"
-			textalign		ITEM_ALIGN_LEFT
-			textscale		TEXTSIZE_SMALL
-			forecolor		1 1 1 1
-			backcolor		0 0 0 0
-			textalignx		5
-			textaligny		0
-			visible			when( team( name ) == "TEAM_FREE" && dvarString("ui_motd") != "" )
-			decoration
-			autowrapped
-		}
-		itemDef
-		{
-			type			ITEM_TYPE_TEXT
-			visible			1
-			rect			55 72 0 0
-			forecolor		1 0.8 0.4 1
-			text			"Message of the Day"
-			textfont		UI_FONT_DEFAULT
-			textscale		TEXTSIZE_DEFAULT
-			visible			when( team( name ) == "TEAM_FREE" && dvarString("ui_motd") != "" )
-			decoration
-		}
-		itemDef
-		{
-
-			style			WINDOW_STYLE_SHADER
-			rect			48 72 283 115
-			background		"white"
-			forecolor		.5 .5 .5 0.15
-			border			1
-			bordersize		1
-			bordercolor		0.5 0.5 0.5 0.7
-			visible			when( team( name ) == "TEAM_FREE" && dvarString("ui_motd") != "" )
-			decoration
-		}
-
 		#include "ui_mp/navcontrols.inc";
 		#include "ui_mp/tactical_map.inc";
 

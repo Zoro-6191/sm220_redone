@@ -175,7 +175,7 @@ main()
 	setDvar( "bg_fallDamageMaxHeight", 350 ); // [1->] (max height to inflict max fall damage)
 
 	// logging (not likely to be changed)
-	setDvar( "logfile", 1 );
+	setDvar( "logfile", 0 );
 	setDvar( "g_log", "games_mp.log" );
 	setDvar( "g_logSync", 0 );
 
@@ -209,20 +209,4 @@ main()
 	setDvar( "promod_allow_readyup", 0 ); // [0-1]
 	setDvar( "promod_kniferound", 0 ); // [0-1] (sd only)
 	setDvar( "g_maxDroppedWeapons", 16 ); // [2-32] (maximum number of dropped weapons before recycling)
-
-	// website
-	setDvar( "promod_hud_website", "www.codpromod.com" ); // (avoid "//" here)
-
-	// messagecenter
-	setDvar( "promod_mc_enable", 0 ); // [0-1]
-	setDvar( "promod_mc_rs_every_round", 0 ); // [0-1] (restarts messages on round-based gametypes)
-	setDvar( "promod_mc_delay", 45 ); // [1->] (default delay in seconds between messages)
-	setDvar( "promod_mc_loopdelay", 45 ); // [1->] (delay in seconds until it starting over)
-	setDvar( "promod_mc_maxmessages", 3 ); // [1->] (set this equivalent to number of messages)
-	setDvar( "promod_mc_message_1", "Message Center ON" );
-	setDvar( "promod_mc_message_2", "Set Me Up Or Turn Me OFF" );
-	setDvar( "promod_mc_message_3", "<*nextmap*>" );
-	setDvar( "promod_mc_messagedelay_1", 0 ); // [1->] (overrides default delay in seconds between messages, e.g special messages)
-	setDvar( "promod_mc_messagedelay_2", 0 );
-	setDvar( "promod_mc_messagedelay_3", 0 );
 }

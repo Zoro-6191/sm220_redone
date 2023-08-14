@@ -154,28 +154,18 @@ default_onDeadEvent( team )
 	if ( team == "allies" )
 	{
 		iPrintLn( game["strings"]["allies_eliminated"] );
-		makeDvarServerInfo( "ui_text_endreason", game["strings"]["allies_eliminated"] );
-		setDvar( "ui_text_endreason", game["strings"]["allies_eliminated"] );
-
 		thread endGame( "axis", game["strings"]["allies_eliminated"] );
 	}
 	else if ( team == "axis" )
 	{
 		iPrintLn( game["strings"]["axis_eliminated"] );
-		makeDvarServerInfo( "ui_text_endreason", game["strings"]["axis_eliminated"] );
-		setDvar( "ui_text_endreason", game["strings"]["axis_eliminated"] );
-
 		thread endGame( "allies", game["strings"]["axis_eliminated"] );
 	}
 	else
 	{
-		makeDvarServerInfo( "ui_text_endreason", game["strings"]["tie"] );
-		setDvar( "ui_text_endreason", game["strings"]["tie"] );
-
 		if ( level.teamBased )
 			thread endGame( "tie", game["strings"]["tie"] );
-		else
-			thread endGame( undefined, game["strings"]["tie"] );
+		else thread endGame( undefined, game["strings"]["tie"] );
 	}
 }
 
@@ -198,14 +188,9 @@ default_onTimeLimit()
 			winner = "tie";
 		else if ( game["teamScores"]["axis"] > game["teamScores"]["allies"] )
 			winner = "axis";
-		else
-			winner = "allies";
+		else winner = "allies";
 	}
-	else
-		winner = getHighestScoringPlayer();
-
-	makeDvarServerInfo( "ui_text_endreason", game["strings"]["time_limit_reached"] );
-	setDvar( "ui_text_endreason", game["strings"]["time_limit_reached"] );
+	else winner = getHighestScoringPlayer();
 
 	thread endGame( winner, game["strings"]["time_limit_reached"] );
 }
@@ -223,14 +208,9 @@ default_onScoreLimit()
 			winner = "tie";
 		else if ( game["teamScores"]["axis"] > game["teamScores"]["allies"] )
 			winner = "axis";
-		else
-			winner = "allies";
+		else winner = "allies";
 	}
-	else
-		winner = getHighestScoringPlayer();
-
-	makeDvarServerInfo( "ui_text_endreason", game["strings"]["score_limit_reached"] );
-	setDvar( "ui_text_endreason", game["strings"]["score_limit_reached"] );
+	else winner = getHighestScoringPlayer();
 
 	level.forcedEnd = true;
 	thread endGame( winner, game["strings"]["score_limit_reached"] );
@@ -1737,16 +1717,6 @@ initPersStat( dataName )
 		self.pers[dataName] = 0;
 }
 
-getPersStat( dataName )
-{
-	return self.pers[dataName];
-}
-
-incPersStat( dataName, increment )
-{
-	self.pers[dataName] += increment;
-}
-
 updateTeamStatus()
 {
 	level notify("updating_team_status");
@@ -2322,9 +2292,6 @@ Callback_StartGameType()
 		precacheShader( "white" );
 		precacheShader( "black" );
 
-		makeDvarServerInfo( "scr_allies", "usmc" );
-		makeDvarServerInfo( "scr_axis", "arab" );
-
 		game["strings"]["press_to_spawn"] = &"PLATFORM_PRESS_TO_SPAWN";
 		if ( level.teamBased )
 		{
@@ -2465,7 +2432,6 @@ Callback_StartGameType()
 	thread maps\mp\gametypes\_teams::init();
 	thread maps\mp\gametypes\_weapons::init();
 	thread maps\mp\gametypes\_scoreboard::init();
-	// thread maps\mp\gametypes\_killcam::init();
 	thread maps\mp\gametypes\_shellshock::init();
 	thread maps\mp\gametypes\_damagefeedback::init();
 	thread maps\mp\gametypes\_healthoverlay::init();
@@ -2531,8 +2497,6 @@ Callback_StartGameType()
 		thread initialDMScoreUpdate();
 
 	[[level.onStartGameType]]();
-
-	thread promod\messagecenter::main();
 
 	deletePlacedEntity("misc_turret");
 
@@ -2634,16 +2598,13 @@ Callback_PlayerConnect()
 	self.score = self.pers["score"];
 
 	self initPersStat( "deaths" );
-	self.deaths = self getPersStat( "deaths" );
-
-	self initPersStat( "suicides" );
-	self.suicides = self getPersStat( "suicides" );
+	self.deaths = self.pers["deaths"];
 
 	self initPersStat( "kills" );
-	self.kills = self getPersStat( "kills" );
+	self.kills = self.pers["kills"];
 
 	self initPersStat( "assists" );
-	self.assists = self getPersStat( "assists" );
+	self.assists = self.pers["assists"];
 
 	self.pers["lives"] = level.numLives;
 
@@ -2970,8 +2931,8 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 
 				if (!level.rdyup)
 				{
-					attacker incPersStat( "kills", 1 );
-					attacker.kills = attacker getPersStat( "kills" );
+					attacker.pers["kills"]++;
+					attacker.kills = attacker.pers["kills"];
 
 					givePlayerScore( "kill", attacker, self );
 					giveTeamScore( "kill", attacker.pers["team"], attacker, self );
@@ -3083,8 +3044,8 @@ processAssist( killedplayer )
 		return;
 
 	self thread [[level.onXPEvent]]( "assist" );
-	self incPersStat( "assists", 1 );
-	self.assists = self getPersStat( "assists" );
+	self.pers["assists"]++;
+	self.assists = self.pers["assists"];
 
 	givePlayerScore( "assist", self, killedplayer );
 

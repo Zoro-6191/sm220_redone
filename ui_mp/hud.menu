@@ -709,17 +709,6 @@
 			visible			when ( ((timeLeft() >= 0 && timeLeft() < 30) || dvarBool( ui_bomb_timer )) && ( !PROMOD_SB || SHOULD_DISPLAY_SCOREBAR == false ) );
 			decoration
 		}
-		itemDef
-		{
-			rect			0 0 1 1 HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_BOTTOM
-			exp				text( dvarString( "promod_hud_website" ) );
-			exp				rect X( 3 + 65 * !PROMOD_SB )
-			exp				rect Y( -4 -43 * PROMOD_SB )
-			textscale		0.35
-			forecolor		0.99 0.99 0.75 1
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			visible			when ( dvarString( "promod_hud_website" ) != "" )
-		}
 	}
 
 	#define WEAPINFO_X -4

@@ -42,12 +42,12 @@ rawfile,maps/mp/_flashgrenades.gsc
 rawfile,maps/mp/_load.gsc
 
 rawfile,maps/mp/gametypes/_class.gsc
+rawfile,maps/mp/gametypes/_damagefeedback.gsc
 rawfile,maps/mp/gametypes/_gameobjects.gsc
 rawfile,maps/mp/gametypes/_globallogic.gsc
 rawfile,maps/mp/gametypes/_healthoverlay.gsc
 rawfile,maps/mp/gametypes/_hud.gsc
 rawfile,maps/mp/gametypes/_hud_message.gsc
-rawfile,maps/mp/gametypes/_killcam.gsc
 rawfile,maps/mp/gametypes/_menus.gsc
 rawfile,maps/mp/gametypes/_missions.gsc
 rawfile,maps/mp/gametypes/_promod.gsc
@@ -92,7 +92,6 @@ rawfile,mp/playeranim.script
 rawfile,promod/client.gsc
 rawfile,promod/comp.gsc
 rawfile,promod/dvarmon.gsc
-rawfile,promod/messagecenter.gsc
 rawfile,promod/modes.gsc
 rawfile,promod/readyup.gsc
 rawfile,promod/setvariables.gsc
