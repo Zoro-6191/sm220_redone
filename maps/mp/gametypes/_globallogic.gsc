@@ -348,7 +348,6 @@ spawnPlayer()
 
 	self.sessionstate = "playing";
 	self.spectatorclient = -1;
-	self.killcamentity = -1;
 	self.archivetime = 0;
 	self.psoffsettime = 0;
 
@@ -468,7 +467,6 @@ in_spawnSpectator( origin, angles )
 
 	self.sessionstate = "spectator";
 	self.spectatorclient = -1;
-	self.killcamentity = -1;
 	self.archivetime = 0;
 	self.psoffsettime = 0;
 
@@ -677,7 +675,6 @@ spawnIntermission()
 
 	self.sessionstate = "intermission";
 	self.spectatorclient = -1;
-	self.killcamentity = -1;
 	self.archivetime = 0;
 	self.psoffsettime = 0;
 
@@ -2468,7 +2465,7 @@ Callback_StartGameType()
 	thread maps\mp\gametypes\_teams::init();
 	thread maps\mp\gametypes\_weapons::init();
 	thread maps\mp\gametypes\_scoreboard::init();
-	thread maps\mp\gametypes\_killcam::init();
+	// thread maps\mp\gametypes\_killcam::init();
 	thread maps\mp\gametypes\_shellshock::init();
 	thread maps\mp\gametypes\_damagefeedback::init();
 	thread maps\mp\gametypes\_healthoverlay::init();
@@ -2625,6 +2622,8 @@ Callback_PlayerConnect()
 
 	level notify( "connected", self );
 
+	self setClientDvar( "ui_hud_hardcore", 0 );
+
 	if ( !isDefined( level.rdyup ) || !level.rdyup )
 		self.statusicon = "";
 
@@ -2643,17 +2642,8 @@ Callback_PlayerConnect()
 	self initPersStat( "kills" );
 	self.kills = self getPersStat( "kills" );
 
-	self initPersStat( "headshots" );
-	self.headshots = self getPersStat( "headshots" );
-
 	self initPersStat( "assists" );
 	self.assists = self getPersStat( "assists" );
-
-	self initPersStat( "teamkills" );
-
-	self.lastGrenadeSuicideTime = -1;
-
-	self.teamkillsThisRound = 0;
 
 	self.pers["lives"] = level.numLives;
 
@@ -2919,8 +2909,7 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 
 	if( level.teamBased && isDefined( attacker.pers ) && self.team == attacker.team && sMeansOfDeath == "MOD_GRENADE" && !level.friendlyfire )
 		obituary(self, self, sWeapon, sMeansOfDeath);
-	else
-		obituary(self, attacker, sWeapon, sMeansOfDeath);
+	else obituary(self, attacker, sWeapon, sMeansOfDeath);
 
 	if ( !isDefined( game["promod_do_readyup"] ) || !game["promod_do_readyup"] )
 		self maps\mp\gametypes\_weapons::dropWeaponForDeath( attacker );
@@ -2936,73 +2925,34 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 
 		if( isDefined( attacker.pers ) && !isDefined( self.switching_teams ) )
 		{
-			self incPersStat( "deaths", 1 );
-			self.deaths = self getPersStat( "deaths" );
+			self.pers["deaths"]++;
+			self.deaths = self.pers["deaths"];
 		}
 	}
-
-	lpattackGuid = "";
-	lpattackname = "";
-	lpattackerteam = "";
-	lpattacknum = -1;
 
 	prof_end( "PlayerKilled pre constants" );
 
 	if( isPlayer( attacker ) )
 	{
-		lpattackGuid = attacker getGuid();
-		lpattackname = attacker.name;
-
 		if ( attacker == self )
 		{
-			doKillcam = false;
-
 			if ( isDefined( self.switching_teams ) )
-			{
 				if ( !level.teamBased && ((self.leaving_team == "allies" && self.joining_team == "axis") || (self.leaving_team == "axis" && self.joining_team == "allies")) )
 				{
 					playerCounts = self maps\mp\gametypes\_teams::CountPlayers();
 					playerCounts[self.leaving_team]--;
 					playerCounts[self.joining_team]++;
-
-					if( !level.rdyup && (playerCounts[self.joining_team] - playerCounts[self.leaving_team]) > 1 )
-					{
-						self thread [[level.onXPEvent]]( "suicide" );
-						self incPersStat( "suicides", 1 );
-						self.suicides = self getPersStat( "suicides" );
-					}
 				}
-			}
-			else
-			{
-				if (!level.rdyup)
-				{
-					self thread [[level.onXPEvent]]( "suicide" );
-					self incPersStat( "suicides", 1 );
-					self.suicides = self getPersStat( "suicides" );
-
-					scoreSub = maps\mp\gametypes\_tweakables::getTweakableValue( "game", "suicidepointloss" );
-					_setPlayerScore( self, _getPlayerScore( self ) - scoreSub );
-				}
-				if ( sMeansOfDeath == "MOD_SUICIDE" && sHitLoc == "none" && self.throwingGrenade )
-					self.lastGrenadeSuicideTime = gettime();
-			}
 		}
 		else
 		{
 			prof_begin( "PlayerKilled attacker" );
-
-			lpattacknum = attacker getEntityNumber();
-
-			doKillcam = true;
 
 			if ( level.teamBased && self.pers["team"] == attacker.pers["team"] )
 			{
 				if ( sMeansOfDeath != "MOD_GRENADE" && level.friendlyfire && !level.rdyup )
 				{
 					attacker thread [[level.onXPEvent]]( "teamkill" );
-
-					attacker.pers["teamkills"] += 1;
 
 					if ( maps\mp\gametypes\_tweakables::getTweakableValue( "team", "teamkillpointloss" ) )
 					{
@@ -3015,19 +2965,8 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 			{
 				prof_begin( "pks1" );
 
-				if ( sMeansOfDeath == "MOD_HEAD_SHOT" )
-				{
-					attacker incPersStat( "headshots", 1 );
-					attacker.headshots = attacker getPersStat( "headshots" );
-					value = maps\mp\gametypes\_rank::getScoreInfoValue( "headshot" );
-					attacker thread maps\mp\gametypes\_rank::giveRankXP( "headshot", value );
-					attacker playLocalSound( "bullet_impact_headshot_2" );
-				}
-				else
-				{
-					value = maps\mp\gametypes\_rank::getScoreInfoValue( "kill" );
-					attacker thread maps\mp\gametypes\_rank::giveRankXP( "kill", value );
-				}
+				value = maps\mp\gametypes\_rank::getScoreInfoValue( "kill" );
+				attacker thread maps\mp\gametypes\_rank::giveRankXP( "kill", value );
 
 				if (!level.rdyup)
 				{
@@ -3035,19 +2974,16 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 					attacker.kills = attacker getPersStat( "kills" );
 
 					givePlayerScore( "kill", attacker, self );
-
 					giveTeamScore( "kill", attacker.pers["team"], attacker, self );
 
 					scoreSub = maps\mp\gametypes\_tweakables::getTweakableValue( "game", "deathpointloss" );
 					_setPlayerScore( self, _getPlayerScore( self ) - scoreSub );
 				}
-
 				prof_end( "pks1" );
 
 				if ( !level.rdyup && level.teamBased )
 				{
 					prof_begin( "PlayerKilled assists" );
-
 					if ( isdefined( self.attackers ) )
 					{
 						for ( j = 0; j < self.attackers.size; j++ )
@@ -3061,31 +2997,16 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 						}
 						self.attackers = [];
 					}
-
 					prof_end( "PlayerKilled assists" );
 				}
 			}
-
 			prof_end( "PlayerKilled attacker" );
 		}
 	}
-	else
-	{
-		doKillcam = false;
-		killedByEnemy = false;
-
-		lpattacknum = -1;
-		lpattackguid = "";
-		lpattackname = "";
-		lpattackerteam = "world";
-
-		if ( isDefined( attacker ) && isDefined( attacker.team ) && (attacker.team == "axis" || attacker.team == "allies") && attacker.team != self.pers["team"] )
-		{
-			killedByEnemy = true;
+	else if ( isDefined( attacker ) && isDefined( attacker.team ) && (attacker.team == "axis" || attacker.team == "allies") && attacker.team != self.pers["team"] )
 			if ( level.teamBased )
 				giveTeamScore( "kill", attacker.team, attacker, self );
-		}
-	}
+
 	self.switching_teams = undefined;
 	self.joining_team = undefined;
 	self.leaving_team = undefined;
@@ -3094,8 +3015,7 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 
 	if ( sMeansOfDeath == "MOD_MELEE" )
 		scWeapon = "knife_mp";
-	else
-		scWeapon = sWeapon;
+	else scWeapon = sWeapon;
 
 	sHeadshot = int(sMeansOfDeath == "MOD_HEAD_SHOT");
 
@@ -3105,22 +3025,11 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 
 	self thread [[level.onPlayerKilled]](eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psOffsetTime, deathAnimDuration);
 
-	if ( sWeapon == "none" )
-		doKillcam = false;
-
-	killcamentity = -1;
-
 	self.deathTime = getTime();
 
 	wait 0.25;
 
-	self.cancelKillcam = false;
-	self thread cancelKillCamOnUse();
-
-	if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" && level.gametype == "sd" )
-		postDeathDelay = waitForTimeOrNotifies( 0.75 );
-	else
-		postDeathDelay = waitForTimeOrNotifies( 1.75 );
+	postDeathDelay = waitForTimeOrNotifies( 0.75 );
 
 	self notify ( "death_delay_finished" );
 
@@ -3129,22 +3038,12 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 
 	respawnTimerStartTime = gettime();
 
-	if ( !self.cancelKillcam && doKillcam && level.killcam )
-	{
-		livesLeft = !(level.numLives && !self.pers["lives"]);
-		timeUntilSpawn = TimeUntilSpawn();
-		willRespawnImmediately = livesLeft && (timeUntilSpawn <= 0);
-
-		self maps\mp\gametypes\_killcam::killcam( lpattacknum, killcamentity, sWeapon, postDeathDelay, psOffsetTime, willRespawnImmediately, timeUntilRoundEnd(), [], attacker );
-	}
-
 	prof_end( "PlayerKilled post constants" );
 
 	if ( !isDefined( game["state"] ) || game["state"] != "playing" )
 	{
 		self.sessionstate = "dead";
 		self.spectatorclient = -1;
-		self.killcamentity = -1;
 		self.archivetime = 0;
 		self.psoffsettime = 0;
 		return;
@@ -3154,46 +3053,6 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 	{
 		timePassed = (gettime() - respawnTimerStartTime) / 1000;
 		self thread [[level.spawnClient]]( timePassed );
-	}
-}
-
-cancelKillCamOnUse()
-{
-	self endon ( "death_delay_finished" );
-	self endon ( "disconnect" );
-	level endon ( "game_ended" );
-
-	for(;;)
-	{
-		if ( !self UseButtonPressed() )
-		{
-			wait 0.05;
-			continue;
-		}
-
-		buttonTime = 0;
-		while( self UseButtonPressed() )
-		{
-			buttonTime += 0.05 ;
-			wait 0.05;
-		}
-
-		if ( buttonTime >= 0.5 )
-			continue;
-
-		buttonTime = 0;
-
-		while ( !self UseButtonPressed() && buttonTime < 0.5 )
-		{
-			buttonTime += 0.05 ;
-			wait 0.05;
-		}
-
-		if ( buttonTime >= 0.5 )
-			continue;
-
-		self.cancelKillcam = true;
-		return;
 	}
 }
 
