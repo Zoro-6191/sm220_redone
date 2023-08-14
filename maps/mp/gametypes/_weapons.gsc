@@ -82,7 +82,7 @@ watchGrenadeAmmo()
 	{
 		self waittill("grenade_fire");
 
-		if((isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || getDvarInt("sv_cheats"))
+		if((isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) )
 			break;
 
 		wait 0.25; // 5 frames, ought to be enough

@@ -4,8 +4,8 @@
 #define TEAM_IS_MARINES		(localVarString( ui_team ) == "marines")
 #define TEAM_IS_OPFOR		(localVarString( ui_team ) == "opfor")
 #define NOT_SPECTATING		(!spectatingClient())
-#define DVAR_ENFORCER		( !dvarint( sv_cheats ) && team( name ) != "TEAM_SPECTATOR" && ( dvarint( com_maxfps ) > 250 || dvarint( com_maxfps ) < 40 || dvarint( cl_maxpackets ) != 100 || dvarint( rate ) != 25000 || dvarint( dynent_active ) || dvarfloat( cg_hudDamageIconWidth ) != 128 || dvarfloat( cg_hudDamageIconHeight ) != 64 || dvarint( cg_huddamageiconinscope ) || dvarfloat( cg_huddamageiconoffset ) != 128 || dvarint( cg_huddamageicontime ) != 2000 || dvarfloat( cg_viewZSmoothingMin ) != 1 || dvarfloat( cg_viewZSmoothingMax ) != 16 || dvarfloat( cg_viewZSmoothingTime ) != 0.1 || dvarint( r_filmtweakInvert ) || dvarint( r_dlightlimit ) || dvarfloat( r_lodscalerigid ) != 1 || dvarfloat( r_lodscaleskinned ) != 1 || dvarint( sm_enable ) || dvarint( cg_nopredict ) || dvarint( developer ) || dvarint( r_zfeather ) || dvarfloat( phys_gravity ) != "-800" ) )
-#define DVAR_ENFORCER_NOSND ( !dvarint( sv_cheats ) && team( name ) != "TEAM_SPECTATOR" && ( dvarint( aim_automelee_enabled ) || dvarfloat( compassplayerwidth ) != dvarfloat( compassplayerheight ) || dvarfloat( compassfriendlywidth ) != dvarfloat( compassfriendlyheight ) ) )
+#define DVAR_ENFORCER		( team( name ) != "TEAM_SPECTATOR" && ( dvarint( com_maxfps ) > 250 || dvarint( com_maxfps ) < 40 || dvarint( cl_maxpackets ) != 100 || dvarint( rate ) != 25000 || dvarint( dynent_active ) || dvarfloat( cg_hudDamageIconWidth ) != 128 || dvarfloat( cg_hudDamageIconHeight ) != 64 || dvarint( cg_huddamageiconinscope ) || dvarfloat( cg_huddamageiconoffset ) != 128 || dvarint( cg_huddamageicontime ) != 2000 || dvarfloat( cg_viewZSmoothingMin ) != 1 || dvarfloat( cg_viewZSmoothingMax ) != 16 || dvarfloat( cg_viewZSmoothingTime ) != 0.1 || dvarint( r_filmtweakInvert ) || dvarint( r_dlightlimit ) || dvarfloat( r_lodscalerigid ) != 1 || dvarfloat( r_lodscaleskinned ) != 1 || dvarint( sm_enable ) || dvarint( cg_nopredict ) || dvarint( developer ) || dvarint( r_zfeather ) || dvarfloat( phys_gravity ) != "-800" ) )
+#define DVAR_ENFORCER_NOSND ( team( name ) != "TEAM_SPECTATOR" && ( dvarint( aim_automelee_enabled ) || dvarfloat( compassplayerwidth ) != dvarfloat( compassplayerheight ) || dvarfloat( compassfriendlywidth ) != dvarfloat( compassfriendlyheight ) ) )
 #define DVAR_BLANK			( dvarString( ui_showmenuonly ) == "" )
 #define HUD_ALPHA 0.65
 #define HUD_FOREGROUND_ALPHA 0.75
@@ -406,7 +406,7 @@
 		rect			(BOTTOM_RECT_X+SCORE_OFFSET_X) (BOTTOM_RECT_Y+SCORE_OFFSET_Y) 640 480 HORIZONTAL_ALIGN_FULLSCREEN VERTICAL_ALIGN_FULLSCREEN
 		exp				rect Y( BOTTOM_RECT_Y - 10 );
 		fullScreen		0
-		visible			when( !inkillcam() && !ui_active() && !dvarint( ui_hud_hardcore ) && (!dvarint( sv_cheats ) || dvarint( sv_cheats ) && !dvarint( promod_movie_hidescorebar ) ) );
+		visible			when( !inkillcam() && !ui_active() && !dvarint( ui_hud_hardcore ) );
 
 		itemDef
 		{
@@ -1018,10 +1018,9 @@
 	menuDef
 	{
 		name			"CenterObituary"
-		rect			0 0 0 0 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_CENTER
+		rect			0 180 0 0 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_CENTER
 		fullScreen		0
 		visible			1
-		exp				rect Y(180 + dvarInt(sv_cheats) * dvarint(promod_centermessage_position));
 
 		itemDef
 		{

@@ -39,7 +39,6 @@
 			uiScript openMenuOnDvarNot ui_playerProfileCount 1 player_profile;
 			uiScript stopRefresh;
 			setdvar ui_showEndOfGame "0";
-			setdvar sv_cheats "1";
 		}
 	}
 

@@ -5,3 +5,4 @@
 - Removed Scorebot Garbage
 - Removed Strat Mode
 - Removed logprinting
+- Removed all sv_cheats checks

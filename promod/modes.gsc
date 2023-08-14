@@ -77,12 +77,10 @@ validMode( mode )
 monitorMode()
 {
 	o_mode = toLower( getDvar( "promod_mode" ) );
-	o_cheats = getDvarInt( "sv_cheats" );
 
 	for(;;)
 	{
 		mode = toLower( getDvar( "promod_mode" ) );
-		cheats = getDvarInt( "sv_cheats" );
 
 		if ( mode != o_mode )
 		{
@@ -111,11 +109,6 @@ monitorMode()
 
 				setDvar( "promod_mode", o_mode );
 			}
-		}
-		else if ( cheats != o_cheats )
-		{
-			map_restart( false );
-			break;
 		}
 
 		wait 0.1;
@@ -294,13 +287,6 @@ setMode( mode )
 		game["SCORES_ATTACK"] = 0;
 		game["SCORES_DEFENCE"] = 0;
 	}
-
-	if( game["PROMOD_PB_OFF"] && getDvarInt( "sv_cheats" ) && !getDvarInt( "sv_punkbuster" ) )
-		game["PROMOD_MODE_HUD"] += " ^1PB: OFF & CHEATS";
-	else if( game["PROMOD_PB_OFF"] && !getDvarInt( "sv_punkbuster" ) )
-		game["PROMOD_MODE_HUD"] += " ^1PB: OFF";
-	else if ( getDvarInt( "sv_cheats" ) )
-		game["PROMOD_MODE_HUD"] += " ^1CHEATS";
 
 	if(level.gametype != "sd") game["PROMOD_KNIFEROUND"] = 0;
 }
