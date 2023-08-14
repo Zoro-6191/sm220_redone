@@ -23,7 +23,7 @@ killcam( attackerNum, killcamentity, sWeapon, predelay, offsetTime, respawn, max
 
 	if ( !respawn )
 		camtime = 5;
-	else if (sWeapon == "frag_grenade_mp" || sWeapon == "frag_grenade_short_mp")
+	else if (sWeapon == "frag_grenade_mp" )
 		camtime = 4.5;
 	else
 		camtime = 2.5;

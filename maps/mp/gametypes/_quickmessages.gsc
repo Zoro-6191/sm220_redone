@@ -114,7 +114,6 @@ quickpromod(response)
 			break;
 
 		case "5":
-			self maps\mp\gametypes\_weapons::printStats();
 			break;
 
 		case "silencer":

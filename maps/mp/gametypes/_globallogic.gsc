@@ -965,8 +965,6 @@ endGame( winner, endReasonText )
 			player thread maps\mp\gametypes\_hud_message::outcomeNotify( winner, endReasonText );
 
 		player setClientDvars( "ui_hud_hardcore", 1, "cg_drawSpectatorMessages", 0, "g_compassShowEnemies", 0 );
-
-		player maps\mp\gametypes\_weapons::printStats();
 	}
 
 	roundEndWait( level.postRoundTime );
@@ -2757,8 +2755,6 @@ Callback_PlayerDisconnect()
 	if ( level.gameEnded )
 		self removeDisconnectedPlayerFromPlacement();
 
-	self maps\mp\gametypes\_weapons::printStats();
-
 	if ( isDefined( self.pers["team"] ) && ( self.pers["team"] == "allies" || self.pers["team"] == "axis" ) )
 		thread maps\mp\gametypes\_promod::updateClassAvailability( self.pers["team"] );
 
@@ -2844,20 +2840,7 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 					iDamage = 1;
 
 				if( (level.friendlyfire & 1) > 0 ) // 1 or 3
-				{
-					if(!level.rdyup)
-					{
-						if(!isDefined(self.pers["friendly_damage_taken"]))
-							self.pers["friendly_damage_taken"] = 0;
-						if(!isDefined(eAttacker.pers["friendly_damage_done"]))
-							eAttacker.pers["friendly_damage_done"] = 0;
-
-						self.pers["friendly_damage_taken"] += min(iDamage, self.health);
-						eAttacker.pers["friendly_damage_done"] += min(iDamage, self.health);
-					}
-
 					self finishPlayerDamageWrapper(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
-				}
 				if( (level.friendlyfire & 2) > 0 ) // 2 or 3
 					eAttacker finishPlayerDamageWrapper(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
 			}
@@ -2878,23 +2861,6 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 				if ( isDefined(sWeapon) && isSubStr("m1014_mp winchester1200_mp mp5_mp uzi_mp ak74u_mp ak47_mp m14_mp mp44_mp g3_mp g36c_mp m16_mp m4_mp m40a3_mp remington700_mp", sWeapon) )
 					self.attackerData[eAttacker.clientid] = true;
 			}
-
-			if( !level.rdyup && isDefined(eAttacker) && isPlayer(eAttacker) && eAttacker != self )
-			{
-				if(!isDefined(eAttacker.pers["hits"]))
-					eAttacker.pers["hits"] = 0;
-
-				eAttacker.pers["hits"]++;
-
-				if(!isDefined(self.pers["damage_taken"]))
-					self.pers["damage_taken"] = 0;
-				if(!isDefined(eAttacker.pers["damage_done"]))
-					eAttacker.pers["damage_done"] = 0;
-
-				self.pers["damage_taken"] += min(iDamage, self.health);
-				eAttacker.pers["damage_done"] += min(iDamage, self.health);
-			}
-
 			self finishPlayerDamageWrapper(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
 		}
 

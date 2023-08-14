@@ -11,7 +11,6 @@ init()
 	precacheItem( "deserteagle_mp" );
 	precacheItem( "deserteaglegold_mp" );
 	precacheItem( "frag_grenade_mp" );
-	precacheItem( "frag_grenade_short_mp" );
 	precacheItem( "g3_mp" );
 	precacheItem( "g3_silencer_mp" );
 	precacheItem( "g36c_mp" );
@@ -62,10 +61,6 @@ onPlayerSpawned()
 		self thread watchWeaponUsage();
 		self thread watchGrenadeUsage();
 		self thread watchGrenadeAmmo();
-
-		if(!isDefined(self.pers["shots"]))
-			self.pers["shots"] = 0;
-		self thread shotCounter();
 	}
 }
 
@@ -90,10 +85,7 @@ watchGrenadeAmmo()
 		pg = "";
 		if(self hasWeapon("frag_grenade_mp"))
 			pg = "frag_grenade_mp";
-		else if(self hasWeapon("frag_grenade_short_mp"))
-			pg = "frag_grenade_short_mp";
-		else
-			prim = false;
+		else prim = false;
 
 		sg = "";
 		if(self hasWeapon("flash_grenade_mp"))
@@ -114,63 +106,6 @@ watchGrenadeAmmo()
 			self TakeWeapon(sg);
 			sec = false;
 		}
-	}
-}
-
-shotCounter()
-{
-	self endon( "death" );
-	self endon( "disconnect" );
-	level endon ( "game_ended" );
-
-	for(;;)
-	{
-		self waittill("weapon_fired");
-		if(!isDefined( level.rdyup ) || !level.rdyup)
-			self.pers["shots"]++;
-	}
-}
-
-printStats()
-{
-	if(isDefined(game["PROMOD_MATCH_MODE"]) && game["PROMOD_MATCH_MODE"] == "match" && isDefined(self.hasDoneCombat) && self.hasDoneCombat && isDefined(level.gameEnded) && !level.gameEnded && (!isDefined( game["promod_do_readyup"] ) || !game["promod_do_readyup"]))
-		self iprintln("Can't display stats. Wait for the round to end.");
-	else
-	{
-		if ( !isDefined( self.pers["damage_done"] ) )
-			self.pers["damage_done"] = 0;
-
-		if ( !isDefined( self.pers["damage_taken"] ) )
-			self.pers["damage_taken"] = 0;
-
-		if ( !isDefined( self.pers["friendly_damage_done"] ) )
-			self.pers["friendly_damage_done"] = 0;
-
-		if ( !isDefined( self.pers["friendly_damage_taken"] ) )
-			self.pers["friendly_damage_taken"] = 0;
-
-		if ( !isDefined( self.pers["shots"] ) )
-			self.pers["shots"] = 0;
-
-		if ( !isDefined( self.pers["hits"] ) )
-			self.pers["hits"] = 0;
-
-		self iprintln("^3" + self.name);
-		self iprintln("Damage Done: ^2" + self.pers["damage_done"] + "^7 Damage Taken: ^1" + self.pers["damage_taken"]);
-		if( level.teamBased )
-			self iprintln("Friendly Damage Done: ^2" + self.pers["friendly_damage_done"] + "^7 Friendly Damage Taken: ^1" + self.pers["friendly_damage_taken"]);
-		acc = 0;
-		if(self.pers["shots"] > 0) // avoid division by 0
-			acc = int(self.pers["hits"]/self.pers["shots"]*10000)/100;
-		self iprintln("Shots Fired: ^2" + self.pers["shots"] + "^7 Shots Hit: ^2" + self.pers["hits"] + "^7 Accuracy: ^1" + acc + " pct");
-
-		// Reset the stats afterwards
-		self.pers["damage_done"] = 0;
-		self.pers["damage_taken"] = 0;
-		self.pers["friendly_damage_done"] = 0;
-		self.pers["friendly_damage_taken"] = 0;
-		self.pers["shots"] = 0;
-		self.pers["hits"] = 0;
 	}
 }
 
@@ -286,7 +221,7 @@ beginGrenadeTracking()
 
 	self waittill ( "grenade_fire", grenade, weaponName );
 
-	if ( weaponName == "frag_grenade_mp" || weaponName == "frag_grenade_short_mp" )
+	if ( weaponName == "frag_grenade_mp" )
 		grenade thread maps\mp\gametypes\_shellshock::grenade_earthQuake();
 
 	self.throwingGrenade = false;
