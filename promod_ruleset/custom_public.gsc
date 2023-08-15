@@ -160,10 +160,6 @@ main()
 	setDvar( "class_sniper_grenade", "smoke_grenade" );
 	setDvar( "class_sniper_camo", "camo_none" );
 
-	// team killing
-	setDvar( "scr_team_fftype", 1 ); // [0-3] (disabled, enabled, reflect, shared)
-	setDvar( "scr_team_teamkillpointloss", 5 ); // [0->] (points)
-
 	// player death/respawn settings
 	setDvar( "scr_player_forcerespawn", 1 ); // [0-1] (require player to press use key to spawn, do not require use key to spawn)
 	setDvar( "scr_game_deathpointloss", 0 ); // [0->] (points)

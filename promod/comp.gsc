@@ -137,8 +137,6 @@ main()
 	setDvar( "class_sniper_grenade", "smoke_grenade" );
 	setDvar( "class_sniper_camo", "camo_none" );
 
-	setDvar( "scr_team_fftype", 1 );
-	setDvar( "scr_team_teamkillpointloss", 5 );
 	setDvar( "scr_game_deathpointloss", 0 );
 	setDvar( "scr_game_suicidepointloss", 0 );
 	setDvar( "scr_player_suicidespawndelay", 0 );

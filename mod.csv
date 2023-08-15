@@ -91,7 +91,6 @@ rawfile,mp/playeranim.script
 
 rawfile,promod/client.gsc
 rawfile,promod/comp.gsc
-rawfile,promod/dvarmon.gsc
 rawfile,promod/modes.gsc
 rawfile,promod/readyup.gsc
 rawfile,promod/setvariables.gsc

@@ -274,8 +274,6 @@ setMode( mode )
 
 pub()
 {
-	setDvar( "scr_team_fftype", 0 );
-	setDvar( "scr_team_teamkillpointloss", 0 );
 	setDvar( "scr_war_roundswitch", 0 );
 	setDvar( "scr_war_roundlimit", 1 );
 	setDvar( "weap_allow_flash_grenade", 0 );
