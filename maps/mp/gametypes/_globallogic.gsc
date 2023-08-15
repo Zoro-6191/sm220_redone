@@ -273,14 +273,14 @@ matchStartTimer()
 {
 	visionSetNaked( "mpIntro", 0 );
 
-	matchStartText = createServerFontString( "objective", 1.5 );
+	matchStartText = createServerFontString( "big", 1.5 );
 	matchStartText setPoint( "CENTER", "CENTER", 0, -60 );
 	matchStartText.sort = 1001;
 	matchStartText setText( game["strings"]["match_starting_in"] );
 	matchStartText.foreground = false;
 	matchStartText.hidewheninmenu = true;
 
-	matchStartTimer = createServerTimer( "objective", 1.4 );
+	matchStartTimer = createServerTimer( "big", 1.4 );
 	matchStartTimer setPoint( "CENTER", "CENTER", 0, -45 );
 	matchStartTimer setTimer( level.prematchPeriod );
 	matchStartTimer.sort = 1001;
@@ -359,27 +359,16 @@ spawnPlayer()
 
 	if ( isDefined( game["PROMOD_KNIFEROUND"] ) && game["PROMOD_KNIFEROUND"] && isDefined( level.strat_over ) && level.strat_over )
 		self thread removeWeapons();
-	else
-		self maps\mp\gametypes\_class::giveLoadout( self.team, self.class );
+	else self maps\mp\gametypes\_class::giveLoadout( self.team, self.class );
 
 	if ( level.inPrematchPeriod && game["promod_do_readyup"] )
 		self freezeControls( true );
 	else if ( level.inPrematchPeriod )
-	{
 		self freezeControls( true );
-
-		team = self.pers["team"];
-		thread maps\mp\gametypes\_hud_message::oldNotifyMessage( game["strings"][team + "_name"], undefined, game["icons"][team], game["colors"][team] );
-	}
 	else
 	{
 		self freezeControls( false );
 		self enableWeapons();
-		if ( !hadSpawned && isDefined( game["state"] ) && game["state"] == "playing" )
-		{
-			team = self.team;
-			thread maps\mp\gametypes\_hud_message::oldNotifyMessage( game["strings"][team + "_name"], undefined, game["icons"][team], game["colors"][team] );
-		}
 	}
 
 	if ( isDefined( level.strat_over ) && !level.strat_over )

@@ -7,7 +7,8 @@
 	"settings": {
 		"files.associations": {
 			"*.json": "jsonc",
-			"*.menu": "c"
+			"*.menu": "c",
+			"*.inc": "c"
 		}
 	}
 }

@@ -318,7 +318,7 @@ teamOutcomeNotify( winner, isRound, endReasonText, delay )
 	textSize = 2;
 	iconSize = 70;
 	spacing = 30;
-	font = "objective";
+	font = "big";
 
 	duration = 60000;
 

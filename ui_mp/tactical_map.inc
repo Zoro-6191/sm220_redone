@@ -1,4 +1,3 @@
-
 #define MAP_X					(- (MAP_WIDTH - RIGHTITEM_OFFSET + 20 ))
 #define MAP_Y					114
 #define MAP_WIDTH				240

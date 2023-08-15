@@ -1,4 +1,3 @@
-
 #define MAP_OFFSET				0 0
 #define FULL_SCREEN				0 30 640 420
 

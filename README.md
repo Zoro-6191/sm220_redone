@@ -9,4 +9,5 @@
 - Removed all sv_cheats checks
 - Removed b55 (Print Stats)
 - Removed Killcam Logic
+- Cleaned all UI a bit
 - Cleaner HUD

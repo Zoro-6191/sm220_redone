@@ -89,19 +89,18 @@ stratTime()
 
 stratTimer()
 {
-	matchStartText = createServerFontString( "objective", 1.5 );
+	matchStartText = createServerFontString( "big", 1.6 );
 	matchStartText setPoint( "CENTER", "CENTER", 0, -60 );
 	matchStartText.sort = 1001;
 
 	if( isDefined(game["PROMOD_KNIFEROUND"]) && game["PROMOD_KNIFEROUND"] )
 		matchStartText setText( "Knife Round" );
-	else
-		matchStartText setText( "Strat Time" );
+	else matchStartText setText( "Strat Time" );
 
 	matchStartText.foreground = false;
 	matchStartText.hidewheninmenu = false;
 
-	matchStartTimer = createServerTimer( "objective", 1.4 );
+	matchStartTimer = createServerTimer( "big", 1.5 );
 	matchStartTimer setPoint( "CENTER", "CENTER", 0, -45 );
 	matchStartTimer setTimer( game["PROMOD_STRATTIME"] + level.prematchPeriod * int( getDvarInt( "promod_allow_strattime" ) && isDefined( game["CUSTOM_MODE"] ) && game["CUSTOM_MODE"] && level.gametype == "sd" ) );
 	matchStartTimer.sort = 1001;

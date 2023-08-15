@@ -1,4 +1,3 @@
-
 #undef CHOICE_Y_SPACING
 #define CHOICE_Y_SPACING		20
 
