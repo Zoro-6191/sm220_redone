@@ -40,45 +40,23 @@ init()
 	precacheItem( "briefcase_bomb_defuse_mp" );
 	precacheModel( "prop_suitcase_bomb" );
 
-	level thread onPlayerConnect();
+	[[level.on]]( "death", ::onDeath );
+	[[level.on]]( "spawned", ::onSpawned );
+	[[level.on]]( "connecting", ::onDisconnect );
 }
 
-onPlayerConnect()
+onSpawned()
 {
-	level endon ( "game_ended" );
-
-	for(;;)
-	{
-		level waittill( "connecting", player );
-
-		player thread onPlayerSpawned();
-		player thread onDisconnect();
-	}
-}
-
-onPlayerSpawned()
-{
-	self endon( "disconnect" );
-	level endon ( "game_ended" );
-
-	for(;;)
-	{
-		self waittill( "spawned_player" );
-
-		self thread onDeath();
-		self.touchTriggers = [];
-		self.carryObject = undefined;
-		self.claimTrigger = undefined;
-		self.canPickupObject = true;
-		self.killedInUse = undefined;
-	}
+	self thread onDeath();
+	self.touchTriggers = [];
+	self.carryObject = undefined;
+	self.claimTrigger = undefined;
+	self.canPickupObject = true;
+	self.killedInUse = undefined;
 }
 
 onDeath()
 {
-	level endon ( "game_ended" );
-
-	self waittill ( "death" );
 	if ( isDefined( self.carryObject ) )
 		self.carryObject thread setDropped();
 }

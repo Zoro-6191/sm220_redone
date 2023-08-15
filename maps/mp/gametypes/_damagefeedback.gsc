@@ -1,25 +1,19 @@
 init()
 {
 	precacheShader("damage_feedback");
-
-	level thread onPlayerConnect();
+	[[level.on]]( "connected", ::onConnect );
 }
 
-onPlayerConnect()
+onConnect()
 {
-	for(;;)
-	{
-		level waittill("connecting", player);
-
-		player.hud_damagefeedback = newClientHudElem(player);
-		player.hud_damagefeedback.horzAlign = "center";
-		player.hud_damagefeedback.vertAlign = "middle";
-		player.hud_damagefeedback.x = -12;
-		player.hud_damagefeedback.y = -12;
-		player.hud_damagefeedback.alpha = 0;
-		player.hud_damagefeedback.archived = true;
-		player.hud_damagefeedback setShader("damage_feedback", 24, 48);
-	}
+	self.hud_damagefeedback = newClientHudElem(self);
+	self.hud_damagefeedback.horzAlign = "center";
+	self.hud_damagefeedback.vertAlign = "middle";
+	self.hud_damagefeedback.x = -12;
+	self.hud_damagefeedback.y = -12;
+	self.hud_damagefeedback.alpha = 0;
+	self.hud_damagefeedback.archived = true;
+	self.hud_damagefeedback setShader("damage_feedback", 24, 48);
 }
 
 updateDamageFeedback( hitBodyArmor )

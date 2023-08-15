@@ -21,7 +21,8 @@ init()
 	level.saytext[18] = &"QUICKMESSAGE_SORRY";
 	level.saytext[19] = &"QUICKMESSAGE_GREAT_SHOT";
 	level.saytext[20] = &"QUICKMESSAGE_COME_ON";
-	for(i=0;i<21;i++) precacheString(level.saytext[i]);
+	for(i=0;i<21;i++)
+		precacheString(level.saytext[i]);
 	level.soundalias = strtok("followme|movein|fallback|suppressfire|attackleftflank|attackrightflank|holdposition|regroup|enemyspotted|enemiesspotted|iminposition|areasecure|watchsix|sniper|needreinforcements|yessir|nosir|onmyway|sorry|greatshot|comeon", "|");
 }
 
@@ -184,11 +185,6 @@ quickpromod(response)
 		case "shoutcaster":
 			if ( self.pers["team"] == "spectator" )
 				self openMenu( game["menu_shoutcast"] );
-			break;
-
-		case "overview":
-			if ( self.pers["team"] == "spectator" )
-				self openmenu( game["menu_shoutcast_map"] );
 			break;
 
 		case "controls":

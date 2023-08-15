@@ -203,8 +203,6 @@ main()
 	setDvar( "scr_game_allowkillcam", 0 ); // [0-1]
 	setDvar( "scr_game_spectatetype", 1 ); // [0-2] (disabled, team only, all)
 	setDvar( "scr_game_matchstarttime", 10 ); // [0->] (seconds)
-	setDvar( "scr_enable_hiticon", 2 ); // [0-2] (disabled, hit icon on, hit icon on but not through walls)
-	setDvar( "scr_enable_scoretext", 1 ); // [0-1] (exp popups, +5 etc)
 	setDvar( "promod_allow_strattime", 0 ); // [0-1] (sd only)
 	setDvar( "promod_allow_readyup", 0 ); // [0-1]
 	setDvar( "promod_kniferound", 0 ); // [0-1] (sd only)

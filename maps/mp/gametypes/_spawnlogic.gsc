@@ -1,11 +1,5 @@
 #include maps\mp\_utility;
 
-onPlayerConnect()
-{
-	for(;;)
-		level waittill("connected", player);
-}
-
 findBoxCenter( mins, maxs )
 {
 	center = ( 0, 0, 0 );
@@ -392,7 +386,6 @@ init()
 	level.grenades = [];
 	level.pipebombs = [];
 
-	level thread onPlayerConnect();
 	level thread trackGrenades();
 }
 

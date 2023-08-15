@@ -11,8 +11,6 @@ init()
 	game["menu_changeclass"] = "changeclass_mw";
 	game["menu_changeclass_offline"] = "changeclass_offline";
 	game["menu_shoutcast"] = "shoutcast";
-	game["menu_callvote"] = "callvote";
-	game["menu_muteplayer"] = "muteplayer";
 	game["menu_quickcommands"] = "quickcommands";
 	game["menu_quickstatements"] = "quickstatements";
 	game["menu_quickresponses"] = "quickresponses";
@@ -34,151 +32,132 @@ init()
 	precacheMenu("class");
 	precacheMenu("changeclass_mw");
 	precacheMenu("changeclass_offline");
-	precacheMenu("callvote");
-	precacheMenu("muteplayer");
 	precacheMenu("shoutcast");
 	precacheMenu("echo");
 	precacheMenu("demo");
 
-	level thread onPlayerConnect();
+	[[level.on]]( "menu_response", ::onMenuResponse );
 }
 
-onPlayerConnect()
+onMenuResponse( menu, response)
 {
-	for(;;)
+	if ( !isDefined( self.pers["team"] ) )
+		return;
+
+	if( getSubStr( response, 0, 7 ) == "loadout" )
 	{
-		level waittill("connecting", player);
-		player thread onMenuResponse();
+		self maps\mp\gametypes\_promod::processLoadoutResponse( response );
+		return;
 	}
-}
 
-onMenuResponse()
-{
-	level endon("restarting");
-	self endon("disconnect");
-
-	for(;;)
+	switch( response )
 	{
-		self waittill("menuresponse", menu, response);
+		case "back":
+			if ( self.pers["team"] == "none" )
+				return;
 
-		if ( !isDefined( self.pers["team"] ) )
-			continue;
-
-		if( getSubStr( response, 0, 7 ) == "loadout" )
-		{
-			self maps\mp\gametypes\_promod::processLoadoutResponse( response );
-			continue;
-		}
-
-		switch( response )
-		{
-			case "back":
-				if ( self.pers["team"] == "none" )
-					continue;
-
-				if( menu == game["menu_changeclass"] && ( self.pers["team"] == "axis" || self.pers["team"] == "allies" ) )
+			if( menu == game["menu_changeclass"] && ( self.pers["team"] == "axis" || self.pers["team"] == "allies" ) )
+			{
+				if( isDefined(self.pers["class"]) )
 				{
-					if( isDefined(self.pers["class"]) )
-					{
-						self maps\mp\gametypes\_promod::setClassChoice( self.pers["class"] );
-						self maps\mp\gametypes\_promod::menuAcceptClass( "go" );
-					}
-
-					self openMenu( game["menu_changeclass_"+self.pers["team"]] );
+					self maps\mp\gametypes\_promod::setClassChoice( self.pers["class"] );
+					self maps\mp\gametypes\_promod::menuAcceptClass( "go" );
 				}
-				else
-				{
-					self closeMenu();
-					self closeInGameMenu();
-				}
-				continue;
 
-			case "demo":
-				if ( menu == "demo" )
-					self.inrecmenu = false;
-				continue;
-
-			case "changeteam":
+				self openMenu( game["menu_changeclass_"+self.pers["team"]] );
+			}
+			else
+			{
 				self closeMenu();
 				self closeInGameMenu();
-				self openMenu(game["menu_team"]);
-				continue;
+			}
+			return;
 
-			case "changeclass_marines":
-			case "changeclass_opfor":
-				if ( self.pers["team"] == "axis" || self.pers["team"] == "allies" )
-				{
-					self closeMenu();
-					self closeInGameMenu();
-					self openMenu( game["menu_changeclass_"+self.pers["team"]] );
-				}
-				continue;
-		}
+		case "demo":
+			if ( menu == "demo" )
+				self.inrecmenu = false;
+			return;
 
-		switch( menu )
-		{
-			case "echo":
-				k = strtok(response, "_");
-				buf = k[0];
-				for(i=1;i<k.size;i++)
-					buf += " "+k[i];
-				self iprintln(buf);
-				continue;
-			case "team_marinesopfor":
-			case "team_marinesopfor_flipped":
-				switch(response)
-				{
-					case "allies":
-						self [[level.allies]]();
-						break;
+		case "changeteam":
+			self closeMenu();
+			self closeInGameMenu();
+			self openMenu(game["menu_team"]);
+			return;
 
-					case "axis":
-						self [[level.axis]]();
-						break;
-
-					case "autoassign":
-						self [[level.autoassign]]();
-						break;
-
-					case "shoutcast":
-						self [[level.spectator]]();
-						break;
-				}
-				continue;
-			case "changeclass_marines_mw":
-			case "changeclass_opfor_mw":
-				if ( response == "killspec" )
-				{
-					self [[level.killspec]]();
-					continue;
-				}
-
-				if ( maps\mp\gametypes\_quickmessages::chooseClassName( response ) == "" || !self maps\mp\gametypes\_promod::verifyClassChoice( self.pers["team"], response ) )
-					continue;
-
-				self maps\mp\gametypes\_promod::setClassChoice( response );
+		case "changeclass_marines":
+		case "changeclass_opfor":
+			if ( self.pers["team"] == "axis" || self.pers["team"] == "allies" )
+			{
 				self closeMenu();
 				self closeInGameMenu();
-				self openMenu( game["menu_changeclass"] );
-				continue;
+				self openMenu( game["menu_changeclass_"+self.pers["team"]] );
+			}
+			return;
+	}
 
-			case "changeclass_mw":
-				self maps\mp\gametypes\_promod::menuAcceptClass( response );
-				continue;
+	switch( menu )
+	{
+		case "echo":
+			k = strtok(response, "_");
+			buf = k[0];
+			for(i=1;i<k.size;i++)
+				buf += " "+k[i];
+			self iprintln(buf);
+			return;
+		case "team_marinesopfor":
+		case "team_marinesopfor_flipped":
+			switch(response)
+			{
+				case "allies":
+					self [[level.allies]]();
+					break;
 
-			case "quickcommands":
-			case "quickstatements":
-			case "quickresponses":
-				maps\mp\gametypes\_quickmessages::doQuickMessage( menu, int(response)-1 );
-				continue;
+				case "axis":
+					self [[level.axis]]();
+					break;
 
-			case "quickpromod":
-				maps\mp\gametypes\_quickmessages::quickpromod( response );
-				continue;
+				case "autoassign":
+					self [[level.autoassign]]();
+					break;
 
-			case "quickpromodgfx":
-				maps\mp\gametypes\_quickmessages::quickpromodgfx( response );
-				continue;
-		}
+				case "shoutcast":
+					self [[level.spectator]]();
+					break;
+			}
+			return;
+		case "changeclass_marines_mw":
+		case "changeclass_opfor_mw":
+			if ( response == "killspec" )
+			{
+				self [[level.killspec]]();
+				return;
+			}
+
+			if ( maps\mp\gametypes\_quickmessages::chooseClassName( response ) == "" || !self maps\mp\gametypes\_promod::verifyClassChoice( self.pers["team"], response ) )
+				return;
+
+			self maps\mp\gametypes\_promod::setClassChoice( response );
+			self closeMenu();
+			self closeInGameMenu();
+			self openMenu( game["menu_changeclass"] );
+			return;
+
+		case "changeclass_mw":
+			self maps\mp\gametypes\_promod::menuAcceptClass( response );
+			return;
+
+		case "quickcommands":
+		case "quickstatements":
+		case "quickresponses":
+			maps\mp\gametypes\_quickmessages::doQuickMessage( menu, int(response)-1 );
+			return;
+
+		case "quickpromod":
+			maps\mp\gametypes\_quickmessages::quickpromod( response );
+			return;
+
+		case "quickpromodgfx":
+			maps\mp\gametypes\_quickmessages::quickpromodgfx( response );
+			return;
 	}
 }

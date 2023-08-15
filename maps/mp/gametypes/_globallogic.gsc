@@ -1594,7 +1594,7 @@ givePlayerScore( event, player, victim )
 
 default_onPlayerScore( event, player, victim )
 {
-	score = maps\mp\gametypes\_rank::getScoreInfoValue( event );
+	score = level.scoreInfo[event];
 	player.pers["score"] += score;
 }
 
@@ -1660,7 +1660,7 @@ _getTeamScore( team )
 
 default_onTeamScore( event, team, player, victim )
 {
-	score = maps\mp\gametypes\_rank::getScoreInfoValue( event );
+	score = level.scoreInfo[event];
 
 	otherTeam = level.otherTeam[team];
 
@@ -2423,6 +2423,7 @@ Callback_StartGameType()
 
 	level.useStartSpawns = true;
 
+	thread maps\mp\gametypes\_eventmanager::init();
 	thread maps\mp\gametypes\_promod::init();
 	thread maps\mp\gametypes\_rank::init();
 	thread maps\mp\gametypes\_menus::init();
@@ -2914,20 +2915,15 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 				if ( sMeansOfDeath != "MOD_GRENADE" && level.friendlyfire && !level.rdyup )
 				{
 					attacker thread [[level.onXPEvent]]( "teamkill" );
-
 					if ( maps\mp\gametypes\_tweakables::getTweakableValue( "team", "teamkillpointloss" ) )
-					{
-						scoreSub = maps\mp\gametypes\_rank::getScoreInfoValue( "kill" );
-						_setPlayerScore( attacker, _getPlayerScore( attacker ) - scoreSub );
-					}
+						_setPlayerScore( attacker, _getPlayerScore( attacker ) - 5 );
 				}
 			}
 			else
 			{
 				prof_begin( "pks1" );
 
-				value = maps\mp\gametypes\_rank::getScoreInfoValue( "kill" );
-				attacker thread maps\mp\gametypes\_rank::giveRankXP( "kill", value );
+				attacker thread maps\mp\gametypes\_rank::giveRankXP( "kill", 5 );
 
 				if (!level.rdyup)
 				{

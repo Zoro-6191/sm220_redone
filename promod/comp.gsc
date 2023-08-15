@@ -148,8 +148,6 @@ main()
 	setDvar( "bg_fallDamageMaxHeight", 350 );
 
 	setDvar( "scr_game_matchstarttime", 10 );
-	setDvar( "scr_enable_hiticon", 2 );
-	setDvar( "scr_enable_scoretext", 1 );
 
 	setDvar( "logfile", 1 );
 	setDvar( "g_log", "games_mp.log" );

@@ -3,93 +3,42 @@ init()
 	level.scoreInfo = [];
 	level.rankTable = [];
 
-	registerScoreInfo( "kill", 5 );
-	registerScoreInfo( "headshot", 5 );
-	registerScoreInfo( "assist", 3 );
-	registerScoreInfo( "suicide", 0 );
-	registerScoreInfo( "teamkill", 0 );
-	registerScoreInfo( "win", 2 );
-	registerScoreInfo( "loss", 1 );
-	registerScoreInfo( "tie", 1.5 );
-	registerScoreInfo( "plant", 3 );
-	registerScoreInfo( "defuse", 3 );
-	registerScoreInfo( "capture", 3 );
-	registerScoreInfo( "assault", 3 );
-	registerScoreInfo( "assault_assist", 1 );
-	registerScoreInfo( "defend", 3 );
-	registerScoreInfo( "defend_assist", 1 );
+	level.scoreInfo["kill"] = 5;
+	level.scoreInfo["assist"] = 3;
+	level.scoreInfo["teamkill"] = 0;
+	level.scoreInfo["plant"] = 3;
+	level.scoreInfo["defuse"] = 3;
+	level.scoreInfo["capture"] = 3;
+	level.scoreInfo["assault"] = 3;
+	level.scoreInfo["defend"] = 3;
 
-	level thread onPlayerConnect();
+	[[level.on]]( "connected", ::onConnect );
+	[[level.on]]( "spawned", ::onSpawn );
+	[[level.on]]( "joined_spectators", ::removeRankHUD );
+	[[level.on]]( "joined_team", ::removeRankHUD );
 }
 
-registerScoreInfo( type, value )
+onConnect()
 {
-	level.scoreInfo[type]["value"] = value;
+	self.rankUpdateTotal = 0;
 }
 
-getScoreInfoValue( type )
+onSpawn()
 {
-	return ( level.scoreInfo[type]["value"] );
-}
-
-onPlayerConnect()
-{
-	for(;;)
+	if(!isdefined(self.hud_rankscroreupdate))
 	{
-		level waittill( "connected", player );
-		player.rankUpdateTotal = 0;
-
-		player thread onPlayerSpawned();
-		player thread onJoinedTeam();
-		player thread onJoinedSpectators();
-	}
-}
-
-onJoinedTeam()
-{
-	self endon("disconnect");
-
-	for(;;)
-	{
-		self waittill("joined_team");
-		self thread removeRankHUD();
-	}
-}
-
-onJoinedSpectators()
-{
-	self endon("disconnect");
-
-	for(;;)
-	{
-		self waittill("joined_spectators");
-		self thread removeRankHUD();
-	}
-}
-
-onPlayerSpawned()
-{
-	self endon("disconnect");
-
-	for(;;)
-	{
-		self waittill("spawned_player");
-
-		if(!isdefined(self.hud_rankscroreupdate))
-		{
-			self.hud_rankscroreupdate = newClientHudElem(self);
-			self.hud_rankscroreupdate.horzAlign = "center";
-			self.hud_rankscroreupdate.vertAlign = "middle";
-			self.hud_rankscroreupdate.alignX = "center";
-			self.hud_rankscroreupdate.alignY = "middle";
-			self.hud_rankscroreupdate.x = 0;
-			self.hud_rankscroreupdate.y = -60;
-			self.hud_rankscroreupdate.font = "default";
-			self.hud_rankscroreupdate.fontscale = 2;
-			self.hud_rankscroreupdate.archived = false;
-			self.hud_rankscroreupdate.color = (0.5,0.5,0.5);
-			self.hud_rankscroreupdate maps\mp\gametypes\_hud::fontPulseInit();
-		}
+		self.hud_rankscroreupdate = newClientHudElem(self);
+		self.hud_rankscroreupdate.horzAlign = "center";
+		self.hud_rankscroreupdate.vertAlign = "middle";
+		self.hud_rankscroreupdate.alignX = "center";
+		self.hud_rankscroreupdate.alignY = "middle";
+		self.hud_rankscroreupdate.x = 0;
+		self.hud_rankscroreupdate.y = -60;
+		self.hud_rankscroreupdate.font = "default";
+		self.hud_rankscroreupdate.fontscale = 2;
+		self.hud_rankscroreupdate.archived = false;
+		self.hud_rankscroreupdate.color = (0.5,0.5,0.5);
+		self.hud_rankscroreupdate maps\mp\gametypes\_hud::fontPulseInit();
 	}
 }
 
@@ -98,15 +47,11 @@ giveRankXP( type, value )
 	self endon("disconnect");
 
 	if ( !isDefined( value ) )
-		value = getScoreInfoValue( type );
+		value = level.scoreInfo[type];
 
-	if ( getDvarInt( "scr_enable_scoretext" ) )
-	{
-		if ( type == "teamkill" )
-			self thread updateRankScoreHUD( 0 - getScoreInfoValue( "kill" ) );
-		else
-			self thread updateRankScoreHUD( value );
-	}
+	if ( type == "teamkill" )
+		self thread updateRankScoreHUD( -5 );
+	else self thread updateRankScoreHUD( value );
 }
 
 updateRankScoreHUD( amount )

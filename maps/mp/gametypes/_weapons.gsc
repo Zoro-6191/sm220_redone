@@ -37,31 +37,16 @@ init()
 	precacheItem( "destructible_car" );
 	precacheShellShock( "default" );
 	thread maps\mp\_flashgrenades::main();
-	level thread onPlayerConnect();
+
+	[[level.on]]( "spawned", ::onSpawn );
+	[[level.on]]( "spawned", ::watchWeaponUsage );
+	[[level.on]]( "spawned", ::watchGrenadeUsage );
+	[[level.on]]( "spawned", ::watchGrenadeAmmo );
 }
 
-onPlayerConnect()
+onSpawn()
 {
-	for(;;)
-	{
-		level waittill("connecting", player);
-		player thread onPlayerSpawned();
-	}
-}
-
-onPlayerSpawned()
-{
-	self endon("disconnect");
-
-	for(;;)
-	{
-		self waittill("spawned_player");
-
-		self.hasDoneCombat = false;
-		self thread watchWeaponUsage();
-		self thread watchGrenadeUsage();
-		self thread watchGrenadeAmmo();
-	}
+	self.hasDoneCombat = false;
 }
 
 watchGrenadeAmmo()

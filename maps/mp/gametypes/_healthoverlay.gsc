@@ -10,53 +10,17 @@ init()
 
 	level.healthRegenDisabled = (level.playerHealth_RegularRegenDelay <= 0);
 
-	level thread onPlayerConnect();
+	[[level.on]]( "connected", ::onPlayerKilled );
+	[[level.on]]( "connected", ::onPlayerDisconnect );
+	[[level.on]]( "spawned", ::playerHealthRegen );
+	[[level.on]]( "joined_team", ::endHealthRegen );
+	[[level.on]]( "joined_spectators", ::endHealthRegen );
 }
 
-onPlayerConnect()
+
+endHealthRegen()
 {
-	for(;;)
-	{
-		level waittill("connecting", player);
-		player thread onPlayerSpawned();
-		player thread onPlayerKilled();
-		player thread onJoinedTeam();
-		player thread onJoinedSpectators();
-		player thread onPlayerDisconnect();
-	}
-}
-
-onJoinedTeam()
-{
-	self endon("disconnect");
-
-	for(;;)
-	{
-		self waittill("joined_team");
-		self notify("end_healthregen");
-	}
-}
-
-onJoinedSpectators()
-{
-	self endon("disconnect");
-
-	for(;;)
-	{
-		self waittill("joined_spectators");
-		self notify("end_healthregen");
-	}
-}
-
-onPlayerSpawned()
-{
-	self endon("disconnect");
-
-	for(;;)
-	{
-		self waittill("spawned_player");
-		self thread playerHealthRegen();
-	}
+	self notify("end_healthregen");
 }
 
 onPlayerKilled()
@@ -139,8 +103,7 @@ playerHealthRegen()
 				if (gettime() > hurtTime + 3000)
 					newHealth += regenRate;
 			}
-			else
-				newHealth = 1;
+			else newHealth = 1;
 
 			if ( newHealth >= 1.0 )
 				newHealth = 1.0;

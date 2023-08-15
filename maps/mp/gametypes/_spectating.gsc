@@ -3,60 +3,9 @@ init()
 	level.spectateOverride["allies"] = spawnstruct();
 	level.spectateOverride["axis"] = spawnstruct();
 
-	level thread onPlayerConnect();
-}
-
-onPlayerConnect()
-{
-	for(;;)
-	{
-		level waittill("connecting", player);
-
-		player thread onJoinedTeam();
-		player thread onJoinedSpectators();
-		player thread onPlayerSpawned();
-	}
-}
-
-onPlayerSpawned()
-{
-	self endon("disconnect");
-
-	for(;;)
-	{
-		self waittill("spawned_player");
-		self setSpectatePermissions();
-	}
-}
-
-onJoinedTeam()
-{
-	self endon("disconnect");
-
-	for(;;)
-	{
-		self waittill("joined_team");
-		self setSpectatePermissions();
-	}
-}
-
-onJoinedSpectators()
-{
-	self endon("disconnect");
-
-	for(;;)
-	{
-		self waittill("joined_spectators");
-		self setSpectatePermissions();
-	}
-}
-
-updateSpectateSettings()
-{
-	level endon ( "game_ended" );
-
-	for ( i = 0; i < level.players.size; i++ )
-		level.players[i] setSpectatePermissions();
+	[[level.on]]( "spawned", ::setSpectatePermissions );
+	[[level.on]]( "joined_team", ::setSpectatePermissions );
+	[[level.on]]( "joined_spectators", ::setSpectatePermissions );
 }
 
 getOtherTeam( team )
@@ -65,8 +14,7 @@ getOtherTeam( team )
 		return "allies";
 	else if ( team == "allies" )
 		return "axis";
-	else
-		return "none";
+	else return "none";
 }
 
 setSpectatePermissions()

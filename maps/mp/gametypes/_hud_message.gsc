@@ -20,20 +20,9 @@ init()
 	game["strings"]["side_switch"] = &"MP_SWITCHING_SIDES";
 	game["strings"]["match_bonus"] = &"MP_MATCH_BONUS_IS";
 
-	level thread onPlayerConnect();
-}
-
-onPlayerConnect()
-{
-	for(;;)
-	{
-		level waittill( "connecting", player );
-
-		player thread hintMessageDeathThink();
-		player thread lowerMessageThink();
-
-		player thread initNotifyMessage();
-	}
+	[[level.on]]( "connecting", ::hintMessageDeathThink );
+	[[level.on]]( "connecting", ::lowerMessageThink );
+	[[level.on]]( "connecting", ::initNotifyMessage );
 }
 
 hintMessage( hintText )
@@ -134,8 +123,7 @@ showNotifyMessage( notifyData )
 		duration = notifyData.duration;
 	else if ( level.gameEnded )
 		duration = 2;
-	else
-		duration = 4;
+	else duration = 4;
 
 	self thread resetOnCancel();
 
@@ -144,8 +132,7 @@ showNotifyMessage( notifyData )
 
 	if ( isDefined( notifyData.glowColor ) )
 		glowColor = notifyData.glowColor;
-	else
-		glowColor = (0.3, 0.6, 0.3);
+	else glowColor = (0.3, 0.6, 0.3);
 
 	anchorElem = self.notifyTitle;
 
@@ -153,13 +140,11 @@ showNotifyMessage( notifyData )
 	{
 		if ( isDefined( notifyData.titleLabel ) )
 			self.notifyTitle.label = notifyData.titleLabel;
-		else
-			self.notifyTitle.label = &"";
+		else self.notifyTitle.label = &"";
 
 		if ( isDefined( notifyData.titleLabel ) && !isDefined( notifyData.titleIsString ) )
 			self.notifyTitle setValue( notifyData.titleText );
-		else
-			self.notifyTitle setText( notifyData.titleText );
+		else self.notifyTitle setText( notifyData.titleText );
 		self.notifyTitle setPulseFX( 100, int(duration*1000), 1000 );
 		self.notifyTitle.glowColor = glowColor;
 		self.notifyTitle.alpha = 1;
@@ -169,13 +154,11 @@ showNotifyMessage( notifyData )
 	{
 		if ( isDefined( notifyData.textLabel ) )
 			self.notifyText.label = notifyData.textLabel;
-		else
-			self.notifyText.label = &"";
+		else self.notifyText.label = &"";
 
 		if ( isDefined( notifyData.textLabel ) && !isDefined( notifyData.textIsString ) )
 			self.notifyText setValue( notifyData.notifyText );
-		else
-			self.notifyText setText( notifyData.notifyText );
+		else self.notifyText setText( notifyData.notifyText );
 		self.notifyText setPulseFX( 100, int(duration*1000), 1000 );
 		self.notifyText.glowColor = glowColor;
 		self.notifyText.alpha = 1;
@@ -188,8 +171,7 @@ showNotifyMessage( notifyData )
 
 		if ( isDefined( notifyData.text2Label ) )
 			self.notifyText2.label = notifyData.text2Label;
-		else
-			self.notifyText2.label = &"";
+		else self.notifyText2.label = &"";
 
 		self.notifyText2 setText( notifyData.notifyText2 );
 		self.notifyText2 setPulseFX( 100, int(duration*1000), 1000 );
@@ -211,8 +193,7 @@ showNotifyMessage( notifyData )
 		self.notifyIcon fadeOverTime( 0.75 );
 		self.notifyIcon.alpha = 0;
 	}
-	else
-		waitRequireVisibility( duration );
+	else waitRequireVisibility( duration );
 
 	self notify ( "notifyMessageDone" );
 	self.doingNotify = false;
@@ -383,8 +364,7 @@ teamOutcomeNotify( winner, isRound, endReasonText, delay )
 		outcomeTitle.glowColor = (0.2, 0.3, 0.7);
 		if ( isRound )
 			outcomeTitle setText( game["strings"]["round_draw"] );
-		else
-			outcomeTitle setText( game["strings"]["draw"] );
+		else outcomeTitle setText( game["strings"]["draw"] );
 		outcomeTitle.color = (1, 1, 1);
 	}
 	else if ( isDefined( self.pers["team"] ) && winner == team )
@@ -392,8 +372,7 @@ teamOutcomeNotify( winner, isRound, endReasonText, delay )
 		outcomeTitle.glowColor = (0, 0, 0);
 		if ( isRound )
 			outcomeTitle setText( game["strings"]["round_win"] );
-		else
-			outcomeTitle setText( game["strings"]["victory"] );
+		else outcomeTitle setText( game["strings"]["victory"] );
 		outcomeTitle.color = (0.6, 0.9, 0.6);
 	}
 	else
@@ -401,8 +380,7 @@ teamOutcomeNotify( winner, isRound, endReasonText, delay )
 		outcomeTitle.glowColor = (0, 0, 0);
 		if ( isRound )
 			outcomeTitle setText( game["strings"]["round_loss"] );
-		else
-			outcomeTitle setText( game["strings"]["defeat"] );
+		else outcomeTitle setText( game["strings"]["defeat"] );
 		outcomeTitle.color = (0.7, 0.3, 0.2);
 	}
 

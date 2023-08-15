@@ -86,19 +86,7 @@ init()
 	setDvarDefault( "class_sniper_grenade", "smoke_grenade" );
 	setDvarDefault( "class_sniper_camo", "camo_none" );
 
-	setDvarDefault( "scr_enable_hiticon", 2, 0, 2 );
-	setDvarDefault( "scr_enable_scoretext", 1, 0, 1 );
-
-	level thread onPlayerConnect();
-}
-
-onPlayerConnect()
-{
-	for(;;)
-	{
-		level waittill( "connecting", player );
-		player thread updateServerDvars();
-	}
+	[[level.on]]( "connecting", ::updateServerDvars );
 }
 
 setClassChoice( classType )
