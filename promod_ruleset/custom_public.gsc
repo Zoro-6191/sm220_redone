@@ -71,17 +71,6 @@ main()
 	setDvar( "scr_dm_timelimit", 10 ); // [0->] (points)
 	setDvar( "scr_dm_waverespawndelay", 0 ); // [0->] (seconds)
 
-	// class limits
-	setDvar( "class_assault_limit", 64 );
-	setDvar( "class_specops_limit", 2 );
-	setDvar( "class_demolitions_limit", 1 );
-	setDvar( "class_sniper_limit", 1 );
-
-	setDvar( "class_assault_allowdrop", 1 );
-	setDvar( "class_specops_allowdrop", 1 );
-	setDvar( "class_demolitions_allowdrop", 0 );
-	setDvar( "class_sniper_allowdrop", 0 );
-
 	// assault
 	setDvar( "weap_allow_m16", 1 );
 	setDvar( "weap_allow_ak47", 1 );
@@ -197,8 +186,6 @@ main()
 	setDvar( "g_allowVote", 0 ); // [0-1]
 	setDvar( "g_deadChat", 1 ); // [0-1]
 	setDvar( "scr_game_allowkillcam", 0 ); // [0-1]
-	setDvar( "scr_game_spectatetype", 1 ); // [0-2] (disabled, team only, all)
-	setDvar( "scr_game_matchstarttime", 10 ); // [0->] (seconds)
 	setDvar( "promod_allow_strattime", 0 ); // [0-1] (sd only)
 	setDvar( "promod_allow_readyup", 0 ); // [0-1]
 	setDvar( "promod_kniferound", 0 ); // [0-1] (sd only)

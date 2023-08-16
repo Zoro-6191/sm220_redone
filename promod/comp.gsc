@@ -1,10 +1,6 @@
 main()
 {
-	setDvar( "scr_sd_bombtimer", 45 );
-	setDvar( "scr_sd_defusetime", 7 );
-	setDvar( "scr_sd_multibomb", 0 );
 	setDvar( "scr_sd_numlives", 1 );
-	setDvar( "scr_sd_planttime", 5 );
 	setDvar( "scr_sd_playerrespawndelay", 0 );
 	setDvar( "scr_sd_roundlimit", 20 );
 	setDvar( "scr_sd_roundswitch", 10 );
@@ -35,11 +31,7 @@ main()
 	setDvar( "scr_koth_timelimit", 20 );
 	setDvar( "scr_koth_waverespawndelay", 0 );
 
-	setDvar( "scr_sab_bombtimer", 45 );
-	setDvar( "scr_sab_defusetime", 5 );
-	setDvar( "scr_sab_hotpotato", 0 );
 	setDvar( "scr_sab_numlives", 0 );
-	setDvar( "scr_sab_planttime", 5 );
 	setDvar( "scr_sab_playerrespawndelay", 7 );
 	setDvar( "scr_sab_roundlimit", 4 );
 	setDvar( "scr_sab_roundswitch", 2 );
@@ -67,75 +59,29 @@ main()
 	setDvar( "class_demolitions_limit", 1 );
 	setDvar( "class_sniper_limit", 1 );
 
-	setDvar( "class_assault_allowdrop", 1 );
-	setDvar( "class_specops_allowdrop", 1 );
-	setDvar( "class_demolitions_allowdrop", 0 );
-	setDvar( "class_sniper_allowdrop", 0 );
-
-	setDvar( "weap_allow_m16", 1 );
-	setDvar( "weap_allow_ak47", 1 );
-	setDvar( "weap_allow_m4", 1 );
-	setDvar( "weap_allow_g3", 1 );
-	setDvar( "weap_allow_g36c", 1 );
-	setDvar( "weap_allow_m14", 1 );
-	setDvar( "weap_allow_mp44", 1 );
-
-	setDvar( "attach_allow_assault_none", 1 );
-	setDvar( "attach_allow_assault_silencer", 1 );
-
-	setDvar( "weap_allow_mp5", 1 );
-	setDvar( "weap_allow_uzi", 1 );
-	setDvar( "weap_allow_ak74u", 1 );
-
-	setDvar( "attach_allow_specops_none", 1 );
-	setDvar( "attach_allow_specops_silencer", 1 );
-
-	setDvar( "weap_allow_m1014", 1 );
-	setDvar( "weap_allow_winchester1200", 1 );
-
-	setDvar( "weap_allow_m40a3", 1 );
-	setDvar( "weap_allow_remington700", 1 );
-
-	setDvar( "weap_allow_beretta", 1 );
-	setDvar( "weap_allow_colt45", 1 );
-	setDvar( "weap_allow_usp", 1 );
-	setDvar( "weap_allow_deserteagle", 1 );
-	setDvar( "weap_allow_deserteaglegold", 1 );
-
-	setDvar( "attach_allow_pistol_none", 1 );
-	setDvar( "attach_allow_pistol_silencer", 1 );
-
-	setDvar( "weap_allow_flash_grenade", 1 );
-	setDvar( "weap_allow_frag_grenade", 1 );
-	setDvar( "weap_allow_smoke_grenade", 1 );
-
 	setDvar( "class_assault_primary", "ak47" );
 	setDvar( "class_assault_primary_attachment", "none" );
 	setDvar( "class_assault_secondary", "deserteagle" );
 	setDvar( "class_assault_secondary_attachment", "none" );
 	setDvar( "class_assault_grenade", "smoke_grenade" );
-	setDvar( "class_assault_camo", "camo_none" );
 
 	setDvar( "class_specops_primary", "ak74u" );
 	setDvar( "class_specops_primary_attachment", "none" );
 	setDvar( "class_specops_secondary", "deserteagle" );
 	setDvar( "class_specops_secondary_attachment", "none" );
 	setDvar( "class_specops_grenade", "smoke_grenade" );
-	setDvar( "class_specops_camo", "camo_none" );
 
 	setDvar( "class_demolitions_primary", "winchester1200" );
 	setDvar( "class_demolitions_primary_attachment", "none" );
 	setDvar( "class_demolitions_secondary", "deserteagle" );
 	setDvar( "class_demolitions_secondary_attachment", "none" );
 	setDvar( "class_demolitions_grenade", "smoke_grenade" );
-	setDvar( "class_demolitions_camo", "camo_none" );
 
 	setDvar( "class_sniper_primary", "m40a3" );
 	setDvar( "class_sniper_primary_attachment", "none" );
 	setDvar( "class_sniper_secondary", "deserteagle" );
 	setDvar( "class_sniper_secondary_attachment", "none" );
 	setDvar( "class_sniper_grenade", "smoke_grenade" );
-	setDvar( "class_sniper_camo", "camo_none" );
 
 	setDvar( "scr_game_deathpointloss", 0 );
 	setDvar( "scr_game_suicidepointloss", 0 );
@@ -144,8 +90,6 @@ main()
 
 	setDvar( "bg_fallDamageMinHeight", 140 );
 	setDvar( "bg_fallDamageMaxHeight", 350 );
-
-	setDvar( "scr_game_matchstarttime", 10 );
 
 	setDvar( "logfile", 1 );
 	setDvar( "g_log", "games_mp.log" );
@@ -170,5 +114,4 @@ main()
 
 	setDvar( "g_allowVote", 0 );
 	setDvar( "scr_game_allowkillcam", 0 );
-	setDvar( "scr_game_spectatetype", 1 );
 }

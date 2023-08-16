@@ -131,8 +131,6 @@ onStartGameType()
 	allowed[2] = "blocker";
 	maps\mp\gametypes\_gameobjects::main(allowed);
 
-	thread updateGametypeDvars();
-
 	thread bombs();
 }
 
@@ -147,13 +145,6 @@ onSpawnPlayer()
 		spawnPointName = "mp_sd_spawn_defender";
 
 	self setclientdvar("ui_drawbombicon", 0);
-	if ( level.multiBomb && !isDefined( self.carryIcon ) && self.pers["team"] == game["attackers"] && !level.bombPlanted )
-	{
-		self.carryIcon = createIcon( "hud_suitcase_bomb", 50, 50 );
-		self.carryIcon setPoint( "CENTER", "CENTER", 223, 167 );
-		self.carryIcon.alpha = 0.75;
-		self setclientdvar("ui_drawbombicon", 1);
-	}
 
 	spawnPoints = getEntArray( spawnPointName, "classname" );
 	spawnpoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_Random( spawnPoints );
@@ -202,14 +193,6 @@ onTimeLimit()
 		sd_endGame( undefined, game["strings"]["time_limit_reached"] );
 }
 
-updateGametypeDvars()
-{
-	level.plantTime = dvarFloatValue( "planttime", 5, 0, 20 );
-	level.defuseTime = dvarFloatValue( "defusetime", 7, 0, 20 );
-	level.bombTimer = dvarFloatValue( "bombtimer", 45, 1, 300 );
-	level.multiBomb = dvarIntValue( "multibomb", 0, 0, 1 );
-}
-
 bombs()
 {
 	level.bombPlanted = false;
@@ -227,7 +210,7 @@ bombs()
 	precacheModel( "prop_suitcase_bomb" );
 	visuals[0] setModel( "prop_suitcase_bomb" );
 
-	if ( !level.multiBomb && !game["promod_do_readyup"] && !game["promod_timeout_called"] && !game["PROMOD_KNIFEROUND"] )
+	if ( !game["promod_do_readyup"] && !game["promod_timeout_called"] && !game["PROMOD_KNIFEROUND"] )
 	{
 		level.sdBomb = maps\mp\gametypes\_gameobjects::createCarryObject( game["attackers"], trigger, visuals, (0,0,32) );
 		level.sdBomb maps\mp\gametypes\_gameobjects::allowCarry( "friendly" );
@@ -255,11 +238,10 @@ bombs()
 
 		bombZone = maps\mp\gametypes\_gameobjects::createUseObject( game["defenders"], trigger, visuals, (0,0,64) );
 		bombZone maps\mp\gametypes\_gameobjects::allowUse( "enemy" );
-		bombZone maps\mp\gametypes\_gameobjects::setUseTime( level.plantTime );
+		bombZone maps\mp\gametypes\_gameobjects::setUseTime( 5 );
 		bombZone maps\mp\gametypes\_gameobjects::setUseText( &"MP_PLANTING_EXPLOSIVE" );
 		bombZone maps\mp\gametypes\_gameobjects::setUseHintText( &"PLATFORM_HOLD_TO_PLANT_EXPLOSIVES" );
-		if ( !level.multiBomb )
-			bombZone maps\mp\gametypes\_gameobjects::setKeyObject( level.sdBomb );
+		bombZone maps\mp\gametypes\_gameobjects::setKeyObject( level.sdBomb );
 		label = bombZone maps\mp\gametypes\_gameobjects::getLabel();
 		bombZone.label = label;
 		bombZone maps\mp\gametypes\_gameobjects::set2DIcon( "friendly", "compass_waypoint_defend" + label );
@@ -315,12 +297,6 @@ onBeginUse( player )
 	{
 		player playSound( "mp_bomb_plant" );
 		player.isPlanting = true;
-
-		if ( level.multibomb )
-		{
-			for ( i = 0; i < self.otherBombZones.size; i++ )
-				self.otherBombZones[i] maps\mp\gametypes\_gameobjects::disableObject();
-		}
 	}
 }
 
@@ -336,14 +312,6 @@ onEndUse( team, player, result )
 	{
 		if ( isDefined( level.sdBombModel ) && !result )
 			level.sdBombModel show();
-	}
-	else
-	{
-		if ( level.multibomb && !result )
-		{
-			for ( i = 0; i < self.otherBombZones.size; i++ )
-				self.otherBombZones[i] maps\mp\gametypes\_gameobjects::enableObject();
-		}
 	}
 }
 
@@ -431,35 +399,13 @@ bombPlanted( destroyedObj, player )
 	level.tickingObject = destroyedObj.visuals[0];
 
 	level.timeLimitOverride = true;
-	setGameEndTime( int( gettime() + (level.bombTimer * 1000) ) );
+	setGameEndTime( int( gettime() + 45000 ) );
 	setDvar( "ui_bomb_timer", 1 );
 
-	if ( !level.multiBomb )
-	{
-		level.sdBomb maps\mp\gametypes\_gameobjects::allowCarry( "none" );
-		level.sdBomb maps\mp\gametypes\_gameobjects::setVisibleTeam( "none" );
-		level.sdBomb maps\mp\gametypes\_gameobjects::setDropped();
-		level.sdBombModel = level.sdBomb.visuals[0];
-	}
-	else
-	{
-		for ( i = 0; i < level.players.size; i++ )
-		{
-			if ( isDefined( level.players[i].carryIcon ) )
-				level.players[i].carryIcon destroyElem();
-		}
-
-		trace = bulletTrace( player.origin + (0,0,20), player.origin - (0,0,2000), false, player );
-
-		tempAngle = randomfloat( 360 );
-		forward = (cos( tempAngle ), sin( tempAngle ), 0);
-		forward = vectornormalize( forward - vector_scale( trace["normal"], vectordot( forward, trace["normal"] ) ) );
-		dropAngles = vectortoangles( forward );
-
-		level.sdBombModel = spawn( "script_model", trace["position"] );
-		level.sdBombModel.angles = dropAngles;
-		level.sdBombModel setModel( "prop_suitcase_bomb" );
-	}
+	level.sdBomb maps\mp\gametypes\_gameobjects::allowCarry( "none" );
+	level.sdBomb maps\mp\gametypes\_gameobjects::setVisibleTeam( "none" );
+	level.sdBomb maps\mp\gametypes\_gameobjects::setDropped();
+	level.sdBombModel = level.sdBomb.visuals[0];
 
 	destroyedObj maps\mp\gametypes\_gameobjects::allowUse( "none" );
 	destroyedObj maps\mp\gametypes\_gameobjects::setVisibleTeam( "none" );
@@ -471,7 +417,7 @@ bombPlanted( destroyedObj, player )
 	visuals = [];
 	defuseObject = maps\mp\gametypes\_gameobjects::createUseObject( game["defenders"], trigger, visuals, (0,0,32) );
 	defuseObject maps\mp\gametypes\_gameobjects::allowUse( "friendly" );
-	defuseObject maps\mp\gametypes\_gameobjects::setUseTime( level.defuseTime );
+	defuseObject maps\mp\gametypes\_gameobjects::setUseTime( 7 );
 	defuseObject maps\mp\gametypes\_gameobjects::setUseText( &"MP_DEFUSING_EXPLOSIVE" );
 	defuseObject maps\mp\gametypes\_gameobjects::setUseHintText( &"PLATFORM_HOLD_TO_DEFUSE_EXPLOSIVES" );
 	defuseObject maps\mp\gametypes\_gameobjects::setVisibleTeam( "any" );
@@ -526,7 +472,7 @@ BombTimerWait()
 	level endon("game_ended");
 	level endon("bomb_defused");
 
-	wait level.bombTimer;
+	wait 45;
 }
 
 playSoundinSpace( alias, origin )

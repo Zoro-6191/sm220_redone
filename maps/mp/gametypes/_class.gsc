@@ -2,13 +2,13 @@ giveLoadout( team, class )
 {
 	self takeAllWeapons();
 
-	self setClientDvar( "loadout_curclass", class );
+	self setStat( 65, int(tableLookup( "promod/customStatsTable.csv", 1, class, 0 ) ) );
 	self.curClass = class;
 
 	sidearmWeapon();
 	primaryWeapon();
 
-	if(getDvarInt("weap_allow_frag_grenade") && (!isDefined( level.strat_over ) || level.strat_over))
+	if(!isDefined( level.strat_over ) || level.strat_over)
 	{
 		self giveWeapon( "frag_grenade_mp" );
 		self setWeaponAmmoClip( "frag_grenade_mp", 1 );
@@ -16,7 +16,7 @@ giveLoadout( team, class )
 	}
 
 	gren = self.pers[class]["loadout_grenade"];
-	if((gren == "flash_grenade" || gren == "smoke_grenade") && getDvarInt("weap_allow_"+gren))
+	if( gren == "flash_grenade" || gren == "smoke_grenade")
 	{
 		self setOffhandSecondaryClass(GetSubStr(gren, 0, 5));
 		if(!isDefined(level.strat_over) || level.strat_over)
@@ -97,16 +97,14 @@ primaryWeapon()
 		if(self.pers[class]["loadout_camo"] == "camo_gold" && (primaryWeapon == "ak47" || primaryWeapon == "uzi" || primaryWeapon == "m1014"))
 			camonum = 6;
 	}
-	else
-		self.pers[class]["loadout_camo"] = "camo_none";
+	else self.pers[class]["loadout_camo"] = "camo_none";
 
 	if(primaryWeapon != "none")
 	{
 		s = "";
 		if(self.pers[class]["loadout_primary_attachment"] == "silencer")
 			s = "_silencer";
-		else
-			self.pers[class]["loadout_primary_attachment"] = "none";
+		else self.pers[class]["loadout_primary_attachment"] = "none";
 
 		primaryWeapon += s+"_mp";
 

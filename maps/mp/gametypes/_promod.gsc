@@ -2,53 +2,6 @@ init()
 {
 	level.serverDvars = [];
 
-	setDvarDefault( "class_assault_limit", 64, 0, 64 );
-	setDvarDefault( "class_specops_limit", 2, 0, 64 );
-	setDvarDefault( "class_demolitions_limit", 1, 0, 64 );
-	setDvarDefault( "class_sniper_limit", 1, 0, 64 );
-
-	setDvarDefault( "class_assault_allowdrop", 1, 0, 1 );
-	setDvarDefault( "class_specops_allowdrop", 1, 0, 1 );
-	setDvarDefault( "class_demolitions_allowdrop", 0, 0, 1 );
-	setDvarDefault( "class_sniper_allowdrop", 0, 0, 1 );
-
-	setDvarDefault( "weap_allow_m16", 1, 0, 1 );
-	setDvarDefault( "weap_allow_ak47", 1, 0, 1 );
-	setDvarDefault( "weap_allow_m4", 1, 0, 1 );
-	setDvarDefault( "weap_allow_g3", 1, 0, 1 );
-	setDvarDefault( "weap_allow_g36c", 1, 0, 1 );
-	setDvarDefault( "weap_allow_m14", 1, 0, 1 );
-	setDvarDefault( "weap_allow_mp44", 1, 0, 1 );
-
-	setDvarDefault( "attach_allow_assault_none", 1, 0, 1 );
-	setDvarDefault( "attach_allow_assault_silencer", 1, 0, 1 );
-
-	setDvarDefault( "weap_allow_mp5", 1, 0, 1 );
-	setDvarDefault( "weap_allow_uzi", 1, 0, 1 );
-	setDvarDefault( "weap_allow_ak74u", 1, 0, 1 );
-
-	setDvarDefault( "attach_allow_specops_none", 1, 0, 1 );
-	setDvarDefault( "attach_allow_specops_silencer", 1, 0, 1 );
-
-	setDvarDefault( "weap_allow_m1014", 1, 0, 1 );
-	setDvarDefault( "weap_allow_winchester1200", 1, 0, 1 );
-
-	setDvarDefault( "weap_allow_m40a3", 1, 0, 1 );
-	setDvarDefault( "weap_allow_remington700", 1, 0, 1 );
-
-	setServerDvarDefault( "weap_allow_beretta", 1, 0, 1 );
-	setServerDvarDefault( "weap_allow_colt45", 1, 0, 1 );
-	setServerDvarDefault( "weap_allow_usp", 1, 0, 1 );
-	setServerDvarDefault( "weap_allow_deserteagle", 1, 0, 1 );
-	setServerDvarDefault( "weap_allow_deserteaglegold", 1, 0, 1 );
-
-	setServerDvarDefault( "attach_allow_pistol_none", 1, 0, 1 );
-	setServerDvarDefault( "attach_allow_pistol_silencer", 1, 0, 1 );
-
-	setServerDvarDefault( "weap_allow_frag_grenade", 1, 0, 1 );
-	setServerDvarDefault( "weap_allow_flash_grenade", 1, 0, 1 );
-	setServerDvarDefault( "weap_allow_smoke_grenade", 1, 0, 1 );
-
 	setServerDvarDefault( "allies_allow_assault", 1, 0, 1 );
 	setServerDvarDefault( "allies_allow_specops", 1, 0, 1 );
 	setServerDvarDefault( "allies_allow_demolitions", 1, 0, 1 );
@@ -94,49 +47,13 @@ setClassChoice( classType )
 	if( classType != "assault" && classType != "specops" && classType != "demolitions" && classType != "sniper" )
 		return;
 
-	idef = !isDefined(self.pers["class"]);
-
 	self.pers["class"] = classType;
 	self.class = classType;
 
 	self setClientDvar( "loadout_class", classType );
 
 	self initClassLoadouts();
-	self setDvarsFromClass( classType );
-
-	switch ( classType )
-	{
-		case "assault":
-			self setClientDvars(
-					"weap_allow_m16", getDvar( "weap_allow_m16" ),
-					"weap_allow_ak47", getDvar( "weap_allow_ak47" ),
-					"weap_allow_m4", getDvar( "weap_allow_m4" ),
-					"weap_allow_g3", getDvar( "weap_allow_g3" ),
-					"weap_allow_g36c", getDvar( "weap_allow_g36c" ),
-					"weap_allow_m14", getDvar( "weap_allow_m14" ),
-					"weap_allow_mp44", getDvar( "weap_allow_mp44" ),
-					"attach_allow_assault_none", getDvar( "attach_allow_assault_none" ),
-					"attach_allow_assault_silencer", getDvar( "attach_allow_assault_silencer" ) );
-			break;
-		case "specops":
-			self setClientDvars(
-					"weap_allow_mp5", getDvar( "weap_allow_mp5" ),
-					"weap_allow_uzi", getDvar( "weap_allow_uzi" ),
-					"weap_allow_ak74u", getDvar( "weap_allow_ak74u" ),
-					"attach_allow_specops_none", getDvar( "attach_allow_specops_none" ),
-					"attach_allow_specops_silencer", getDvar( "attach_allow_specops_silencer" ) );
-			break;
-		case "demolitions":
-			self setClientDvars(
-					"weap_allow_m1014", getDvar( "weap_allow_m1014" ),
-					"weap_allow_winchester1200", getDvar( "weap_allow_winchester1200" ) );
-			break;
-		case "sniper":
-			self setClientDvars(
-					"weap_allow_m40a3", getDvar( "weap_allow_m40a3" ),
-					"weap_allow_remington700", getDvar( "weap_allow_remington700" ) );
-			break;
-	}
+	self setStatsFromClass( classType );
 
 	thread updateClassAvailability( self.pers["team"] );
 }
@@ -158,8 +75,7 @@ setDvarDefault( dvarName, setVal, minVal, maxVal )
 	{
 		if ( isString( setVal ) )
 			setVal = getDvar( dvarName );
-		else
-			setVal = getDvarFloat( dvarName );
+		else setVal = getDvarFloat( dvarName );
 	}
 
 	if ( isDefined( minVal ) && !isString( setVal ) )
@@ -174,7 +90,8 @@ setDvarDefault( dvarName, setVal, minVal, maxVal )
 
 setServerDvarDefault( dvarName, setVal, minVal, maxVal )
 {
-	setVal = setDvarDefault( dvarName, setVal, minVal, maxVal );
+	setDvar( dvarName, setVal );
+	makeDvarServerInfo( dvarName );
 
 	level.serverDvars[dvarName] = setVal;
 }
@@ -210,48 +127,42 @@ initLoadoutForClass( classType )
 	{
 		if ( validClass( classType, get_config( CLASS_PRIMARY ), "loadout_primary" ) )
 			self.pers[classType]["loadout_primary"] = get_config( CLASS_PRIMARY );
-		else
-			self.pers[classType]["loadout_primary"] = getDvar( "class_" + classType + "_primary" );
+		else self.pers[classType]["loadout_primary"] = getDvar( "class_" + classType + "_primary" );
 	}
 
 	if ( !isDefined( self.pers[classType] ) || !isDefined( self.pers[classType]["loadout_primary_attachment"] ) )
 	{
 		if ( validClass( classType, get_config( CLASS_PRIMARY_ATTACHMENT ), "loadout_primary_attachment" ) )
 			self.pers[classType]["loadout_primary_attachment"] = get_config( CLASS_PRIMARY_ATTACHMENT );
-		else
-			self.pers[classType]["loadout_primary_attachment"] = getDvar( "class_" + classType + "_primary_attachment" );
+		else self.pers[classType]["loadout_primary_attachment"] = getDvar( "class_" + classType + "_primary_attachment" );
 	}
 
 	if ( !isDefined( self.pers[classType] ) || !isDefined( self.pers[classType]["loadout_secondary"] ) )
 	{
 		if ( validClass( classType, get_config( CLASS_SECONDARY ), "loadout_secondary" ) )
 			self.pers[classType]["loadout_secondary"] = get_config( CLASS_SECONDARY );
-		else
-			self.pers[classType]["loadout_secondary"] = getDvar( "class_" + classType + "_secondary" );
+		else self.pers[classType]["loadout_secondary"] = getDvar( "class_" + classType + "_secondary" );
 	}
 
 	if ( !isDefined( self.pers[classType] ) || !isDefined( self.pers[classType]["loadout_secondary_attachment"] ) )
 	{
 		if ( validClass( classType, get_config( CLASS_SECONDARY_ATTACHMENT ), "loadout_secondary_attachment" ) )
 			self.pers[classType]["loadout_secondary_attachment"] = get_config( CLASS_SECONDARY_ATTACHMENT );
-		else
-			self.pers[classType]["loadout_secondary_attachment"] = getDvar( "class_" + classType + "_secondary_attachment" );
+		else self.pers[classType]["loadout_secondary_attachment"] = getDvar( "class_" + classType + "_secondary_attachment" );
 	}
 
 	if ( !isDefined( self.pers[classType] ) || !isDefined( self.pers[classType]["loadout_grenade"] ) )
 	{
 		if ( validClass( classType, get_config( CLASS_GRENADE ), "loadout_grenade" ) )
 			self.pers[classType]["loadout_grenade"] = get_config( CLASS_GRENADE );
-		else
-			self.pers[classType]["loadout_grenade"] = getDvar( "class_" + classType + "_grenade" );
-	}
+		else self.pers[classType]["loadout_grenade"] = getDvar( "class_" + classType + "_grenade" );
+	} 
 
 	if ( !isDefined( self.pers[classType] ) || !isDefined( self.pers[classType]["loadout_camo"] ) )
 	{
 		if ( validClass( classType, get_config( CLASS_CAMO ), "loadout_camo" ) )
 			self.pers[classType]["loadout_camo"] = get_config( CLASS_CAMO );
-		else
-			self.pers[classType]["loadout_camo"] = getDvar( "class_" + classType + "_camo" );
+		else self.pers[classType]["loadout_camo"] = getDvar( "class_" + classType + "_camo" );
 	}
 }
 
@@ -286,70 +197,39 @@ validClass( classType, preServed, type )
 	{
 		case "loadout_primary":
 			for ( i = 0; i < loadout_primary.size; i++ )
-			{
-				exp = loadout_primary[i];
-
-				if ( exp == preServed )
-					if ( getDvarInt( "weap_allow_" + preServed ) )
-						return true;
-			}
+				if ( loadout_primary[i] == preServed )
+					return true;
 			break;
 
 		case "loadout_primary_attachment":
 			if ( classType == "assault" || classType == "specops" )
-			{
 				for ( i = 0; i < loadout_primary_attachment.size; i++ )
-				{
-					exp = loadout_primary_attachment[i];
-
-					if ( exp == preServed )
-						if ( getDvarInt( "attach_allow" + "_" + classType + "_" + preServed ) )
-							return true;
-				}
-			}
+					if ( loadout_primary_attachment[i] == preServed )
+						return true;
 			break;
 
 		case "loadout_secondary":
 			for ( i = 0; i < loadout_secondary.size; i++ )
-			{
-				exp = loadout_secondary[i];
-
-				if ( exp == preServed )
-					if ( getDvarInt( "weap_allow_" + preServed ) )
-						return true;
-			}
+				if ( loadout_secondary[i] == preServed )
+					return true;
 			break;
 
 		case "loadout_secondary_attachment":
 			for ( i = 0; i < loadout_secondary_attachment.size; i++ )
-			{
-				exp = loadout_secondary_attachment[i];
-
-				if ( exp == preServed )
-					if ( getDvarInt( "attach_allow_pistol_" + preServed ) )
-						return true;
-			}
+				if ( loadout_secondary_attachment[i] == preServed )
+					return true;
 			break;
 
 		case "loadout_grenade":
 			for ( i = 0; i < loadout_grenade.size; i++ )
-			{
-				exp = loadout_grenade[i];
-
-				if ( exp == preServed )
-					if ( getDvarInt( "weap_allow_" + preServed ) )
-						return true;
-			}
+				if ( loadout_grenade[i] == preServed )
+					return true;
 			break;
 
 		case "loadout_camo":
 			for ( i = 0; i < loadout_camo.size; i++ )
-			{
-				exp = loadout_camo[i];
-
-				if ( exp == preServed )
+				if ( loadout_camo[i] == preServed )
 					return true;
-			}
 			break;
 
 		default:
@@ -359,15 +239,14 @@ validClass( classType, preServed, type )
 	return false;
 }
 
-setDvarsFromClass( classType )
+setStatsFromClass( classType )
 {
-	self setClientDvars(
-		"loadout_primary", self.pers[classType]["loadout_primary"],
-		"loadout_primary_attachment", self.pers[classType]["loadout_primary_attachment"],
-		"loadout_secondary", self.pers[classType]["loadout_secondary"],
-		"loadout_secondary_attachment", self.pers[classType]["loadout_secondary_attachment"],
-		"loadout_grenade", self.pers[classType]["loadout_grenade"],
-		"loadout_camo", self.pers[classType]["loadout_camo"] );
+	self setStat( 67, int(tableLookup( "promod/customStatsTable.csv", 1, self.pers[classType]["loadout_primary"], 0 ) ) );
+	self setStat( 68, int(tableLookup( "promod/customStatsTable.csv", 1, self.pers[classType]["loadout_primary_attachment"], 0 ) ) );
+	self setStat( 69, int(tableLookup( "promod/customStatsTable.csv", 1, self.pers[classType]["loadout_secondary"], 0 ) ) );
+	self setStat( 70, int(tableLookup( "promod/customStatsTable.csv", 1, self.pers[classType]["loadout_secondary_attachment"], 0 ) ) );
+	self setStat( 71, int(tableLookup( "promod/customStatsTable.csv", 1, self.pers[classType]["loadout_grenade"], 0 ) ) );
+	self setStat( 72, int(tableLookup( "promod/customStatsTable.csv", 1, self.pers[classType]["loadout_camo"], 0 ) ) );
 }
 
 processLoadoutResponse( respString )
@@ -386,24 +265,30 @@ processLoadoutResponse( respString )
 		switch ( subTokens[0] )
 		{
 			case "loadout_primary":
-			case "loadout_secondary":
-				if ( getDvarInt( "weap_allow_" + subTokens[1] ) && self verifyWeaponChoice( subTokens[1], self.class ) )
+				if ( self verifyWeaponChoice( subTokens[1], self.class ) )
 				{
-					self.pers[self.class][subTokens[0]] = subTokens[1];
-					self setClientDvar( subTokens[0], subTokens[1] );
+					self.pers[self.class]["loadout_primary"] = subTokens[1];
+					self setStat( 67, int(tableLookup( "promod/customStatsTable.csv", 1, subTokens[1], 0 )) );
 					if ( subTokens[1] == "mp44" )
 					{
 						self.pers[self.class]["loadout_primary_attachment"] = "none";
-						self setClientDvar( "loadout_primary_attachment", "none" );
-					}
-					else if ( subTokens[1] == "deserteagle" || subTokens[1] == "deserteaglegold" )
-					{
-						self.pers[self.class]["loadout_secondary_attachment"] = "none";
-						self setClientDvar( "loadout_secondary_attachment", "none" );
+						self setStat( 68, 45 );
 					}
 				}
-				else
-					self setClientDvar( subTokens[0], self.pers[self.class][subTokens[0]] );
+				else self setStat( 67, int(tableLookup( "promod/customStatsTable.csv", 1, self.pers[self.class]["loadout_primary"], 0 )) );
+				break;
+			case "loadout_secondary":
+				if ( self verifyWeaponChoice( subTokens[1], self.class ) )
+				{
+					self.pers[self.class]["loadout_secondary"] = subTokens[1];
+					self setStat( 69, int(tableLookup( "promod/customStatsTable.csv", 1, subTokens[1], 0 )) );
+					if ( subTokens[1] == "deserteagle" || subTokens[1] == "deserteaglegold" )
+					{
+						self.pers[self.class]["loadout_secondary_attachment"] = "none";
+						self setStat( 70, 45 );
+					}
+				}
+				else self setStat( 69, int(tableLookup( "promod/customStatsTable.csv", 1, self.pers[self.class]["loadout_secondary"], 0 )) );
 				break;
 
 			case "loadout_primary_attachment":
@@ -413,32 +298,25 @@ processLoadoutResponse( respString )
 					if ( subTokens[0] == "loadout_primary_attachment" && self.pers[self.class]["loadout_primary"] == "mp44" )
 					{
 						self.pers[self.class]["loadout_primary_attachment"] = "none";
-						self setClientDvar( "loadout_primary_attachment", "none" );
-					}
-					else if ( getDvarInt( "attach_allow_" + subTokens[1] + "_" + subTokens[2] ) )
-					{
-						self.pers[self.class][subTokens[0]] = subTokens[2];
-						self setClientDvar( subTokens[0], subTokens[2] );
+						self setStat( 68, 45 );
 					}
 					else
-						self setClientDvar( subTokens[0], self.pers[self.class][subTokens[0]] );
+					{
+						self.pers[self.class][subTokens[0]] = subTokens[2];
+						self setStat( int(tableLookup( "promod/customStatsTable.csv", 1, subTokens[0], 0 )), int(tableLookup( "promod/customStatsTable.csv", 1, subTokens[2], 0 )) );
+					}
 					break;
 				}
-				else
-					return;
+				else return;
 
 			case "loadout_grenade":
 				switch ( subTokens[1] )
 				{
 					case "flash_grenade":
 					case "smoke_grenade":
-						if ( getDvarInt( "weap_allow_" + subTokens[1] ) )
-						{
-							self.pers[self.class][subTokens[0]] = subTokens[1];
-							self setClientDvar( subTokens[0], subTokens[1] );
-						}
-						else
-							self setClientDvar( subTokens[0], self.pers[self.class][subTokens[0]] );
+						self.pers[self.class][subTokens[0]] = subTokens[1];
+						self setStat( 71, int(tableLookup( "promod/customStatsTable.csv", 1, subTokens[1], 0 )) );
+						self setClientDvar( subTokens[0], subTokens[1] );
 						break;
 					default:
 						return;
@@ -455,6 +333,7 @@ processLoadoutResponse( respString )
 					case "camo_stagger":
 					case "camo_gold":
 						self.pers[self.class][subTokens[0]] = subTokens[1];
+						self setStat( 72, int(tableLookup( "promod/customStatsTable.csv", 1, subTokens[1], 0 ) ) );
 						break;
 					default:
 						return;
@@ -490,20 +369,18 @@ verifyWeaponChoice( weaponName, classType )
 
 verifyClassChoice( teamName, classType )
 {
-	if ( teamName == "allies" || teamName == "axis" )
-	{
-		if ( isDefined( self.pers["class"] ) && self.pers["class"] == classType )
-			return true;
+	if( teamName != "allies" && teamName != "axis" )
+		return false;
 
-		game[teamName + "_" + classType + "_count"] = 0;
-		for ( i = 0; i < level.players.size; i++ )
-			if ( level.players[i].team == teamName && isDefined( level.players[i].class ) && level.players[i].class == classType )
-				game[teamName + "_" + classType + "_count"]++;
+	if ( isDefined( self.pers["class"] ) && self.pers["class"] == classType )
+		return true;
 
-		return ( game[teamName + "_" + classType + "_count"] < getDvarInt( "class_" + classType + "_limit" ) );
-	}
+	game[teamName + "_" + classType + "_count"] = 0;
+	for ( i = 0; i < level.players.size; i++ )
+		if ( level.players[i].team == teamName && isDefined( level.players[i].class ) && level.players[i].class == classType )
+			game[teamName + "_" + classType + "_count"]++;
 
-	return false;
+	return ( game[teamName + "_" + classType + "_count"] < getDvarInt( "class_" + classType + "_limit" ) );
 }
 
 updateClassAvailability( teamName )
@@ -530,10 +407,10 @@ updateClassAvailability( teamName )
 			game[teamName + "_sniper_count"]++;
 	}
 
-	setDvarWrapper( teamName + "_allow_assault", game[teamName + "_assault_count"] < getDvarInt( "class_assault_limit" ) );
-	setDvarWrapper( teamName + "_allow_specops", game[teamName + "_specops_count"] < getDvarInt( "class_specops_limit" ) );
-	setDvarWrapper( teamName + "_allow_demolitions", game[teamName + "_demolitions_count"] < getDvarInt( "class_demolitions_limit" ) );
-	setDvarWrapper( teamName + "_allow_sniper", game[teamName + "_sniper_count"] < getDvarInt( "class_sniper_limit" ) );
+	setDvar( teamName + "_allow_assault", game[teamName + "_assault_count"] < 64 );
+	setDvar( teamName + "_allow_specops", game[teamName + "_specops_count"] < 2 );
+	setDvar( teamName + "_allow_demolitions", game[teamName + "_demolitions_count"] < 1 );
+	setDvar( teamName + "_allow_sniper", game[teamName + "_sniper_count"] < 1 );
 }
 
 menuAcceptClass( response )
@@ -554,7 +431,7 @@ menuAcceptClass( response )
 		else
 		{
 			self iprintlnbold( game["strings"]["change_class"] );
-			self setClientDvar( "loadout_curclass", self.pers["class"] );
+			self setStat( 65, int(tableLookup( "promod/customStatsTable.csv", 1, self.pers["class"], 0 )) );
 		}
 
 		if ( isDefined( response ) )
@@ -562,7 +439,7 @@ menuAcceptClass( response )
 	}
 	else
 	{
-		self setClientDvar( "loadout_curclass", self.pers["class"] );
+		self setStat( 65, int(tableLookup( "promod/customStatsTable.csv", 1, self.pers["class"], 0 )) );
 
 		if ( isDefined( response) && response == "go" )
 			self thread maps\mp\gametypes\_class::preserveClass( self.pers["class"] );

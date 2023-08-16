@@ -228,7 +228,6 @@ quickpromodgfx(response)
 			break;
 
 		case "6":
-			self setclientdvar("r_blur", 0.2 * self promod\client::loopthrough("PROMOD_GFXBLUR", 5));
 			break;
 	}
 }

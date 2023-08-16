@@ -221,7 +221,7 @@
 	{
 		name			"FullScreenMap"
 		fullScreen		0
-		visible			when( dvarString( self_ready ) != "" && !ui_active() );
+		visible			when( stat( 73 ) && !ui_active() );
 
 		itemDef
 		{
@@ -238,7 +238,7 @@
 		itemDef
 		{
 			rect			-37 108 2 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_TOP
-			exp				text(dvarint(waiting_on))
+			exp				text(stat(74))
 			textalign		ITEM_ALIGN_CENTER
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			textscale		0.35
@@ -256,7 +256,7 @@
 			textscale		0.35
 			textfont		UI_FONT_DEFAULT
 			forecolor		0.8 1 1 1
-			visible			when( dvarInt( waiting_on ) > 1 )
+			visible			when( stat(74) > 1 )
 			decoration
 		}
 		itemDef
@@ -268,7 +268,7 @@
 			textscale		0.35
 			textfont		UI_FONT_DEFAULT
 			forecolor		0.8 1 1 1
-			visible			when( dvarInt( waiting_on ) < 2 )
+			visible			when( stat(74) < 2 )
 			decoration
 		}
 		itemDef
@@ -292,7 +292,7 @@
 			textscale		0.35
 			textfont		UI_FONT_DEFAULT
 			forecolor		0.73 0.99 0.73 1
-			visible			when ( dvarInt( self_ready ) )
+			visible			when ( stat( 73 ) == 2 )
 			decoration
 		}
 		itemDef
@@ -304,7 +304,7 @@
 			textscale		0.35
 			textfont		UI_FONT_DEFAULT
 			forecolor		1 0.66 0.66 1
-			visible			when ( !dvarInt( self_ready ) )
+			visible			when ( stat( 73 ) == 1 )
 			decoration
 		}
 	}

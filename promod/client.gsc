@@ -50,7 +50,6 @@ use_config()
 	"r_fog", 0,
 	"r_blur", 0,
 	"cg_drawSpectatorMessages", 1,
-	"self_ready", "",
 	"cg_hudGrenadeIconMaxRangeFrag", 250,
 	"fx_drawclouds", 0,
 	"r_normalmap", self get_config("PROMOD_NORMALMAP"),

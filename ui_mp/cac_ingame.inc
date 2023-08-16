@@ -54,8 +54,8 @@ menuDef	{
 		uiScript openMenuOnDvar loadout_class assault "ocd_attachment_popup_assault"; \
 		uiScript openMenuOnDvar loadout_class specops "ocd_attachment_popup_SMG";
 
-	CHOICE_BUTTON_VIS( 2, "2. Primary Attachment", CAC_SETUP_ACTION_ATTACHMENT, when( dvarString( loadout_primary ) != "mp44" && dvarString( loadout_class ) != "demolitions" && dvarString( loadout_class ) != "sniper" ) )
-	CHOICE_DBUTTON_VIS( 2, "2. Primary Attachment", when( dvarString( loadout_primary ) == "mp44" || dvarString( loadout_class ) == "demolitions" || dvarString( loadout_class ) == "sniper" ) )
+	CHOICE_BUTTON_VIS( 2, "2. Primary Attachment", CAC_SETUP_ACTION_ATTACHMENT, when( stat(67) != 37 && dvarString( loadout_class ) != "demolitions" && dvarString( loadout_class ) != "sniper" ) )
+	CHOICE_DBUTTON_VIS( 2, "2. Primary Attachment", when( stat(67) == 37 || dvarString( loadout_class ) == "demolitions" || dvarString( loadout_class ) == "sniper" ) )
 	execKey "2" { CAC_SETUP_ACTION_ATTACHMENT; }
 
 	#define CAC_SETUP_ACTION2 \
@@ -85,11 +85,12 @@ menuDef	{
 	CHOICE_BUTTON( 6, "6. Start!", CAC_SETUP_ACTIONGO )
 	execKey "6" { CAC_SETUP_ACTIONGO; }
 
-	#define STAT_CAC_PRIMARY				tableLookup("mp/statstable.csv", 4, dvarString( loadout_primary ), 0)
-	#define STAT_CAC_PRIMARY_ATTACHMENT		tableLookup("mp/attachmentTable.csv", 4, dvarString( loadout_primary_attachment ), 9)
-	#define STAT_CAC_SECONDARY				tableLookup("mp/statstable.csv", 4, dvarString( loadout_secondary ), 0)
-	#define STAT_CAC_SECONDARY_ATTACHMENT	tableLookup("mp/attachmentTable.csv", 4, dvarString( loadout_secondary_attachment ), 9)
-	#define STAT_CAC_CAMO					tableLookup("mp/attachmentTable.csv", 4, dvarString( loadout_camo ), 11)
+	#define STAT_CAC_PRIMARY				tableLookup("mp/statstable.csv", 4, tableLookup("promod/customStatsTable.csv",0,stat(67),1), 0)
+	#define STAT_CAC_PRIMARY_ATTACHMENT		tableLookup("mp/attachmentTable.csv", 4, tableLookup("promod/customStatsTable.csv",0,stat(68),1), 9)
+	#define STAT_CAC_SECONDARY				tableLookup("mp/statstable.csv", 4, tableLookup("promod/customStatsTable.csv",0,stat(69),1), 0)
+	#define STAT_CAC_SECONDARY_ATTACHMENT	tableLookup("mp/attachmentTable.csv", 4, tableLookup("promod/customStatsTable.csv",0,stat(70),1), 9)
+	#define STAT_CAC_CAMO					tableLookup("mp/attachmentTable.csv", 4, tableLookup("promod/customStatsTable.csv",0,stat(72),1), 11)
+	// #define STAT_CAC_CAMO					tableLookup("mp/attachmentTable.csv", 4, dvarString( loadout_camo ), 11)
 
 	#include "ui_mp/cac_loadout_ingame.inc"
 }
@@ -129,20 +130,15 @@ close "ocd_popup_cac_camo"; \
 
 #define LOCAL_PRIMARY_WEAPON_ACTION( suffix, weapClass, weapRef ) \
 	play "mouse_click"; \
-	execOnDvarStringValue loadout_primary_attachment gl ""; \
 	scriptMenuResponse "loadout_primary:"weapRef;\
-	setdvar loadout_primary weapRef; \
 	close self;
 
 #define WI_FOCUS_ACTION( weaponRef ) \
 	exec "set ui_primary_highlighted "weaponRef;
 
 #define LOCAL_WEAPON_ITEM( suffix, itemNum, weaponName, weaponClass, weaponRef )\
-	CHOICE_BUTTON_FOCUS_VIS_NOHI( itemNum, "", ;, WI_FOCUS_ACTION( weaponRef ), ;, when( !dvarBool( "weap_allow_"weaponRef ) ); ) \
 	CHOICE_DBUTTON_VIS( itemNum, weaponName, when( 1 ); ) \
-	CHOICE_BUTTON_FOCUS_VIS_ADV( itemNum, weaponName, LOCAL_PRIMARY_WEAPON_ACTION( suffix, weaponClass, weaponRef ), \
-	WI_FOCUS_ACTION( weaponRef ), ;, when( dvarBool( "weap_allow_"weaponRef ) );, \
-	dvarBool( "weap_allow_"weaponRef ) ) \
+	CHOICE_BUTTON_FOCUS_VIS_ADV( itemNum, weaponName, LOCAL_PRIMARY_WEAPON_ACTION( suffix, weaponClass, weaponRef ), WI_FOCUS_ACTION( weaponRef ), ;, when( 1 );, 1 ) \
 
 menuDef
 {
@@ -219,12 +215,10 @@ LOCAL_MASTER_WEAPON_GROUP( "", 1, 0 )
 	PREPROC_TEXT_DRAW_ALIGNED_EXP( (CHOICE_POPUP_WIDTH+10) 80 256 20 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "@"+tablelookup("mp/attachmentTable.csv",4,dvarString(ui_attachment_highlighted),7), TEXTSIZE_SMALL, 0, 0, ITEM_ALIGN_MIDDLE_LEFT, CHOICE_TEXTCOLOR )\
 
 #define LOCAL_ATTACHMENT_ACTION( attachmentDvar, attachmentName, paction, groupArg ) \
-	setdvar loadout_primary_attachment attachmentName; \
 	scriptMenuResponse "loadout_primary_attachment:"groupArg":"attachmentName;\
 	PREPROC_ATTACH_CLOSEALL
 
 #define LOCAL_ATTACHMENT_ACTION2( attachmentDvar, attachmentName, paction, groupArg ) \
-	setdvar loadout_secondary_attachment attachmentName; \
 	scriptMenuResponse "loadout_secondary_attachment:"groupArg":"attachmentName;\
 	PREPROC_ATTACH_CLOSEALL
 
@@ -232,10 +226,8 @@ LOCAL_MASTER_WEAPON_GROUP( "", 1, 0 )
 	exec "set ui_attachment_highlighted "weaponRef;
 
 #define LOCAL_ATTACHMENT_ITEM( itemNum, buttonText, p_setstat, groupArg ,p_numref, pname, paction, ptype, statDvar, bitMask)\
-	CHOICE_BUTTON_FOCUS_VIS_ADV( itemNum, buttonText, LOCAL_ATTACHMENT_ACTION( statDvar, pname, paction, groupArg );, AI_FOCUS_ACTION(groupArg,pname), ;, when( ptype == "primary" && dvarBool( "attach_allow_"groupArg"_"pname ) ), ptype == "primary" && dvarBool( "attach_allow_"groupArg"_"pname ) ) \
-	CHOICE_BUTTON_FOCUS_VIS_ADV( itemNum, buttonText, LOCAL_ATTACHMENT_ACTION2( statDvar, pname, paction, groupArg );, AI_FOCUS_ACTION(groupArg,pname), ;, when( ptype == "secondary" && dvarBool( "attach_allow_"groupArg"_"pname ) ), ptype == "primary" && dvarBool( "attach_allow_"groupArg"_"pname ) ) \
-	CHOICE_BUTTON_FOCUS_VIS_NOHI( itemNum, "", ;, AI_FOCUS_ACTION(groupArg,pname), ;, when( !dvarBool( "attach_allow_"groupArg"_"pname ) ); ) \
-	CHOICE_DBUTTON_VIS( itemNum, buttonText, when( !dvarBool( "attach_allow_"groupArg"_"pname ) ); )
+	CHOICE_BUTTON_FOCUS_VIS_ADV( itemNum, buttonText, LOCAL_ATTACHMENT_ACTION( statDvar, pname, paction, groupArg );, AI_FOCUS_ACTION(groupArg,pname), ;, when( ptype == "primary" ), ptype == "primary" ) \
+	CHOICE_BUTTON_FOCUS_VIS_ADV( itemNum, buttonText, LOCAL_ATTACHMENT_ACTION2( statDvar, pname, paction, groupArg );, AI_FOCUS_ACTION(groupArg,pname), ;, when( ptype == "secondary" ), ptype == "primary" ) \
 
 #undef UI_FOCUSFIRST
 #define UI_FOCUSFIRST "ui_attachment_highlighted"
@@ -282,15 +274,11 @@ LOCAL_MASTER_ATTACHMENT_GROUP( CAC_PRIMARY_ATTACHMENT, "", 1, "primary", -30, "l
 
 #define LOCAL_SIDEARM_ACTION( pstat, weaponRef ) \
 		play "mouse_click"; \
-		setdvar	loadout_secondary weaponRef; \
-		setdvar	loadout_secondary_attachment none; \
 		scriptMenuResponse "loadout_secondary:"weaponRef;\
 		PREPROC_ATTACH_CLOSEALL
 
 #define LOCAL_SIDEARM_ACTION2( pstat, weaponRef ) \
 		play "mouse_click"; \
-		setdvar	loadout_secondary weaponRef; \
-		setdvar	loadout_secondary_attachment none; \
 		scriptMenuResponse "loadout_secondary:"weaponRef;\
 		uiScript openMenuOnDvar "selected_weapon_class" pistol "ocd_attachment_popup_pistol";
 
@@ -298,14 +286,8 @@ LOCAL_MASTER_ATTACHMENT_GROUP( CAC_PRIMARY_ATTACHMENT, "", 1, "primary", -30, "l
 	exec "set ui_sidearm_highlighted "weaponRef;
 
 #define LOCAL_SIDEARM_ITEM( itemNum, weaponName, weaponStat, weaponRef, highlight_dvar )\
-	CHOICE_BUTTON_FOCUS_VIS_ADV( itemNum, weaponName, LOCAL_SIDEARM_ACTION( weaponStat, weaponRef ), SI_FOCUS_ACTION( weaponRef ), ;, \
-	when( dvarBool( "weap_allow_"weaponRef ) && ( weaponRef == REF_DESERTEAGLE || weaponRef == REF_DESERTEAGLEGOLD ) );, \
-		dvarBool( "weap_allow_"weaponRef ) && ( weaponRef == REF_DESERTEAGLE || weaponRef == REF_DESERTEAGLEGOLD ) ) \
-	CHOICE_BUTTON_FOCUS_VIS_ADV( itemNum, weaponName, LOCAL_SIDEARM_ACTION2( weaponStat, weaponRef ), SI_FOCUS_ACTION( weaponRef ), ;, \
-	when( dvarBool( "weap_allow_"weaponRef ) && weaponRef != REF_DESERTEAGLE && weaponRef != REF_DESERTEAGLEGOLD );, \
-		dvarBool( "weap_allow_"weaponRef ) && weaponRef != REF_DESERTEAGLE && weaponRef != REF_DESERTEAGLEGOLD ) \
-	CHOICE_BUTTON_FOCUS_VIS_NOHI( itemNum, "", ;, SI_FOCUS_ACTION( weaponRef ), ;, when( !dvarBool( "weap_allow_"weaponRef ) ); ) \
-	CHOICE_DBUTTON_VIS( itemNum, weaponName, when( !dvarBool( "weap_allow_"weaponRef ) ); )
+	CHOICE_BUTTON_FOCUS_VIS_ADV( itemNum, weaponName, LOCAL_SIDEARM_ACTION( weaponStat, weaponRef ), SI_FOCUS_ACTION( weaponRef ), ;, when( ( weaponRef == REF_DESERTEAGLE || weaponRef == REF_DESERTEAGLEGOLD ) );, ( weaponRef == REF_DESERTEAGLE || weaponRef == REF_DESERTEAGLEGOLD ) ) \
+	CHOICE_BUTTON_FOCUS_VIS_ADV( itemNum, weaponName, LOCAL_SIDEARM_ACTION2( weaponStat, weaponRef ), SI_FOCUS_ACTION( weaponRef ), ;,	when( weaponRef != REF_DESERTEAGLE && weaponRef != REF_DESERTEAGLEGOLD );, weaponRef != REF_DESERTEAGLE && weaponRef != REF_DESERTEAGLEGOLD )
 
 #undef UI_FOCUSFIRST
 #define UI_FOCUSFIRST "ui_sidearm_highlighted"
@@ -344,8 +326,7 @@ menuDef
 		close "ocd_popup_cac_extra"
 
 #define LOCAL_SGRENADE_ITEM( itemNum, weaponName, weaponStat, weaponRef, highlight_dvar )\
-	CHOICE_BUTTON_FOCUS_VIS_ADV( itemNum, weaponName, LOCAL_SGRENADE_ACTION( weaponRef ), execnow "set "highlight_dvar" "weaponRef, ;, when( dvarBool("weap_allow_"weaponRef) );, dvarBool("weap_allow_"weaponRef) ) \
-	CHOICE_DBUTTON_VIS( itemNum, weaponName, when( !dvarBool("weap_allow_"weaponRef) ); )
+	CHOICE_BUTTON_FOCUS_VIS_ADV( itemNum, weaponName, LOCAL_SGRENADE_ACTION( weaponRef ), execnow "set "highlight_dvar" "weaponRef, ;, when( 1 );, 1 )
 
 #undef UI_FOCUSFIRST
 #define UI_FOCUSFIRST "ui_sgrenade_highlighted"
@@ -372,7 +353,6 @@ menuDef
 
 #define LOCAL_CAMO_ACTION( camoRef ) \
 		play "mouse_click"; \
-		setdvar loadout_camo camoRef;\
 		scriptMenuResponse "loadout_camo:" camoRef;\
 		PREPROC_ATTACH_CLOSEALL
 
@@ -380,8 +360,8 @@ menuDef
 	CHOICE_BUTTON_FOCUS( itemNum, camoName, LOCAL_CAMO_ACTION( camoRef );, execnow "set "highlight_dvar" "camoRef;, ; );
 
 #define LOCAL_CAMO_ITEM2( itemNum, camoName, pnum, camoRef, highlight_dvar, bitMask, visArg )\
-	CHOICE_BUTTON_FOCUS_VIS( itemNum, camoName, LOCAL_CAMO_ACTION( camoRef );, execnow "set "highlight_dvar" "camoRef;, ;, when( dvarString( loadout_primary ) == "ak47" || dvarString( loadout_primary ) == "uzi" || dvarString( loadout_primary ) == "m1014" ) ) \
-	CHOICE_DBUTTON_VIS( itemNum, camoName, when( dvarString( loadout_primary ) != "ak47" && dvarString( loadout_primary ) != "uzi" && dvarString( loadout_primary ) != "m1014" ) )
+	CHOICE_BUTTON_FOCUS_VIS( itemNum, camoName, LOCAL_CAMO_ACTION( camoRef );, execnow "set "highlight_dvar" "camoRef;, ;, when( stat(67) == 32 || stat(67) == 39 || stat(67) == 42 ) ) \
+	CHOICE_DBUTTON_VIS( itemNum, camoName, when( stat(67) != 32 && stat(67) != 39 && stat(67) != 42 ) )
 
 #undef UI_FOCUSFIRST
 #define UI_FOCUSFIRST "ui_camo_highlighted"

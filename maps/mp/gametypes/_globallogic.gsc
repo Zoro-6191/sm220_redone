@@ -496,19 +496,16 @@ waveSpawnTimer()
 
 freeLook( condition )
 {
-	if ( getDvarInt( "scr_game_spectatetype" ) == 1 )
-	{
-		if ( condition )
-			wait 0.1;
+	if ( condition )
+		wait 0.1;
 
-		for ( i = 0; i < level.players.size; i++ )
+	for ( i = 0; i < level.players.size; i++ )
+	{
+		player = level.players[i];
+		if ( player.pers["team"] == "spectator" )
 		{
-			player = level.players[i];
-			if ( player.pers["team"] == "spectator" )
-			{
-				if ( !isDefined( player.freelook ) || !player.freelook )
-					player allowSpectateTeam( "freelook", condition );
-			}
+			if ( !isDefined( player.freelook ) || !player.freelook )
+				player allowSpectateTeam( "freelook", condition );
 		}
 	}
 }
@@ -742,8 +739,7 @@ endGame( winner, endReasonText )
 
 				if ( level.teamBased )
 					player thread maps\mp\gametypes\_hud_message::teamOutcomeNotify( winner, true, endReasonText, 0.75 );
-				else
-					player thread maps\mp\gametypes\_hud_message::outcomeNotify( winner, endReasonText, 0.75 );
+				else player thread maps\mp\gametypes\_hud_message::outcomeNotify( winner, endReasonText, 0.75 );
 
 				if ( isDefined( player.pers["team"] ) && player.pers["team"] == "spectator" )
 					continue;
@@ -755,8 +751,7 @@ endGame( winner, endReasonText )
 
 			if ( hitRoundLimit() || hitScoreLimit() )
 				roundEndWait( level.roundEndDelay / 2 );
-			else
-				roundEndWait( level.roundEndDelay );
+			else roundEndWait( level.roundEndDelay );
 		}
 
 		game["roundsplayed"]++;
@@ -792,11 +787,9 @@ endGame( winner, endReasonText )
 					{
 						if ( game["roundsplayed"] == (level.scoreLimit - 1) )
 							switchType = "halftime";
-						else
-							switchType = "intermission";
+						else switchType = "intermission";
 					}
-					else
-						switchType = "intermission";
+					else switchType = "intermission";
 				}
 
 				player thread maps\mp\gametypes\_hud_message::teamOutcomeNotify( switchType, true, level.halftimeSubCaption );
@@ -905,8 +898,7 @@ endGame( winner, endReasonText )
 			endReasonText = game["strings"]["round_limit_reached"];
 		else if ( hitScoreLimit() )
 			endReasonText = game["strings"]["score_limit_reached"];
-		else
-			endReasonText = game["strings"]["time_limit_reached"];
+		else endReasonText = game["strings"]["time_limit_reached"];
 	}
 
 	for ( i = 0; i < level.players.size; i++ )
@@ -924,11 +916,9 @@ endGame( winner, endReasonText )
 		if ( level.teamBased )
 		{
 			winner = getWinningTeam();
-
 			player thread maps\mp\gametypes\_hud_message::teamOutcomeNotify( winner, false, endReasonText );
 		}
-		else
-			player thread maps\mp\gametypes\_hud_message::outcomeNotify( winner, endReasonText );
+		else player thread maps\mp\gametypes\_hud_message::outcomeNotify( winner, endReasonText );
 
 		player setClientDvars( "ui_hud_hardcore", 1, "cg_drawSpectatorMessages", 0, "g_compassShowEnemies", 0 );
 	}
@@ -1166,7 +1156,7 @@ menuAutoAssign()
 	self.class = undefined;
 	self.pers["team"] = assignment;
 	self.team = assignment;
-	self setClientDvar( "loadout_curclass", "" );
+	self setStat( 65 , 0 );
 
 	self updateObjectiveText();
 
@@ -1281,7 +1271,7 @@ menuAllies()
 			self.class = undefined;
 			self.pers["team"] = "allies";
 			self.team = "allies";
-			self setClientDvar( "loadout_curclass", "" );
+			self setStat( 65 , 0 );
 		}
 
 		self updateObjectiveText();
@@ -1365,7 +1355,7 @@ menuAxis()
 			self.class = undefined;
 			self.pers["team"] = "axis";
 			self.team = "axis";
-			self setClientDvar( "loadout_curclass", "" );
+			self setStat( 65 , 0 );
 		}
 
 		self updateObjectiveText();
@@ -1420,7 +1410,7 @@ menuKillspec()
 	self.pers["class"] = undefined;
 	self.class = undefined;
 	self iprintln("Choose a class to respawn");
-	self setClientDvar("loadout_curclass", "");
+	self setStat( 65 , 0 );
 	self thread [[level.spawnSpectator]]( self.origin, self.angles );
 
 	thread maps\mp\gametypes\_promod::updateClassAvailability( self.pers["team"] );
@@ -1450,7 +1440,7 @@ menuSpectator()
 		self.class = undefined;
 		self.pers["team"] = "spectator";
 		self.team = "spectator";
-		self setClientDvar( "loadout_curclass", "" );
+		self setStat( 65 , 0 );
 
 		self updateObjectiveText();
 
@@ -2625,7 +2615,7 @@ Callback_PlayerConnect()
 		self.team = "none";
 		self.sessionstate = "dead";
 
-		self setClientDvar("loadout_curclass", "");
+		self setStat( 65 , 0 );
 
 		self updateObjectiveText();
 

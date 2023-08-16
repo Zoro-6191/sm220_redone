@@ -37,7 +37,7 @@ main()
 			player = level.players[i];
 			if ( !isDefined( player.looped ) )
 			{
-				player setclientdvar("self_ready", 0);
+				player setStat( 73, 1 );
 
 				player.looped = true;
 				player.ready = false;
@@ -72,7 +72,7 @@ main()
 
 			if ( player.oldready != player.newready && ( !isDefined( player.inrecmenu ) || !player.inrecmenu ) )
 			{
-				player setclientdvar("self_ready", int(player.ready));
+				player setStat( 73, int(player.ready)+1 );
 				player.oldready = player.newready;
 
 				if ( player.ready )
@@ -86,7 +86,7 @@ main()
 		{
 			for(i=0;i<level.players.size;i++)
 			{
-				level.players[i] setclientdvar("waiting_on", level.not_ready_count);
+				level.players[i] setStat( 74, level.not_ready_count );
 				level.players[i] ShowScoreBoard();
 				previous_not_ready_count = level.not_ready_count;
 			}
@@ -103,7 +103,8 @@ main()
 
 	for(i=0;i<level.players.size;i++)
 	{
-		level.players[i] setclientdvars("self_ready","", "ui_hud_hardcore", 1 );
+		level.players[i] setStat( 73, 0 );
+		level.players[i] setclientdvar( "ui_hud_hardcore", 1 );
 		level.players[i].statusicon = "";
 	}
 	for(i=0;i<level.players.size;i++)
@@ -211,10 +212,10 @@ updatePlayerHUDInterval()
 			if ( isDefined( player ) )
 			{
 				if ( isDefined( player.ready ) && !isDefined( player.inrecmenu ) )
-					player setclientdvar("self_ready", int(player.ready));
+					player setStat( 73, int(player.ready)+1 );
 
 				if ( isDefined( level.not_ready_count ) )
-					player setclientdvar("waiting_on", level.not_ready_count);
+					player setStat( 74, level.not_ready_count );
 			}
 		}
 	}

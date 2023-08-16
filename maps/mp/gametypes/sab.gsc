@@ -137,8 +137,6 @@ onStartGameType()
 	allowed[0] = "sab";
 	maps\mp\gametypes\_gameobjects::main(allowed);
 
-	thread updateGametypeDvars();
-
 	thread sabotage();
 }
 
@@ -246,14 +244,6 @@ onSpawnPlayer()
 	}
 
 	self spawn( spawnpoint.origin, spawnpoint.angles );
-}
-
-updateGametypeDvars()
-{
-	level.plantTime = dvarFloatValue( "planttime", 5, 0, 20 );
-	level.defuseTime = dvarFloatValue( "defusetime", 5, 0, 20 );
-	level.bombTimer = dvarFloatValue( "bombtimer", 45, 1, 300 );
-	level.hotPotato = dvarIntValue( "hotpotato", 1, 0, 1 );
 }
 
 sabotage()
@@ -493,7 +483,7 @@ bombPlanted( destroyedObj, team )
 	level.timeLimitOverride = true;
 	setDvar( "ui_bomb_timer", 1 );
 
-	setGameEndTime( int( getTime() + (level.bombTimer * 1000) ) );
+	setGameEndTime( int( getTime() + 45000 ) );
 
 	destroyedObj.visuals[0] thread maps\mp\gametypes\_globallogic::playTickingSound();
 
@@ -504,14 +494,7 @@ bombPlanted( destroyedObj, team )
 	destroyedObj.visuals[0] maps\mp\gametypes\_globallogic::stopTickingSound();
 
 	if ( !level.bombPlanted )
-	{
-		if ( level.hotPotato )
-		{
-			timePassed = (gettime() - starttime) / 1000;
-			level.bombTimer -= timePassed;
-		}
 		return;
-	}
 
 	explosionOrigin = level.sabBomb.visuals[0].origin;
 	level.bombExploded = true;
@@ -551,13 +534,13 @@ playSoundinSpace( alias, origin )
 bombTimerWait()
 {
 	level endon("bomb_defused");
-	wait level.bombTimer;
+	wait 45;
 }
 
 resetBombsite()
 {
 	self maps\mp\gametypes\_gameobjects::allowUse( "enemy" );
-	self maps\mp\gametypes\_gameobjects::setUseTime( level.plantTime );
+	self maps\mp\gametypes\_gameobjects::setUseTime( 5 );
 	self maps\mp\gametypes\_gameobjects::setUseText( &"MP_PLANTING_EXPLOSIVE" );
 	self maps\mp\gametypes\_gameobjects::setUseHintText( &"PLATFORM_HOLD_TO_PLANT_EXPLOSIVES" );
 	self maps\mp\gametypes\_gameobjects::setKeyObject( level.sabBomb );
@@ -569,7 +552,7 @@ resetBombsite()
 setUpForDefusing()
 {
 	self maps\mp\gametypes\_gameobjects::allowUse( "friendly" );
-	self maps\mp\gametypes\_gameobjects::setUseTime( level.defuseTime );
+	self maps\mp\gametypes\_gameobjects::setUseTime( 5 );
 	self maps\mp\gametypes\_gameobjects::setUseText( &"MP_DEFUSING_EXPLOSIVE" );
 	self maps\mp\gametypes\_gameobjects::setUseHintText( &"PLATFORM_HOLD_TO_DEFUSE_EXPLOSIVES" );
 	self maps\mp\gametypes\_gameobjects::setKeyObject( undefined );

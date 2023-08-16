@@ -34,9 +34,9 @@ PREPROC_SHADER_DRAW_ALIGNED( 160 (6+80) 90 90 LOADOUT_ALIGN, ORIGIN_LOADOUT, tab
 
 PREPROC_SHADER_DRAW_ALIGNED( 2 118 32 32 LOADOUT_ALIGN, ORIGIN_LOADOUT, tablelookup( "mp/attachmenttable.csv", 9, STAT_CAC_SECONDARY_ATTACHMENT, 6 ), 1 1 1 1, 0, 1, 1 1 1 1)
 
-PREPROC_SHADER_DRAW_ALIGNED( 3 178 32 32 LOADOUT_ALIGN, ORIGIN_LOADOUT, "weapon_fraggrenade", 1 1 1 1, 0, 1, 1 1 1 1 visible when( dvarInt( weap_allow_frag_grenade ) != "0" ) )
-PREPROC_SHADER_DRAW_ALIGNED( 32 178 32 32 LOADOUT_ALIGN, ORIGIN_LOADOUT, "weapon_smokegrenade", 1 1 1 1, 0, 1, 1 1 1 1 visible when( dvarInt( weap_allow_smoke_grenade ) != 0 && dvarString( loadout_grenade ) == "smoke_grenade" ) )
-PREPROC_SHADER_DRAW_ALIGNED( 32 178 32 32 LOADOUT_ALIGN, ORIGIN_LOADOUT, "weapon_flashbang", 1 1 1 1, 0, 1, 1 1 1 1 visible when( dvarInt( weap_allow_flash_grenade ) != 0 && dvarString( loadout_grenade ) == "flash_grenade" ) )
+PREPROC_SHADER_DRAW_ALIGNED( 3 178 32 32 LOADOUT_ALIGN, ORIGIN_LOADOUT, "weapon_fraggrenade", 1 1 1 1, 0, 1, 1 1 1 1 visible 1 )
+PREPROC_SHADER_DRAW_ALIGNED( 32 178 32 32 LOADOUT_ALIGN, ORIGIN_LOADOUT, "weapon_smokegrenade", 1 1 1 1, 0, 1, 1 1 1 1 visible when( stat(71) == 53 ) )
+PREPROC_SHADER_DRAW_ALIGNED( 32 178 32 32 LOADOUT_ALIGN, ORIGIN_LOADOUT, "weapon_flashbang", 1 1 1 1, 0, 1, 1 1 1 1 visible when( stat(71) == 52 ) )
 
-PREPROC_TEXT_DRAW_ALIGNED_EXP( 0 183 (LOADOUT_WIDTH+8) 20 LOADOUT_ALIGN, ORIGIN_LOADOUT, 1, TEXTSIZE_SMALL, 0, 0, ITEM_ALIGN_MIDDLE_LEFT, COLOR_TITLE visible when( dvarInt( weap_allow_frag_grenade ) != "0" ) )
-PREPROC_TEXT_DRAW_ALIGNED_EXP( 30 183 (LOADOUT_WIDTH+8) 20 LOADOUT_ALIGN, ORIGIN_LOADOUT, 1, TEXTSIZE_SMALL, 0, 0, ITEM_ALIGN_MIDDLE_LEFT, COLOR_TITLE visible when( dvarInt( weap_allow_flash_grenade ) != "0" && dvarInt( weap_allow_smoke_grenade ) != "0" ) )
+PREPROC_TEXT_DRAW_ALIGNED_EXP( 0 183 (LOADOUT_WIDTH+8) 20 LOADOUT_ALIGN, ORIGIN_LOADOUT, 1, TEXTSIZE_SMALL, 0, 0, ITEM_ALIGN_MIDDLE_LEFT, COLOR_TITLE visible 1 )
+PREPROC_TEXT_DRAW_ALIGNED_EXP( 30 183 (LOADOUT_WIDTH+8) 20 LOADOUT_ALIGN, ORIGIN_LOADOUT, 1, TEXTSIZE_SMALL, 0, 0, ITEM_ALIGN_MIDDLE_LEFT, COLOR_TITLE visible 1 )
