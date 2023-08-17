@@ -38,7 +38,6 @@
 			uiScript openMenuOnDvar com_playerProfile "" player_profile;
 			uiScript openMenuOnDvarNot ui_playerProfileCount 1 player_profile;
 			uiScript stopRefresh;
-			setdvar ui_showEndOfGame "0";
 		}
 	}
 

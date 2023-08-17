@@ -35,6 +35,7 @@ init()
 	precacheMenu("shoutcast");
 	precacheMenu("echo");
 	precacheMenu("demo");
+	precacheMenu("filmtweak");
 
 	[[level.on]]( "menu_response", ::onMenuResponse );
 }

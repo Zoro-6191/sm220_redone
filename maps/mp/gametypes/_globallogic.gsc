@@ -1214,12 +1214,6 @@ menuAllies()
 
 	if ( self.pers["team"] != "allies" )
 	{
-		if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] != "match" && level.teamBased && !self.switching && !maps\mp\gametypes\_teams::getJoinTeamPermissions( "allies" ) )
-		{
-			self openMenu(game["menu_team"]);
-			return;
-		}
-
 		if ( level.inGracePeriod && (!isdefined(self.hasDoneCombat) || !self.hasDoneCombat) )
 			self.hasSpawned = false;
 
@@ -1256,8 +1250,7 @@ menuAllies()
 		{
 			if ( !isAlive( self ) )
 				self.statusicon = "hud_status_dead";
-			else
-				self.statusicon = "";
+			else self.statusicon = "";
 		}
 
 		self setclientdvar("g_scriptMainMenu", game["menu_class_allies"]);
@@ -1296,12 +1289,6 @@ menuAxis()
 
 	if ( self.pers["team"] != "axis" )
 	{
-		if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] != "match" && level.teamBased && !self.switching && !maps\mp\gametypes\_teams::getJoinTeamPermissions( "allies" ) )
-		{
-			self openMenu(game["menu_team"]);
-			return;
-		}
-
 		if ( level.inGracePeriod && (!isdefined(self.hasDoneCombat) || !self.hasDoneCombat) )
 			self.hasSpawned = false;
 
@@ -2788,7 +2775,6 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 		else if ( isDefined( eInflictor.destructible_type ) && isSubStr( eInflictor.destructible_type, "vehicle_" ) )
 			sWeapon = "destructible_car";
 	}
-
 	friendly = false;
 
 	// if level.iDFLAGS_NO_PROTECTION element in iDflags is not 0, this will happen. NO_PROTECTION == 0 could be god-mode
@@ -2842,7 +2828,6 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 			if ( iDamage > 0 && !(iDFlags & level.iDFLAGS_PENETRATION) )
 				eAttacker thread maps\mp\gametypes\_damagefeedback::updateDamageFeedback( false );
 		}
-
 		self.hasDoneCombat = true;
 	}
 

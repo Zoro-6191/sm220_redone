@@ -321,7 +321,6 @@ menuDef
 
 #define LOCAL_SGRENADE_ACTION( weaponRef ) \
 		play "mouse_click"; \
-		setdvar loadout_grenade weaponRef; \
 		scriptMenuResponse "loadout_grenade:"weaponRef;\
 		close "ocd_popup_cac_extra"
 

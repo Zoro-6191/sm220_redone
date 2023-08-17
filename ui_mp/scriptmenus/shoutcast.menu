@@ -24,7 +24,7 @@
 		rect			0 0 640 480
 		focuscolor		COLOR_FOCUSED
 		style			WINDOW_STYLE_EMPTY
-		blurWorld		0
+		blurWorld		7
 
 		itemDef
 		{
@@ -51,6 +51,7 @@
 		CHOICE_BUTTON( 3, "@MPUI_CHANGE_TEAM", scriptMenuResponse "changeteam"; )
 		CHOICE_BUTTON( 4, "@MENU_CONTROLS", close self; open main_controls; )
 		CHOICE_BUTTON( 5, "@MENU_OPTIONS", close self; open main_options; execnow "set ui_allow_graphic_change 0"; )
-		CHOICE_BUTTON( 6, "@MPUI_LEAVE_GAME", open popup_endgame; )
+		CHOICE_BUTTON( 6, "Filmtweak Settings", close self; open filmtweak; )
+		CHOICE_BUTTON( 7, "@MPUI_LEAVE_GAME", open popup_endgame; )
 	}
 }

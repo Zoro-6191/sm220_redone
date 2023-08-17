@@ -7,6 +7,7 @@ menufile,ui_mp/scriptmenus/changeclass_opfor_mw.menu
 menufile,ui_mp/scriptmenus/class.menu
 menufile,ui_mp/scriptmenus/demo.menu
 menufile,ui_mp/scriptmenus/echo.menu
+menufile,ui_mp/scriptmenus/filmtweak.menu
 menufile,ui_mp/scriptmenus/quickpromod.menu
 menufile,ui_mp/scriptmenus/quickpromodgfx.menu
 menufile,ui_mp/scriptmenus/scoreboard.menu

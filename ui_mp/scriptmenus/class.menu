@@ -9,7 +9,7 @@
 #define CHOICE_Y_START			204
 
 #define CHOICE_GROUP			"class"
-#define CHOICE_SEP_1			4
+#define CHOICE_SEP_1			5
 
 #include "ui_mp/menustyle.inc"
 #include "ui_mp/choices_setup_teams.menu"
@@ -96,7 +96,8 @@
 
 		CHOICE_BUTTON( 3, "@MENU_CONTROLS", close self; open main_controls )
 		CHOICE_BUTTON( 4, "@MENU_OPTIONS", close self; open main_options; execnow "set ui_allow_graphic_change 0"; )
+		CHOICE_BUTTON( 5, "Filmtweak Settings", close self; open filmtweak; )
 
-		CHOICE_BUTTON( 5, "@MENU_LEAVE_GAME", open popup_leavegame; )
+		CHOICE_BUTTON( 6, "@MENU_LEAVE_GAME", open popup_leavegame; )
 	}
 }
