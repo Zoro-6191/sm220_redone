@@ -11,6 +11,14 @@ main()
 	level.onStartGameType = ::onStartGameType;
 	level.onSpawnPlayer = ::onSpawnPlayer;
 	level.onRoundSwitch = ::onRoundSwitch;
+
+	setDvar( "scr_war_numlives", 0 );
+	setDvar( "scr_war_playerrespawndelay", 0 );
+	setDvar( "scr_war_roundlimit", 2 );
+	setDvar( "scr_war_scorelimit", 0 );
+	setDvar( "scr_war_roundswitch", 1 );
+	setDvar( "scr_war_timelimit", 15 );
+	setDvar( "scr_war_waverespawndelay", 0 );
 }
 
 onStartGameType()

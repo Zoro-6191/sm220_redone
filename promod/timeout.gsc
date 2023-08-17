@@ -35,8 +35,7 @@ disableBombBag()
 
 timeoutLoop()
 {
-	if ( !isDefined( game["LAN_MODE"] ) || !game["LAN_MODE"] )
-		thread timeoutLeft();
+	thread timeoutLeft();
 
 	if ( !isDefined( level.ready_up_over ) )
 		level.ready_up_over = false;
@@ -66,7 +65,7 @@ timeoutLeft()
 
 timeoutCall()
 {
-	if ( (isDefined( level.ready_up_over ) && !level.ready_up_over || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] != "match") || ( level.gametype != "sd" && level.gametype != "sab" ) )
+	if ( (isDefined( level.ready_up_over ) && !level.ready_up_over ) || ( level.gametype != "sd" && level.gametype != "sab" ) )
 	{
 		self iprintln("^3Timeout is not available right now");
 		return;
@@ -85,16 +84,14 @@ timeoutCall()
 
 				game["promod_timeout_called"] = false;
 			}
-			else
-				self iprintln("^3Timeout already called by " + game["promod_timeout_called_by"].name);
+			else self iprintln("^3Timeout already called by " + game["promod_timeout_called_by"].name);
 		}
-		else
-			self iprintln("^3Timeout already called");
+		else self iprintln("^3Timeout already called");
 
 		return;
 	}
 
-	if ( game[self.pers["team"] + "_timeout_called"] && (!isDefined( game["LAN_MODE"] ) || !game["LAN_MODE"]) )
+	if ( game[self.pers["team"] + "_timeout_called"] )
 	{
 		self iprintln("^3Only one timeout per team/half allowed");
 		return;

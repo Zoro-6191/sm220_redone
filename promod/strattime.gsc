@@ -23,15 +23,14 @@ main()
 		{
 			if ( isDefined( game["PROMOD_KNIFEROUND"] ) && !game["PROMOD_KNIFEROUND"] || !isDefined( game["PROMOD_KNIFEROUND"] ) )
 			{
-				if ( getDvarInt( "weap_allow_frag_grenade" ) )
-					player giveWeapon( "frag_grenade_mp" );
+				player giveWeapon( "frag_grenade_mp" );
 
-				if ( player.pers[classType]["loadout_grenade"] == "flash_grenade" && getDvarInt("weap_allow_flash_grenade") )
+				if ( player.pers[classType]["loadout_grenade"] == "flash_grenade" )
 				{
 					player setOffhandSecondaryClass("flash");
 					player giveWeapon( "flash_grenade_mp" );
 				}
-				else if ( player.pers[classType]["loadout_grenade"] == "smoke_grenade" && getDvarInt("weap_allow_smoke_grenade") )
+				else if ( player.pers[classType]["loadout_grenade"] == "smoke_grenade" )
 				{
 					player setOffhandSecondaryClass("smoke");
 					player giveWeapon( "smoke_grenade_mp" );
@@ -63,7 +62,7 @@ stratTime()
 	thread stratTimer();
 
 	level.strat_over = false;
-	strat_time_left = game["PROMOD_STRATTIME"] + level.prematchPeriod * int( getDvarInt( "promod_allow_strattime" ) && isDefined( game["CUSTOM_MODE"] ) && game["CUSTOM_MODE"] && level.gametype == "sd" );
+	strat_time_left = game["PROMOD_STRATTIME"];
 
 	while ( !level.strat_over )
 	{
@@ -102,7 +101,7 @@ stratTimer()
 
 	matchStartTimer = createServerTimer( "big", 1.5 );
 	matchStartTimer setPoint( "CENTER", "CENTER", 0, -45 );
-	matchStartTimer setTimer( game["PROMOD_STRATTIME"] + level.prematchPeriod * int( getDvarInt( "promod_allow_strattime" ) && isDefined( game["CUSTOM_MODE"] ) && game["CUSTOM_MODE"] && level.gametype == "sd" ) );
+	matchStartTimer setTimer( game["PROMOD_STRATTIME"] );
 	matchStartTimer.sort = 1001;
 	matchStartTimer.foreground = false;
 	matchStartTimer.hideWhenInMenu = false;

@@ -40,6 +40,21 @@ main()
 	level.iconoffset = (0,0,32);
 
 	level.onRespawnDelay = ::getRespawnDelay;
+
+	setDvar( "koth_autodestroytime", 120 );
+	setDvar( "koth_capturetime", 20 );
+	setDvar( "koth_delayPlayer", 0 );
+	setDvar( "koth_destroytime", 10 );
+	setDvar( "koth_kothmode", 0 );
+	setDvar( "koth_spawnDelay", 45 );
+	setDvar( "koth_spawntime", 10 );
+	setDvar( "scr_koth_numlives", 0 );
+	setDvar( "scr_koth_playerrespawndelay", 0 );
+	setDvar( "scr_koth_roundlimit", 2 );
+	setDvar( "scr_koth_roundswitch", 1 );
+	setDvar( "scr_koth_scorelimit", 0 );
+	setDvar( "scr_koth_timelimit", 20 );
+	setDvar( "scr_koth_waverespawndelay", 0 );
 }
 
 updateObjectiveHintMessages( alliesObjective, axisObjective )

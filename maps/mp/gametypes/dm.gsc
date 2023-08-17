@@ -6,6 +6,13 @@ main()
 
 	level.onStartGameType = ::onStartGameType;
 	level.onSpawnPlayer = ::onSpawnPlayer;
+
+	setDvar( "scr_dm_numlives", 0 );
+	setDvar( "scr_dm_playerrespawndelay", 0 );
+	setDvar( "scr_dm_roundlimit", 1 );
+	setDvar( "scr_dm_scorelimit", 0 );
+	setDvar( "scr_dm_timelimit", 10 );
+	setDvar( "scr_dm_waverespawndelay", 0 );
 }
 
 onStartGameType()

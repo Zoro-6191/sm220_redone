@@ -20,6 +20,14 @@ main()
 	level.onRoundSwitch = ::onRoundSwitch;
 
 	level.endGameOnScoreLimit = false;
+
+	setDvar( "scr_sd_numlives", 1 );
+	setDvar( "scr_sd_playerrespawndelay", 0 );
+	setDvar( "scr_sd_roundlimit", 20 );
+	setDvar( "scr_sd_roundswitch", 10 );
+	setDvar( "scr_sd_scorelimit", 0 );
+	setDvar( "scr_sd_timelimit", 1.75 );
+	setDvar( "scr_sd_waverespawndelay", 0 );
 }
 
 onPrecacheGameType()

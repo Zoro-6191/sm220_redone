@@ -706,8 +706,7 @@ endGame( winner, endReasonText )
 	if ( isDefined( level.onEndGame ) )
 		[[level.onEndGame]]( winner );
 
-	if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" )
-		setDvar( "g_deadChat", 1 );
+	setDvar( "g_deadChat", 1 );
 
 	game["state"] = "postgame";
 	level.gameEndTime = getTime();
@@ -862,23 +861,20 @@ endGame( winner, endReasonText )
 
 		if ( isDefined(game["PROMOD_KNIFEROUND"]) && game["PROMOD_KNIFEROUND"] )
 		{
-			if(isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match")
+			game["promod_do_readyup"] = 1;
+			game["promod_first_readyup_done"] = 0;
+			for(i=0;i<level.players.size;i++)
 			{
-				game["promod_do_readyup"] = 1;
-				game["promod_first_readyup_done"] = 0;
-				for(i=0;i<level.players.size;i++)
-				{
-					level.players[i].pers["kills"] = 0;
-					level.players[i].pers["deaths"] = 0;
-					level.players[i].pers["assists"] = 0;
-					level.players[i].pers["score"] = 0;
-					waittillframeend;
-				}
-
-				game["roundsplayed"]--;
-				[[level._setTeamScore]]( "allies", 0 );
-				[[level._setTeamScore]]( "axis", 0 );
+				level.players[i].pers["kills"] = 0;
+				level.players[i].pers["deaths"] = 0;
+				level.players[i].pers["assists"] = 0;
+				level.players[i].pers["score"] = 0;
+				waittillframeend;
 			}
+			game["roundsplayed"]--;
+			[[level._setTeamScore]]( "allies", 0 );
+			[[level._setTeamScore]]( "axis", 0 );
+
 			game["PROMOD_KNIFEROUND"] = 0;
 			for(i=0;i<level.players.size;i++)
 			{
@@ -942,13 +938,8 @@ endGame( winner, endReasonText )
 
 	wait 4;
 
-	if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" )
-	{
-		map_restart( false );
-		return;
-	}
-
-	exitLevel( false );
+	map_restart( false );
+	return;
 }
 
 getWinningTeam()
@@ -1277,9 +1268,9 @@ menuAllies()
 		self.freelook = undefined;
 
 		if( game["attackers"] == "allies" && game["defenders"] == "axis" && !self.switching )
-			iprintln(self.name + " Joined Attack");
+			iprintln(self.name + " ^7Joined Attack");
 		else if ( !self.switching )
-			iprintln(self.name + " Joined Defence");
+			iprintln(self.name + " ^7Joined Defence");
 
 		if ( oldTeam == "axis" )
 			thread maps\mp\gametypes\_promod::updateClassAvailability( oldTeam );
@@ -1357,9 +1348,9 @@ menuAxis()
 		self.freelook = undefined;
 
 		if( game["attackers"] == "allies" && game["defenders"] == "axis" && !self.switching )
-			iprintln(self.name + " Joined Defence");
+			iprintln(self.name + " ^7Joined Defence");
 		else if ( !self.switching )
-			iprintln(self.name + " Joined Attack");
+			iprintln(self.name + " ^7Joined Attack");
 
 		if ( oldTeam == "allies" )
 			thread maps\mp\gametypes\_promod::updateClassAvailability( oldTeam );
@@ -1424,7 +1415,7 @@ menuSpectator()
 		self setclientdvar( "g_scriptMainMenu", game["menu_shoutcast"] );
 
 		self notify("joined_spectators");
-		iprintln(self.name + " Joined Shoutcaster");
+		iprintln(self.name + " ^7Joined Shoutcaster");
 
 		if ( oldTeam == "allies" || oldTeam == "axis" )
 			thread maps\mp\gametypes\_promod::updateClassAvailability( oldTeam );
@@ -1908,11 +1899,9 @@ startGame()
 		return;
 	}
 
-	if ( ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" || getDvarInt( "promod_allow_strattime" ) && isDefined( game["CUSTOM_MODE"] ) && game["CUSTOM_MODE"] ) && level.gametype == "sd" )
-		promod\strattime::main();
+	promod\strattime::main();
 
-	if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" )
-		setDvar( "g_deadChat", 0 );
+	setDvar( "g_deadChat", 0 );
 
 	if ( isDefined( level.timeout_over ) && !level.timeout_over )
 		return;
@@ -1989,15 +1978,7 @@ prematchPeriod()
 {
 	level endon( "game_ended" );
 
-	if ( level.prematchPeriod > 0 && isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] != "match" )
-	{
-		if ( getDvarInt( "promod_allow_strattime" ) && isDefined( game["CUSTOM_MODE"] ) && game["CUSTOM_MODE"] && level.gametype == "sd" )
-			matchStartTimerSkip();
-		else
-			matchStartTimer();
-	}
-	else
-		matchStartTimerSkip();
+	matchStartTimerSkip();
 
 	level.inPrematchPeriod = false;
 
@@ -2355,7 +2336,7 @@ Callback_StartGameType()
 	if ( !isDefined( game["promod_do_readyup"] ) )
 		game["promod_do_readyup"] = false;
 
-	if ( (isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" || getDvarInt( "promod_allow_readyup" ) && isDefined( game["CUSTOM_MODE"] ) && game["CUSTOM_MODE"]) && ( !game["roundsplayed"] && !game["promod_first_readyup_done"] || ( game["SCORES_ATTACK"] > 0 || game["SCORES_DEFENCE"] > 0 ) ) )
+	if ( (isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" || isDefined( game["CUSTOM_MODE"] ) && game["CUSTOM_MODE"]) && ( !game["roundsplayed"] && !game["promod_first_readyup_done"] || ( game["SCORES_ATTACK"] > 0 || game["SCORES_DEFENCE"] > 0 ) ) )
 		game["promod_do_readyup"] = true;
 
 	game["SCORES_ATTACK"] = 0;
@@ -2371,7 +2352,6 @@ Callback_StartGameType()
 	level.useStartSpawns = true;
 
 	thread maps\mp\gametypes\_eventmanager::init();
-	thread maps\mp\gametypes\_promod::init();
 	thread maps\mp\gametypes\_rank::init();
 	thread maps\mp\gametypes\_menus::init();
 	thread maps\mp\gametypes\_hud::init();
@@ -2463,6 +2443,37 @@ setvariables()
 	setDvar( "player_throwBackOuterRadius", 0 );
 	setDvar( "loc_warnings", 0 );
 
+	setDvar( "scr_game_deathpointloss", 0 );
+	setDvar( "scr_game_suicidepointloss", 0 );
+	setDvar( "scr_player_suicidespawndelay", 0 );
+	setDvar( "scr_player_forcerespawn", 1 );
+
+	setDvar( "bg_fallDamageMinHeight", 140 );
+	setDvar( "bg_fallDamageMaxHeight", 350 );
+
+	setDvar( "logfile", 0 );
+	setDvar( "g_log", "games_mp.log" );
+	setDvar( "g_logSync", 0 );
+
+	setDvar( "g_inactivity", 0 );
+	setDvar( "g_no_script_spam", 1 );
+	setDvar( "g_antilag", 1 );
+	setDvar( "g_smoothClients", 1 );
+	setDvar( "sv_allowDownload", 1 );
+	setDvar( "sv_maxPing", 0 );
+	setDvar( "sv_minPing", 0 );
+	setDvar( "sv_reconnectlimit", 3 );
+	setDvar( "sv_timeout", 240 );
+	setDvar( "sv_zombietime", 2 );
+	setDvar( "sv_floodprotect", 4 );
+	setDvar( "sv_kickBanTime", 0 );
+	setDvar( "sv_disableClientConsole", 0 );
+	setDvar( "sv_voice", 0 );
+	setDvar( "sv_clientarchive", 1 );
+	setDvar( "timescale", 1 );
+
+	setDvar( "g_allowVote", 0 );
+
 	game["allies_assault_count"] = 0;
 	game["allies_specops_count"] = 0;
 	game["allies_demolitions_count"] = 0;
@@ -2480,6 +2491,45 @@ setvariables()
 
 	game["promod_first_readyup_done"] = 0;
 	game["PROMOD_VERSION"] = "Promod ^1LIVE ^7V2.20 EU";
+
+	setDvar( "class_assault_primary", "ak47" );
+	setDvar( "class_assault_primary_attachment", "none" );
+	setDvar( "class_assault_secondary", "deserteagle" );
+	setDvar( "class_assault_secondary_attachment", "none" );
+	setDvar( "class_assault_grenade", "smoke_grenade" );
+
+	setDvar( "class_specops_primary", "ak74u" );
+	setDvar( "class_specops_primary_attachment", "none" );
+	setDvar( "class_specops_secondary", "deserteagle" );
+	setDvar( "class_specops_secondary_attachment", "none" );
+	setDvar( "class_specops_grenade", "smoke_grenade" );
+
+	setDvar( "class_demolitions_primary", "winchester1200" );
+	setDvar( "class_demolitions_primary_attachment", "none" );
+	setDvar( "class_demolitions_secondary", "deserteagle" );
+	setDvar( "class_demolitions_secondary_attachment", "none" );
+	setDvar( "class_demolitions_grenade", "smoke_grenade" );
+
+	setDvar( "class_sniper_primary", "m40a3" );
+	setDvar( "class_sniper_primary_attachment", "none" );
+	setDvar( "class_sniper_secondary", "deserteagle" );
+	setDvar( "class_sniper_secondary_attachment", "none" );
+	setDvar( "class_sniper_grenade", "smoke_grenade" );
+
+	setServerDvarDefault( "allies_allow_assault", 1 );
+	setServerDvarDefault( "allies_allow_specops", 1 );
+	setServerDvarDefault( "allies_allow_demolitions", 1 );
+	setServerDvarDefault( "allies_allow_sniper", 1 );
+	setServerDvarDefault( "axis_allow_assault", 1 );
+	setServerDvarDefault( "axis_allow_specops", 1 );
+	setServerDvarDefault( "axis_allow_demolitions", 1 );
+	setServerDvarDefault( "axis_allow_sniper", 1 );
+}
+
+setServerDvarDefault( dvarName, setVal )
+{
+	setDvar( dvarName, setVal );
+	makeDvarServerInfo( dvarName );
 }
 
 deletePickups()
@@ -2531,7 +2581,7 @@ checkRoundSwitch()
 
 	if ( game["roundsplayed"] % level.roundswitch == 0 )
 	{
-		if ( ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" || getDvarInt( "promod_allow_readyup" ) && isDefined( game["CUSTOM_MODE"] ) && game["CUSTOM_MODE"] ) && game["promod_first_readyup_done"] )
+		if ( ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" || isDefined( game["CUSTOM_MODE"] ) && game["CUSTOM_MODE"] ) && game["promod_first_readyup_done"] )
 			game["promod_do_readyup"] = true;
 
 		game["promod_timeout_called"] = false;

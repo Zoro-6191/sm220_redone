@@ -1,47 +1,3 @@
-init()
-{
-	level.serverDvars = [];
-
-	setServerDvarDefault( "allies_allow_assault", 1, 0, 1 );
-	setServerDvarDefault( "allies_allow_specops", 1, 0, 1 );
-	setServerDvarDefault( "allies_allow_demolitions", 1, 0, 1 );
-	setServerDvarDefault( "allies_allow_sniper", 1, 0, 1 );
-	setServerDvarDefault( "axis_allow_assault", 1, 0, 1 );
-	setServerDvarDefault( "axis_allow_specops", 1, 0, 1 );
-	setServerDvarDefault( "axis_allow_demolitions", 1, 0, 1 );
-	setServerDvarDefault( "axis_allow_sniper", 1, 0, 1 );
-
-	setDvarDefault( "class_assault_primary", "ak47" );
-	setDvarDefault( "class_assault_primary_attachment", "none" );
-	setDvarDefault( "class_assault_secondary", "deserteagle" );
-	setDvarDefault( "class_assault_secondary_attachment", "none" );
-	setDvarDefault( "class_assault_grenade", "smoke_grenade" );
-	setDvarDefault( "class_assault_camo", "camo_none" );
-
-	setDvarDefault( "class_specops_primary", "ak74u" );
-	setDvarDefault( "class_specops_primary_attachment", "none" );
-	setDvarDefault( "class_specops_secondary", "deserteagle" );
-	setDvarDefault( "class_specops_secondary_attachment", "none" );
-	setDvarDefault( "class_specops_grenade", "smoke_grenade" );
-	setDvarDefault( "class_specops_camo", "camo_none" );
-
-	setDvarDefault( "class_demolitions_primary", "winchester1200" );
-	setDvarDefault( "class_demolitions_primary_attachment", "none" );
-	setDvarDefault( "class_demolitions_secondary", "deserteagle" );
-	setDvarDefault( "class_demolitions_secondary_attachment", "none" );
-	setDvarDefault( "class_demolitions_grenade", "smoke_grenade" );
-	setDvarDefault( "class_demolitions_camo", "camo_none" );
-
-	setDvarDefault( "class_sniper_primary", "m40a3" );
-	setDvarDefault( "class_sniper_primary_attachment", "none" );
-	setDvarDefault( "class_sniper_secondary", "deserteagle" );
-	setDvarDefault( "class_sniper_secondary_attachment", "none" );
-	setDvarDefault( "class_sniper_grenade", "smoke_grenade" );
-	setDvarDefault( "class_sniper_camo", "camo_none" );
-
-	[[level.on]]( "connecting", ::updateServerDvars );
-}
-
 setClassChoice( classType )
 {
 	if( classType != "assault" && classType != "specops" && classType != "demolitions" && classType != "sniper" )
@@ -56,33 +12,6 @@ setClassChoice( classType )
 	self setStatsFromClass( classType );
 
 	thread updateClassAvailability( self.pers["team"] );
-}
-
-setDvarDefault( dvarName, setVal, minVal, maxVal )
-{
-	if ( getDvar( dvarName ) != "" )
-	{
-		if ( isString( setVal ) )
-			setVal = getDvar( dvarName );
-		else setVal = getDvarFloat( dvarName );
-	}
-
-	if ( isDefined( minVal ) && !isString( setVal ) )
-		setVal = max( setVal, minVal );
-
-	if ( isDefined( maxVal ) && !isString( setVal ) )
-		setVal = min( setVal, maxVal );
-
-	setDvar( dvarName, setVal );
-	return setVal;
-}
-
-setServerDvarDefault( dvarName, setVal, minVal, maxVal )
-{
-	setDvar( dvarName, setVal );
-	makeDvarServerInfo( dvarName );
-
-	level.serverDvars[dvarName] = setVal;
 }
 
 initClassLoadouts()
@@ -369,7 +298,25 @@ verifyClassChoice( teamName, classType )
 		if ( level.players[i].team == teamName && isDefined( level.players[i].class ) && level.players[i].class == classType )
 			game[teamName + "_" + classType + "_count"]++;
 
-	return ( game[teamName + "_" + classType + "_count"] < getDvarInt( "class_" + classType + "_limit" ) );
+	limit = 0;
+
+	switch( classType )
+	{
+		case "assault":
+			limit = 64;
+			break;
+		case "specops":
+			limit = 2;
+			break;
+		case "demolitions":
+			limit = 1;
+			break;
+		case "sniper":
+			limit = 1;
+			break;
+	}
+
+	return ( game[teamName + "_" + classType + "_count"] < limit );
 }
 
 updateClassAvailability( teamName )
@@ -441,18 +388,6 @@ menuAcceptClass( response )
 	}
 
 	self thread maps\mp\gametypes\_spectating::setSpectatePermissions();
-}
-
-updateServerDvars()
-{
-	self endon ( "disconnect" );
-
-	dvarKeys = getArrayKeys( level.serverDvars );
-	for ( i = 0; i < dvarKeys.size; i++ )
-	{
-		self setClientDvar( dvarKeys[i], level.serverDvars[dvarKeys[i]] );
-		wait 0.05;
-	}
 }
 
 get_config( dataName )

@@ -18,6 +18,14 @@ main()
 	level.onRoundSwitch = ::onRoundSwitch;
 
 	level.displayRoundEndText = false;
+
+	setDvar( "scr_dom_numlives", 0 );
+	setDvar( "scr_dom_playerrespawndelay", 7 );
+	setDvar( "scr_dom_roundlimit", 2 );
+	setDvar( "scr_dom_roundswitch", 1 );
+	setDvar( "scr_dom_scorelimit", 0 );
+	setDvar( "scr_dom_timelimit", 15 );
+	setDvar( "scr_dom_waverespawndelay", 0 );
 }
 
 onPrecacheGameType()

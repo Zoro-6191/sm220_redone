@@ -141,18 +141,17 @@ quickpromod(response)
 
 			classType = self.pers["class"];
 
-			if ( self.pers[classType]["loadout_grenade"] == "smoke_grenade" && getDvarInt( "weap_allow_flash_grenade" ) )
+			if ( self.pers[classType]["loadout_grenade"] == "smoke_grenade" )
 			{
 				self.pers[classType]["loadout_grenade"] = "flash_grenade";
 				self iprintln("Flash selected");
 			}
-			else if ( self.pers[classType]["loadout_grenade"] == "flash_grenade" && getDvarInt( "weap_allow_smoke_grenade" ) )
+			else if ( self.pers[classType]["loadout_grenade"] == "flash_grenade" )
 			{
 				self.pers[classType]["loadout_grenade"] = "smoke_grenade";
 				self iprintln("Smoke selected");
 			}
-			else
-				return;
+			else return;
 
 			self maps\mp\gametypes\_promod::menuAcceptClass( "go" );
 			break;

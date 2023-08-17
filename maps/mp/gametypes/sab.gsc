@@ -33,6 +33,14 @@ main()
 		level.timeLimit = 0;
 	}
 
+	setDvar( "scr_sab_numlives", 0 );
+	setDvar( "scr_sab_playerrespawndelay", 7 );
+	setDvar( "scr_sab_roundlimit", 4 );
+	setDvar( "scr_sab_roundswitch", 2 );
+	setDvar( "scr_sab_scorelimit", 0 );
+	setDvar( "scr_sab_timelimit", 10 );
+	setDvar( "scr_sab_waverespawndelay", 0 );
+
 	badtrig = getent( "sab_bomb_defuse_allies", "targetname" );
 	if ( isdefined( badtrig ) )
 		badtrig delete();

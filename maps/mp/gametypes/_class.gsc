@@ -8,7 +8,7 @@ giveLoadout( team, class )
 	sidearmWeapon();
 	primaryWeapon();
 
-	if(!isDefined( level.strat_over ) || level.strat_over)
+	if(!isDefined( level.strat_over ) || level.strat_over )
 	{
 		self giveWeapon( "frag_grenade_mp" );
 		self setWeaponAmmoClip( "frag_grenade_mp", 1 );
@@ -19,7 +19,7 @@ giveLoadout( team, class )
 	if( gren == "flash_grenade" || gren == "smoke_grenade")
 	{
 		self setOffhandSecondaryClass(GetSubStr(gren, 0, 5));
-		if(!isDefined(level.strat_over) || level.strat_over)
+		if( !isDefined(level.strat_over) || level.strat_over )
 		{
 			self giveWeapon(gren+"_mp");
 			self setWeaponAmmoClip(gren+"_mp", 1);
