@@ -744,7 +744,8 @@ endGame( winner, endReasonText )
 				if ( isDefined( player.pers["team"] ) && player.pers["team"] == "spectator" )
 					continue;
 
-				player setClientDvars( "ui_hud_hardcore", 1, "cg_drawSpectatorMessages", 0, "g_compassShowEnemies", 0 );
+				player setStat( 75, 1 );
+				player setClientDvars( "cg_drawSpectatorMessages", 0, "g_compassShowEnemies", 0 );
 			}
 
 			level thread header();
@@ -793,7 +794,7 @@ endGame( winner, endReasonText )
 				}
 
 				player thread maps\mp\gametypes\_hud_message::teamOutcomeNotify( switchType, true, level.halftimeSubCaption );
-				player setClientDvar( "ui_hud_hardcore", 1 );
+				player setStat( 75, 1 );
 
 				if ( player.pers["team"] == "axis" )
 				{
@@ -853,7 +854,7 @@ endGame( winner, endReasonText )
 				}
 
 				player thread maps\mp\gametypes\_hud_message::teamOutcomeNotify( switchType, true, endReasonText );
-				player setClientDvar( "ui_hud_hardcore", 1 );
+				player setStat( 75, 1 );
 			}
 
 			roundEndWait( level.halftimeRoundEndDelay );
@@ -919,8 +920,9 @@ endGame( winner, endReasonText )
 			player thread maps\mp\gametypes\_hud_message::teamOutcomeNotify( winner, false, endReasonText );
 		}
 		else player thread maps\mp\gametypes\_hud_message::outcomeNotify( winner, endReasonText );
-
-		player setClientDvars( "ui_hud_hardcore", 1, "cg_drawSpectatorMessages", 0, "g_compassShowEnemies", 0 );
+		
+		player setStat( 75, 1 );
+		player setClientDvars( "cg_drawSpectatorMessages", 0, "g_compassShowEnemies", 0 );
 	}
 
 	roundEndWait( level.postRoundTime );
@@ -935,7 +937,7 @@ endGame( winner, endReasonText )
 		player closeInGameMenu();
 		player notify ( "reset_outcome" );
 		player thread spawnIntermission();
-		player setClientDvar( "ui_hud_hardcore", 0 );
+		player setStat( 75, 0 );
 	}
 
 	wait 4;
@@ -1158,19 +1160,15 @@ menuAutoAssign()
 	self.team = assignment;
 	self setStat( 65 , 0 );
 
-	self updateObjectiveText();
-
 	if ( level.teamBased )
 		self.sessionteam = assignment;
-	else
-		self.sessionteam = "none";
+	else self.sessionteam = "none";
 
 	if ( !isDefined( level.rdyup ) || !level.rdyup )
 	{
 		if ( !isAlive( self ) )
 			self.statusicon = "hud_status_dead";
-		else
-			self.statusicon = "";
+		else self.statusicon = "";
 	}
 
 	self notify("joined_team");
@@ -1181,16 +1179,14 @@ menuAutoAssign()
 	if( self.pers["team"] == "allies" && oldTeam != self.pers["team"] )
 	{
 		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
-			iPrintLN(self.name + " Joined Attack");
-		else
-			iPrintLN(self.name + " Joined Defence");
+			iPrintLN(self.name + " ^7Joined Attack");
+		else iPrintLN(self.name + " ^7Joined Defence");
 	}
 	else if( self.pers["team"] == "axis" && oldTeam != self.pers["team"] )
 	{
 		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
-			iPrintLN(self.name + " Joined Defence");
-		else
-			iPrintLN(self.name + " Joined Attack");
+			iPrintLN(self.name + " ^7Joined Defence");
+		else iPrintLN(self.name + " ^7Joined Attack");
 	}
 
 	if ( oldTeam != self.pers["team"] && ( oldTeam == "allies" || oldTeam == "axis" ) )
@@ -1201,20 +1197,6 @@ menuAutoAssign()
 	self beginClassChoice();
 
 	self setclientdvar( "g_scriptMainMenu", game[ "menu_class_" + self.pers["team"] ] );
-}
-
-updateObjectiveText()
-{
-	if ( self.pers["team"] == "spectator" )
-	{
-		self setClientDvar( "cg_objectiveText", "" );
-		return;
-	}
-
-	if( level.scorelimit > 0 )
-		self setclientdvar( "cg_objectiveText", getObjectiveScoreText( self.pers["team"] ), level.scorelimit );
-	else
-		self setclientdvar( "cg_objectiveText", getObjectiveText( self.pers["team"] ) );
 }
 
 closeMenus()
@@ -1273,8 +1255,6 @@ menuAllies()
 			self.team = "allies";
 			self setStat( 65 , 0 );
 		}
-
-		self updateObjectiveText();
 
 		if ( level.teamBased )
 			self.sessionteam = "allies";
@@ -1358,19 +1338,15 @@ menuAxis()
 			self setStat( 65 , 0 );
 		}
 
-		self updateObjectiveText();
-
 		if ( level.teamBased )
 			self.sessionteam = "axis";
-		else
-			self.sessionteam = "none";
+		else self.sessionteam = "none";
 
 		if ( !isDefined( level.rdyup ) || !level.rdyup )
 		{
 			if ( !isAlive( self ) )
 				self.statusicon = "hud_status_dead";
-			else
-				self.statusicon = "";
+			else self.statusicon = "";
 		}
 
 		self setclientdvar("g_scriptMainMenu", game["menu_class_axis"]);
@@ -1441,8 +1417,6 @@ menuSpectator()
 		self.pers["team"] = "spectator";
 		self.team = "spectator";
 		self setStat( 65 , 0 );
-
-		self updateObjectiveText();
 
 		self.sessionteam = "spectator";
 		self thread [[level.spawnSpectator]]( self.origin, self.angles );
@@ -1688,12 +1662,6 @@ sendUpdatedDMScores()
 		level.players[i] updateDMScores();
 		level.players[i].updatedDMScores = true;
 	}
-}
-
-initPersStat( dataName )
-{
-	if( !isDefined( self.pers[dataName] ) )
-		self.pers[dataName] = 0;
 }
 
 updateTeamStatus()
@@ -2375,7 +2343,7 @@ Callback_StartGameType()
 
 		level.prematchPeriod = maps\mp\gametypes\_tweakables::getTweakableValue( "game", "matchstarttime" );
 
-		thread promod\setvariables::main();
+		thread setvariables();
 	}
 
 	if ( !isdefined( game["timepassed"] ) )
@@ -2409,7 +2377,7 @@ Callback_StartGameType()
 	thread maps\mp\gametypes\_hud::init();
 	thread maps\mp\gametypes\_serversettings::init();
 	thread maps\mp\gametypes\_clientids::init();
-	thread maps\mp\gametypes\_teams::init();
+	thread maps\mp\gametypes\_teams::setPlayerModels();
 	thread maps\mp\gametypes\_weapons::init();
 	thread maps\mp\gametypes\_scoreboard::init();
 	thread maps\mp\gametypes\_shellshock::init();
@@ -2485,6 +2453,33 @@ Callback_StartGameType()
 	thread startGame();
 
 	level thread updateGameTypeDvars();
+}
+
+setvariables()
+{
+	setDvar( "bg_bobMax", 0 );
+	setDvar( "player_sustainAmmo", 0 );
+	setDvar( "player_throwBackInnerRadius", 0 );
+	setDvar( "player_throwBackOuterRadius", 0 );
+	setDvar( "loc_warnings", 0 );
+
+	game["allies_assault_count"] = 0;
+	game["allies_specops_count"] = 0;
+	game["allies_demolitions_count"] = 0;
+	game["allies_sniper_count"] = 0;
+
+	game["axis_assault_count"] = 0;
+	game["axis_specops_count"] = 0;
+	game["axis_demolitions_count"] = 0;
+	game["axis_sniper_count"] = 0;
+
+	game["promod_timeout_called"] = false;
+	game["promod_in_timeout"] = 0;
+	game["allies_timeout_called"] = 0;
+	game["axis_timeout_called"] = 0;
+
+	game["promod_first_readyup_done"] = 0;
+	game["PROMOD_VERSION"] = "Promod ^1LIVE ^7V2.20 EU";
 }
 
 deletePickups()
@@ -2566,7 +2561,7 @@ Callback_PlayerConnect()
 
 	level notify( "connected", self );
 
-	self setClientDvar( "ui_hud_hardcore", 0 );
+	self setStat( 75, 0 );
 
 	if ( !isDefined( level.rdyup ) || !level.rdyup )
 		self.statusicon = "";
@@ -2574,16 +2569,14 @@ Callback_PlayerConnect()
 	if( !isdefined( self.pers["score"] ) )
 		iPrintLn( &"MP_CONNECTED", self.name );
 
-	self initPersStat( "score" );
+	if( !isDefined( self.pers["score"] ) ) self.pers["score"] = 0;
+	if( !isDefined( self.pers["deaths"] ) ) self.pers["deaths"] = 0;
+	if( !isDefined( self.pers["kills"] ) ) self.pers["kills"] = 0;
+	if( !isDefined( self.pers["assists"] ) ) self.pers["assists"] = 0;
+
 	self.score = self.pers["score"];
-
-	self initPersStat( "deaths" );
 	self.deaths = self.pers["deaths"];
-
-	self initPersStat( "kills" );
 	self.kills = self.pers["kills"];
-
-	self initPersStat( "assists" );
 	self.assists = self.pers["assists"];
 
 	self.pers["lives"] = level.numLives;
@@ -2617,8 +2610,6 @@ Callback_PlayerConnect()
 
 		self setStat( 65 , 0 );
 
-		self updateObjectiveText();
-
 		[[level.spawnSpectator]]();
 
 		self thread promod\client::use_config();
@@ -2651,8 +2642,6 @@ Callback_PlayerConnect()
 	{
 		self.sessionteam = self.pers["team"];
 		self.sessionstate = "dead";
-
-		self updateObjectiveText();
 
 		[[level.spawnSpectator]]();
 
@@ -2908,10 +2897,8 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 				{
 					attacker.pers["kills"]++;
 					attacker.kills = attacker.pers["kills"];
-
 					givePlayerScore( "kill", attacker, self );
 					giveTeamScore( "kill", attacker.pers["team"], attacker, self );
-
 					scoreSub = maps\mp\gametypes\_tweakables::getTweakableValue( "game", "deathpointloss" );
 					_setPlayerScore( self, _getPlayerScore( self ) - scoreSub );
 				}
@@ -2954,26 +2941,18 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 	else scWeapon = sWeapon;
 
 	sHeadshot = int(sMeansOfDeath == "MOD_HEAD_SHOT");
-
 	level thread updateTeamStatus();
-
 	self clonePlayer( deathAnimDuration );
-
 	self thread [[level.onPlayerKilled]](eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psOffsetTime, deathAnimDuration);
-
 	self.deathTime = getTime();
-
 	wait 0.25;
-
 	postDeathDelay = waitForTimeOrNotifies( 0.75 );
-
 	self notify ( "death_delay_finished" );
 
 	if ( !isDefined( game["state"] ) || game["state"] != "playing" )
 		return;
 
 	respawnTimerStartTime = gettime();
-
 	prof_end( "PlayerKilled post constants" );
 
 	if ( !isDefined( game["state"] ) || game["state"] != "playing" )

@@ -1,8 +1,3 @@
-init()
-{
-	setPlayerModels();
-}
-
 setPlayerModels()
 {
 	game["allies_model"] = [];
@@ -175,6 +170,5 @@ getJoinTeamPermissions( team )
 
 	if( teamCount < level.teamLimit )
 		return true;
-	else
-		return false;
+	else return false;
 }

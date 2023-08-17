@@ -1,4 +1,3 @@
-
 #include maps\mp\gametypes\_hud_util;
 
 main()
@@ -77,8 +76,7 @@ main()
 
 				if ( player.ready )
 					player.statusicon = "compassping_friendlyfiring_mp";
-				else
-					player.statusicon = "compassping_enemy";
+				else player.statusicon = "compassping_enemy";
 			}
 		}
 
@@ -104,7 +102,7 @@ main()
 	for(i=0;i<level.players.size;i++)
 	{
 		level.players[i] setStat( 73, 0 );
-		level.players[i] setclientdvar( "ui_hud_hardcore", 1 );
+		level.players[i] setStat( 75, 1 );
 		level.players[i].statusicon = "";
 	}
 	for(i=0;i<level.players.size;i++)
@@ -255,8 +253,7 @@ clientHUD()
 		text = "Pre-Match";
 	else if ( game["promod_in_timeout"] )
 		text = "Timeout";
-	else
-		text = "Half-Time";
+	else text = "Half-Time";
 
 	self.periodtext = createFontString( "big", 1.6 );
 	self.periodtext setPoint( "CENTER", "CENTER", 0, -75 );
@@ -309,8 +306,7 @@ periodAnnounce()
 
 	if ( !game["promod_in_timeout"] || isDefined( game["LAN_MODE"] ) && game["LAN_MODE"] )
 		level.halftimetimer setTimerUp( 0 );
-	else
-		level.halftimetimer setTimer( 300 );
+	else level.halftimetimer setTimer( 300 );
 
 	level.halftimetimer.sort = 1001;
 	level.halftimetimer.foreground = false;
@@ -332,7 +328,6 @@ moveOver()
 		wait 3;
 		self.periodtext MoveOverTime( 2.5 );
 	}
-
 	self.periodtext setPoint( "CENTER", "CENTER", 0, 185 );
 
 	if( level.rup_txt_fx )

@@ -41,6 +41,7 @@ setsunlight(n)
 use_config()
 {
 	self setsunlight(self get_config("PROMOD_SUNLIGHT"));
+	
 	self setClientDvars(
 	"cg_crosshairenemycolor", 0,
 	"cg_drawcrosshairnames", 0,

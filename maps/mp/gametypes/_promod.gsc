@@ -58,17 +58,6 @@ setClassChoice( classType )
 	thread updateClassAvailability( self.pers["team"] );
 }
 
-setDvarWrapper( dvarName, setVal )
-{
-	setDvar( dvarName, setVal );
-	if ( isDefined( level.serverDvars[dvarName] ) )
-	{
-		level.serverDvars[dvarName] = setVal;
-		for ( i = 0; i < level.players.size; i++ )
-			level.players[i] setClientDvar( dvarName, setVal );
-	}
-}
-
 setDvarDefault( dvarName, setVal, minVal, maxVal )
 {
 	if ( getDvar( dvarName ) != "" )

@@ -61,7 +61,7 @@
 		name			"MantleHint"
 		rect			0 105 40 40 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_CENTER
 		fullScreen		0
-		visible			when( !dvarInt( ui_hud_hardcore ) && NOT_SPECTATING )
+		visible			when( !stat( 75 ) && NOT_SPECTATING )
 
 		itemDef
 		{
@@ -80,7 +80,7 @@
 		name			"Cursorhints"
 		rect			0 60 40 40 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_CENTER
 		fullScreen		0
-		visible			when( !dvarInt( ui_hud_hardcore ) && !ui_active() && NOT_SPECTATING )
+		visible			when( !stat( 75 ) && !ui_active() && NOT_SPECTATING )
 
 		itemDef
 		{
@@ -127,7 +127,7 @@
 			rect			0 0 80 80
 			ownerdraw		CG_PLAYER_STANCE
 			textfont		7
-			visible			when( !inkillcam() && !dvarint( ui_hud_hardcore ) );
+			visible			when( !inkillcam() && !stat( 75 ) );
 			textscale		TEXTSIZE_SMALL
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			forecolor		1 1 1 HUD_ALPHA
@@ -144,7 +144,7 @@
 		name			"Compass_old"
 		rect			RECT_COMPASS
 		fullScreen		0
-		visible			when ( !inkillcam() && !flashbanged() && !ui_active() && !scoped() && DVAR_BLANK && (!dvarint( ui_hud_hardcore ) || dvarInt( g_compassShowEnemies ) ) );
+		visible			when ( !inkillcam() && !flashbanged() && !ui_active() && !scoped() && DVAR_BLANK && (!stat( 75 ) || dvarInt( g_compassShowEnemies ) ) );
 
 		itemDef
 		{
@@ -324,7 +324,7 @@
 		rect			(BOTTOM_RECT_X+SCORE_OFFSET_X) (BOTTOM_RECT_Y+SCORE_OFFSET_Y) 640 480 HORIZONTAL_ALIGN_FULLSCREEN VERTICAL_ALIGN_FULLSCREEN
 		exp				rect Y( BOTTOM_RECT_Y - 10 );
 		fullScreen		0
-		visible			when( !inkillcam() && !ui_active() && !dvarint( ui_hud_hardcore ) );
+		visible			when( !inkillcam() && !ui_active() && !stat( 75 ) );
 
 		itemDef
 		{
@@ -719,7 +719,7 @@
 		name			"weaponinfo"
 		rect			BOTTOM_RECT_X (BOTTOM_RECT_Y - 10) 0 0 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_BOTTOM
 		fullScreen		0
-		visible			when( !inkillcam() && !dvarBool( ammoCounterHide ) && !flashbanged() && !ui_active() && !dvarint( ui_hud_hardcore ) && DVAR_BLANK && team( name ) != "TEAM_SPECTATOR" && NOT_SPECTATING );
+		visible			when( !inkillcam() && !dvarBool( ammoCounterHide ) && !flashbanged() && !ui_active() && !stat( 75 ) && DVAR_BLANK && team( name ) != "TEAM_SPECTATOR" && NOT_SPECTATING );
 
 		itemDef
 		{
@@ -805,7 +805,7 @@
 		name			"amitalking"
 		rect			0 45 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_BOTTOM
 		fullScreen		0
-		visible			when ( dvarint( hud_enable ) && !dvarint( ui_hud_hardcore ) && !ui_active() && DVAR_BLANK && ( team( name ) == "TEAM_ALLIES" || team( name ) == "TEAM_AXIS" ) )
+		visible			when ( dvarint( hud_enable ) && !stat( 75 ) && !ui_active() && DVAR_BLANK && ( team( name ) == "TEAM_ALLIES" || team( name ) == "TEAM_AXIS" ) )
 
 		itemDef
 		{
@@ -985,7 +985,7 @@
 		name			"subtitles"
 		rect			200 400 10 10 HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_TOP
 		fullScreen		0
-		visible			when( !inkillcam() && dvarint( ui_hud_obituaries ) && !ui_active() && !dvarint( ui_hud_hardcore ) );
+		visible			when( !inkillcam() && dvarint( ui_hud_obituaries ) && !ui_active() && !stat( 75 ) );
 
 		itemDef
 		{

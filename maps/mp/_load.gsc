@@ -16,7 +16,6 @@ main( bScriptgened, bCSVgened, bsgenabled )
 	setDvar("scr_RequiredMapAspectratio", 1);
 
 	thread maps\mp\gametypes\_tweakables::init();
-	thread maps\mp\_minefields::minefields();
 	thread maps\mp\_destructables::init();
 	thread maps\mp\_destructible::init();
 
@@ -56,7 +55,6 @@ main( bScriptgened, bCSVgened, bsgenabled )
 				triggertype = "trigger_damage";
 				break;
 		}
-
 		triggers = getentarray( triggertype, "classname" );
 
 		for ( i = 0;i < triggers.size;i ++ )
@@ -78,8 +76,7 @@ exploder_load( trigger )
 	{
 		if ( isdefined( trigger.script_delay ) )
 			wait trigger.script_delay;
-		else
-			wait 4;
+		else wait 4;
 		level thread exploder_load( trigger );
 		return;
 	}
@@ -180,8 +177,7 @@ setupExploders()
 		ent.v[ "type" ] = "exploder";
 		if ( !isdefined( exploder.script_fxid ) )
 			ent.v[ "fxid" ] = "No FX";
-		else
-			ent.v[ "fxid" ] = exploder.script_fxid;
+		else ent.v[ "fxid" ] = exploder.script_fxid;
 		ent.v[ "exploder" ] = exploder.script_exploder;
 
 		if ( !isdefined( ent.v[ "delay" ] ) )
@@ -201,8 +197,7 @@ setupExploders()
 
 		if ( isdefined( exploder.targetname ) && isdefined( acceptableTargetnames[ exploder.targetname ] ) )
 			ent.v[ "exploder_type" ] = exploder.targetname;
-		else
-			ent.v[ "exploder_type" ] = "normal";
+		else ent.v[ "exploder_type" ] = "normal";
 
 		ent maps\mp\_createfx::post_entity_creation_function();
 	}

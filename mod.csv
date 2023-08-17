@@ -48,6 +48,7 @@ rawfile,maps/mp/gametypes/_globallogic.gsc
 rawfile,maps/mp/gametypes/_healthoverlay.gsc
 rawfile,maps/mp/gametypes/_hud.gsc
 rawfile,maps/mp/gametypes/_hud_message.gsc
+rawfile,maps/mp/gametypes/_hud_util.gsc
 rawfile,maps/mp/gametypes/_menus.gsc
 rawfile,maps/mp/gametypes/_missions.gsc
 rawfile,maps/mp/gametypes/_promod.gsc
@@ -93,7 +94,6 @@ rawfile,promod/client.gsc
 rawfile,promod/comp.gsc
 rawfile,promod/modes.gsc
 rawfile,promod/readyup.gsc
-rawfile,promod/setvariables.gsc
 rawfile,promod/strattime.gsc
 rawfile,promod/timeout.gsc
 
